@@ -1,0 +1,804 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<title>widlproc</title>
+<style type="text/css">
+    body { color: black; font: 10pt verdana; }
+    a:link { text-decoration: none; }
+    a:visited { text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    dt { margin-top: 0.5em; }
+    dd { margin-left: 1em; margin-bottom: 0.5em; }
+    li { margin-bottom: 0; }
+    h4 { font-size: 10pt; }
+    table { border: 1px solid; border-collapse: collapse; }
+    td { border: 1px solid; }
+    th { border: 1px solid; }
+    code { background-color: #f0f0f0; }
+    pre { background-color: #f0f0f0; }
+    .indent { margin-left: 3em; }
+    .issue { background-color: #00CCCC; }
+</style>
+</head>
+<body>
+<h1>widlproc</h1>
+
+<p>Tim Renouf, Aplix Corp</p>
+<p>$Id$
+<br>$URL$
+</p>
+
+<h2>Introduction</h2>
+
+<p>
+widlproc is a processor that accepts as input
+<a href="#webidl">Web IDL</a>
+with comments in a subset of the format used by
+<a href="#doxygen">Doxygen</a>.
+The format it accepts is proposed by Aplix for authoring
+<a href="#bondi">BONDI</a> interface definitions.
+</p>
+
+<p>
+The output of widlproc is an XML representation of the
+parse tree resulting from parsing the 
+<a href="#webidl">Web IDL</a>
+using the latter's LL(1) grammar, with a few minor modifications, with
+added XML elements representing the
+<a href="#doxygen">Doxygen</a>-like comments.
+</p>
+
+<h2>Usage</h2>
+
+<p>
+<code>widlproc <i>filename</i></code>
+</p>
+
+<p>
+widlproc reads the file named <em>filename</em>, and 
+sends its XML output format to stdout.
+</p>
+
+<h2>Input format</h2>
+
+<p>
+The input format accepted by widlproc is
+<a href="#webidl">Web IDL</a>,
+with comments in a subset of the format used by
+<a href="#doxygen">Doxygen</a>.
+</p>
+
+<h3>Doxygen subset introduction</h3>
+
+<p>
+Only a small subset of Doxygen functionality is supported by
+widlproc.
+</p>
+
+<p>
+In particular, no links are added automatically. (This could be added
+in the future.)
+</p>
+
+<h3>Doxygen comment block</h3>
+
+<h4>Comment referral point</h4>
+
+<p>
+Each <em>Doxygen comment block</em> refers to a <em>comment referral
+point</em> in the Web IDL, one of
+module, interface, exception, const, attribute, operation or argument.
+</p>
+
+<h4>Block comment</h4>
+
+<p>
+A block comment (delimited by <code>/* */</code>) whose first character
+after the <code>/*</code> is <code>!</code> or a second <code>*</code>
+is a <em>Doxygen comment block</em>.
+</p>
+
+<p>
+Normally the comment block refers to the next comment referral point in
+the Web IDL.
+If the first character is <code>&lt;</code>, so the comment block is introduced
+with <code>/**&lt;</code> or <code>/*!&lt;</code> , then the comment block
+refers back to the previous comment referral point.
+</p>
+
+<p>
+The text of the comment block
+excludes the initial <code>!</code> or <code>*</code> (and the <code>&lt;</code>
+for a referring back block),
+and excludes an initial (after whitespace) <code>*</code>
+on each line,
+and, when not in a <a href="#code"><code>\code</code></a> block,
+excludes any line consisting entirely of whitespace, then <code>*</code>
+characters, then whitespace.
+</p>
+
+<p>
+widlproc does not support Doxygen commands to force a comment
+block to refer to a different referral point.
+</p>
+
+<h4>Inline comments</h4>
+
+<p>
+The maximal sequence of inline comments (delimited by <code>//</code>)
+on adjacent lines, where all of the following conditions hold:
+</p>
+<ul>
+<li>
+each has a first character after the <code>/</code> of <code>!</code> or
+a third <code>/</code>;
+<li>
+no comment referral point intervenes;
+<li>
+either each comment in the sequence starts with a <code>&lt;</code>
+(see below), or none does;
+<li>
+the sequence contains at least two inline comments, or, if only one,
+then it starts with <code>&lt;</code> (see below);
+</ul>
+<p>
+forms a <em>Doxygen comment block</em>.
+</p>
+
+<p>
+Normally the comment block refers to the next comment referral point in
+the Web IDL.
+If the first character of each comment is <code>&lt;</code>, so each
+comment in the block is introduced
+with <code>///&lt;</code> or <code>//!&lt;</code> , then the comment block
+refers back to the previous comment referral point.
+</p>
+
+<p>
+The text of the comment block
+excludes the initial <code>!</code> or <code>/</code> (and the <code>&lt;</code>
+for a referring back block) of each inline comment,
+and, when not in a <a href="#code"><code>\code</code></a> block,
+excludes any line consisting entirely of whitespace, then <code>/</code>
+characters, then whitespace.
+</p>
+
+<p>
+widlproc does not support Doxygen commands to force a comment
+block to refer to a different referral point.
+</p>
+
+<h3>Paragraph</h3>
+
+<p>
+A comment block is broken into zero or more <em>paragraph</em>s.
+One or more blank lines break the paragraphs (unless in a
+<a href="#code"><code>\code</code></a> block).
+</p>
+
+<p>
+Certain commands (below) also start a new paragraph.
+</p>
+
+<p>
+An
+<a href="#html">HTML block element</a>
+is a paragraph.
+A blank line (other than in a
+<a href="#code"><code>\code</code></a> block)
+implicitly closes any open HTML elements, thus ending the paragraph.
+</p>
+
+<h3>Doxygen commands</h3>
+
+<p>
+widlproc supports a small subset of Doxygen commands.
+</p>
+
+<p>
+A command is always introduced with a <code>\</code> character.
+The Doxygen alternative (from JavaDoc) of <code>@</code> is not
+supported.
+</p>
+
+<h4>\author</h4>
+
+<p>
+Starts a new paragraph. The remainder of the paragraph contains
+information about a single author of the specification. Multiple
+<code>\author</code> commands should be used for multiple authors.
+</p>
+
+<p>
+(Here widlproc differs from Doxygen; Doxygen also allows
+multiple authors on separate lines to appear in one <code>\author</code>
+paragraph.)
+</p>
+
+<h4>\b</h4>
+
+<p>
+This renders the next word as bold. It is equivalent to enclosing the
+next word with <code>&lt;b> &lt;/b></code>.
+</p>
+
+<h4>\brief</h4>
+
+<p>
+Starts a new paragraph. The remainder of the paragraph contains a brief
+description of the entity being documented.
+</p>
+
+<h4 id="code">\code, \endcode</h4>
+
+<p>
+<code>\code</code>
+starts a new paragraph which is a <em>code block</em>. The code block
+ends at the next <code>\endcode</code> command.
+</p>
+
+<p>
+Within the code block, whitespace and newlines are passed verbatim into
+the output.
+</p>
+
+<h4>\n</h4>
+
+<p>
+Creates a line break in the output.
+</p>
+
+<h4>\package</h4>
+
+<p>
+This takes the following word and uses it to override the name of the
+Web IDL <code>module</code> being documented.
+<span class="issue">
+Is this necessary? Can we use the Web IDL qualified name syntax instead
+to get a package name such as <code>bondi.filesystem</code>?
+</span>
+</p>
+
+<h4>\param</h4>
+
+<p>
+Starts a new paragraph. This takes the following word as the name of
+a parameter (argument) of the entity being documented, then makes the
+remainder of the paragraph refer to that parameter.
+</p>
+
+<h4>\return</h4>
+
+<p>
+Starts a new paragraph. The remainder of the paragraph is made to refer to
+the return type of the entity being documented.
+</p>
+
+<h4>\throw</h4>
+
+<p>
+Starts a new paragraph. The next word is taken to be the name of an
+exception thrown by the entity being documented, and the remainder of
+the paragraph documents that exception (in the <code>raises</code> list of
+the <code>operation</code>).
+</p>
+
+<h4>\version</h4>
+
+<p>
+Starts a new paragraph. The remainder of the paragraph contains
+version number information.
+</p>
+
+<h3>Escape sequences</h3>
+
+<p>
+The following escape sequences are recognized in a comment block:
+</p>
+
+<table>
+<tr>
+<th>escape sequence
+<th>result
+<tr>
+<td><code>\\</code>
+<td><code>\</code>
+<tr>
+<td><code>\&amp;</code>
+<td><code>&amp;</code> (escaped to <code>&amp;amp;</code> in output XML)
+<tr>
+<td><code>\$</code>
+<td><code>$</code>
+<tr>
+<td><code>\#</code>
+<td><code>#</code>
+<tr>
+<td><code>\&lt;</code>
+<td><code>&lt;</code> (escaped to <code>&amp;lt;</code> in output XML)
+<tr>
+<td><code>\></code>
+<td><code>></code>
+<tr>
+<td><code>\%</code>
+<td><code>%</code>
+</table>
+
+<p>
+Some of these escape sequences are used to avoid Doxygen features that
+widlproc does not currently implement. In particular,
+widlproc insists on a <code>$</code> being escaped, to
+allow for possible future functionality.
+</p>
+
+<h3 id="html">HTML in comments</h3>
+
+<p>
+widlproc accepts a small subset of HTML elements.
+</p>
+
+<p>
+An HTML block element is a paragraph.
+A blank line (other than in a
+<a href="#code"><code>\code</code></a> block)
+implicitly closes any open HTML elements, thus ending the paragraph.
+</p>
+
+<p>
+The following HTML block elements are accepted:
+<code>dl</code>
+<code>p</code>
+<code>table</code>
+<code>ul</code>
+</p>
+
+<p>
+The following HTML inline elements are accepted:
+<code>b</code>
+<code>br</code>
+<code>em</code>
+</p>
+
+<p>
+The following HTML elements are accepted where valid inside one of the
+other elements:
+<code>dd</code>
+<code>dt</code>
+<code>li</code>
+<code>td</code>
+<code>th</code>
+<code>tr</code>
+</p>
+
+
+<h2>Output format</h2>
+
+<p>
+The output of widlproc is an XML representation of the
+parse tree resulting from parsing the 
+<a href="#webidl">Web IDL</a>
+using the latter's LL(1) grammar, with a few minor modifications, with
+added XML elements representing the
+<a href="#doxygen">Doxygen</a>-like comments.
+</p>
+
+<p>
+Most non-terminals in the Web IDL grammar correspond to an XML element
+of the same name. Where the XML element would be empty, it is omitted.
+</p>
+<p>
+Terminals do not appear in the XML output, except:
+</p>
+<ul>
+<li>
+<em>identifier</em> appears as the <code>identifier</code> attribute
+of the containing element;
+<li>
+<em>integer</em>, <em>float</em> and <em>string</em> appear as the
+empty element
+<code>&lt;integer/></code>,
+<code>&lt;Float/></code> or
+<code>&lt;string/></code> (respectively)
+with the attribute <code>value</code> containing the integer, float or
+string value;
+<li>
+The terminals
+<em>DOMString</em>,
+<em>unsigned</em>,
+<em>void</em>,
+<em>any</em>,
+<em>boolean</em>,
+<em>octet</em>,
+<em>short</em>,
+<em>long</em>,
+<em>float</em> and
+<em>Object</em>
+appear as an empty element of the same name.
+</ul>
+
+<p>
+Where a production is right recursive, the XML is slightly modified to
+remove the recursion. For example, the non-terminal <em>Definitions</em>
+is right recursive for the production <em>Definition Definitions</em>,
+but in the XML the recursion is removed so that, however many
+<code>&lt;Definition></code> elements there are, they are all direct
+children of a single <code>&lt;Definitions></code> element.
+</p>
+
+<p>
+This modification is taken slightly further for <em>ArgumentList</em>,
+<em>ExtendedAttributeList</em> and <em>ScopedNameList</em>:
+the <code>&lt;ArgumentList></code>,
+<code>&lt;ExtendedAttributeList></code> or <code>&lt;ScopedNameList></code>
+directly contains one or more
+<code>&lt;Argument></code>, <code>&lt;ExtendedAttribute></code>
+or <code>&lt;ScopedName></code>
+(respectively) elements, and there are no XML elements for the
+non-terminals <em>Arguments</em>, <em>ExtendedAttributes</em>
+and <em>ScopedNames</em>.
+</p>
+
+<p>
+The whole of a subtree rooted at an <em>ExtendedAttribute</em>
+non-terminal is output as a single
+<code>&lt;ExtendedAttribute value="<i>text</i>"></code>
+element where <i>text</i> is the text of the extended attribute with
+whitespace normalized (no whitespace except where needed to separate
+tokens, and then multiple whitespace characters folded into a single
+space character).
+</p>
+
+<p>
+The <code>&lt;ExtendedAttributeList></code> element is output as a child
+of the element it refers to, rather than as a preceeding sibling as the
+Web IDL grammar would imply. As an exception to this,
+<code>&lt;ExtendedAttributeList></code> is output as a child of a
+<code>&lt;Argument></code>.
+</p>
+
+<p>
+A <em>BooleanLiteral</em> is output as an empty
+<code>&lt;BooleanLiteral value="<i>val</i>"/></code>
+element, where <i>val</i> is either <code>TRUE</code> or <code>FALSE</code>.
+</p>
+
+<h3>Annotated document type declaration</h3>
+
+<pre class="dtd">
+&lt;!-- Autogenerated from widlproc.html : do not edit. -->
+</pre>
+
+<h4>Entities used elsewhere</h4>
+
+<pre class="dtd">
+&lt;!ENTITY % block 'dl | p | table | ul' >
+&lt;!ENTITY % Block '(%block;)*' >
+&lt;!ENTITY % inline 'b | br | em' >
+&lt;!ENTITY % Inline '(#PCDATA | %inline;)*' >
+&lt;!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
+</pre>
+
+<h4>Definition</h4>
+
+<p>
+The <em>ExtendedAttributeList</em> specifies any extended attributes
+for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
+<em>Typedef</em>, <em>Valuetype</em> or <em>Const</em> in the
+<em>Definition</em>.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Definitions (Definition+) >
+
+&lt;!ELEMENT Definition (ExtendedAttributeList?, (Module | Interface
+    | Exception | Typedef | Valuetype | Const )) >
+</pre>
+
+<h4>Module</h4>
+
+<p>
+A <em>Module</em> represents an API. The <code>identifier</code>
+attribute specifies the name of the API. The <code>&lt;descriptive></code> element
+provides its documentation if any.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Module (descriptive?, Definitions?) >
+&lt;!ATTLIST Module identifier CDATA #REQUIRED >
+</pre>
+
+<h4>Interface</h4>
+
+<p>
+An <em>Interface</em> represents an interface. The <code>identifier</code>
+attribute specifies the name of the interface. The <code>&lt;descriptive></code> element
+provides its documentation if any.
+</p>
+
+<p>
+The currently defined extended attribute for an <em>Interface</em>
+is <code>callback</code>, which specifies that, where the interface is used
+as the type of a function parameter, the function will instead accept
+a function object. <code>callback=function</code> indicates that the
+function will <em>only</em> accept a function object.
+<span class="issue">Is this the right interpretation of the callback
+extended attribute in the JavaScript binding of Web IDL?</span>
+</p>
+
+<p>
+The <em>ExtendedAttributeList</em> in an <em>InterfaceMember</em>
+applies to the <em>Const</em>, <em>Attribute</em> or <em>Operation</em>
+inside the <em>InterfaceMember</em>.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Interface (descriptive?, ExtendedAttributeList?,
+    InterfaceBody) >
+&lt;!ATTLIST Interface identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT InterfaceInheritance (ScopedNameList) >
+
+&lt;!ELEMENT InterfaceBody (InterfaceInheritance?, InterfaceMembers?) >
+
+&lt;!ELEMENT InterfaceMembers (InterfaceMember+) >
+
+&lt;!ELEMENT InterfaceMember (ExtendedAttributeList?,
+    (Const | Attribute | Operation)) >
+</pre>
+
+<h4>Exception</h4>
+
+<pre class="dtd">
+&lt;!ELEMENT Exception (ExceptionMembers?) >
+&lt;!ATTLIST Exception identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT ExceptionMembers (ExceptionMember+) >
+
+&lt;!ELEMENT ExceptionMember (descriptive?, ExtendedAttributeList?,
+    DeclarationType) >
+&lt;!ATTLIST ExceptionMember identifier CDATA #REQUIRED >
+</pre>
+
+<h4>Typedef</h4>
+
+<p>
+A <code>&lt;TypedefRest></code> has <em>either</em> a
+<code>&lt;DOMString/></code> child <em>or</em> an
+<code>identifier</code> attribute. This constraint is not expressed
+in the DTD.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Typedef (Type, TypedefRest) >
+
+&lt;!ELEMENT TypedefRest (descriptive? | DOMString) >
+&lt;!ATTLIST TypedefRest identifier CDATA #IMPLIED >
+</pre>
+
+<h4>Valuetype</h4>
+
+<p>
+A <code>&lt;ValuetypeRest></code> has <em>either</em> a
+<code>&lt;DOMString/></code> child <em>or</em> an
+<code>identifier</code> attribute. This constraint is not expressed
+in the DTD.
+</p>
+
+<p>
+A <code>&lt;ValuetypeRest></code> with a <code>&lt;DOMString/></code>
+child represents Web IDL's
+<code>DOMString sequence &lt;unsigned short >;</code>
+syntax.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Valuetype (ValuetypeRest) >
+
+&lt;!ELEMENT ValuetypeRest ((descriptive?, BoxedType) | DOMString) >
+&lt;!ATTLIST ValuetypeRest identifier CDATA #IMPLIED >
+</pre>
+
+<h4>Const</h4>
+
+<p>
+<code>&lt;Const></code> represents Web IDL's
+<code>const <i>DeclarationType</i> <i>identifier</i> = <i>ConstExpr</i>;</code>
+syntax.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Const (descriptive?, DeclarationType, ConstExpr) >
+&lt;!ATTLIST Const identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT ConstExpr (BooleanLiteral | integer | Float) >
+
+&lt;!ELEMENT integer EMPTY >
+&lt;!ATTLIST integer value CDATA #REQUIRED >
+
+&lt;!ELEMENT Float EMPTY >
+&lt;!ATTLIST Float value CDATA #REQUIRED >
+
+&lt;!ELEMENT BooleanLiteral EMPTY >
+&lt;!ATTLIST BooleanLiteral value (FALSE|TRUE) #REQUIRED >
+</pre>
+
+<h4>Attribute</h4>
+
+<pre class="dtd">
+&lt;!ELEMENT Attribute (descriptive?, ReadOnly?, DeclarationType,
+    GetRaises?, SetRaises?) >
+&lt;!ATTLIST Attribute identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT ReadOnly EMPTY >
+
+&lt;!ELEMENT GetRaises (ExceptionList) >
+
+&lt;!ELEMENT SetRaises (ExceptionList) >
+</pre>
+
+<h4>Operation</h4>
+
+<p>
+An <em>Operation</em> represents a method on interface.
+The <code>identifier</code>
+attribute specifies the name of the method. The <code>&lt;descriptive></code> element
+provides its documentation if any.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Operation (descriptive?, ReturnType, ArgumentList?, Raises?) >
+&lt;!ATTLIST Operation identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT Raises (ExceptionList) >
+
+&lt;!ELEMENT ExceptionList (ScopedNameList) >
+
+&lt;!ELEMENT ArgumentList (Argument+) >
+
+&lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?,
+    DeclarationType) >
+&lt;!ATTLIST Argument identifier CDATA #REQUIRED >
+</pre>
+
+<h4>Extended attributes</h4>
+
+<pre class="dtd">
+&lt;!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
+
+&lt;!ELEMENT ExtendedAttribute EMPTY >
+&lt;!ATTLIST ExtendedAttribute value CDATA #REQUIRED >
+</pre>
+
+<h4>DeclarationType</h4>
+
+<p>
+Where <code>&lt;BoxedType></code> or <code>&lt;Type></code>
+contains a <code>&lt;Type></code>,
+this represents the Web IDL
+<code>sequence &lt; <i>Type</i> ></code> syntax.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT DeclarationType (UnsignedIntegerType | ScopedName | any
+    | boolean | octet | float | DOMString | Object ) >
+
+&lt;!ELEMENT any EMPTY >
+&lt;!ELEMENT boolean EMPTY >
+&lt;!ELEMENT octet EMPTY >
+&lt;!ELEMENT float EMPTY >
+&lt;!ELEMENT short EMPTY >
+&lt;!ELEMENT long EMPTY >
+&lt;!ELEMENT DOMString EMPTY >
+&lt;!ELEMENT Object EMPTY >
+
+&lt;!ELEMENT BoxedType (UnsignedIntegerType | ScopedName | boolean
+    | octet | float | Type) >
+
+&lt;!ELEMENT Type (DeclarationType | Type) >
+
+&lt;!ELEMENT UnsignedIntegerType (unsigned?, IntegerType) >
+
+&lt;!ELEMENT unsigned EMPTY >
+
+&lt;!ELEMENT IntegerType (short | (long, OptionalLong?)) >
+
+&lt;!ELEMENT OptionalLong (long) >
+
+&lt;!ELEMENT ReturnType (descriptive?, (DeclarationType | void)) >
+
+&lt;!ELEMENT void EMPTY >
+</pre>
+
+<h4>Scoped names</h4>
+
+<p>
+A <code>&lt;ScopedName></code> has an <code>identifier</code> attribute
+giving the full scoped name. The element is otherwise empty.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT ScopedNameList (ScopedName+) >
+
+&lt;!ELEMENT ScopedName (descriptive?) >
+&lt;!ATTLIST ScopedName identifier CDATA #REQUIRED >
+</pre>
+
+<h4>Descriptive elements</h4>
+
+<p>
+The following elements contain documentation, extracted from the
+Doxygen-like comments in the input:
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT descriptive (description | brief | throw | author
+    | version | Code)* >
+
+&lt;!ELEMENT description %Block; >
+
+&lt;!ELEMENT brief %Inline; >
+
+&lt;!ELEMENT throw %Inline; >
+
+&lt;!ELEMENT author %Inline; >
+
+&lt;!ELEMENT version %Inline; >
+
+&lt;!ELEMENT Code %Inline; >
+</pre>
+
+<h4>XHTML elements</h4>
+
+<p>
+The following XHTML elements are part of widlprocxml:
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT b %Inline; >
+
+&lt;!ELEMENT br EMPTY >
+
+&lt;!ELEMENT dd %Flow; >
+
+&lt;!ELEMENT dl ((dt | dd)*) >
+
+&lt;!ELEMENT dt %Inline; >
+
+&lt;!ELEMENT em %Inline; >
+
+&lt;!ELEMENT li %Flow; >
+
+&lt;!ELEMENT p %Inline; >
+
+&lt;!ELEMENT table (tr*) >
+
+&lt;!ELEMENT td %Flow; >
+
+&lt;!ELEMENT th %Flow; >
+
+&lt;!ELEMENT tr ((th | td)*) >
+
+&lt;!ELEMENT ul (li*) >
+</pre>
+
+
+<h2>Bibliography</h2>
+
+<p id="bondi">
+BONDI - an open source industry collaboration for widget and web technologies,
+<a href="http://bondi.omtp.org/">http://bondi.omtp.org/</a>
+</p>
+
+<p id="doxygen">
+Doxygen Source code documentation generator tool,
+<a href="http://www.stack.nl/~dimitri/doxygen/index.html">
+http://www.stack.nl/~dimitri/doxygen/index.html</a>
+</p>
+
+<p id="webidl">
+Web IDL W3C Working Draft 19 December 2008,
+<a href="http://www.w3.org/TR/WebIDL/">http://www.w3.org/TR/WebIDL/</a>
+</p>
+
+
+

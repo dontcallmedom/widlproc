@@ -1,0 +1,149 @@
+########################################################################
+# $Id$
+# $URL$
+# Cut'n'pasted from W3C Editor's Draft 2 March 2009 of Web IDL at:
+# http://dev.w3.org/2006/webapi/WebIDL/
+########################################################################
+
+[1]	Definitions	→	ExtendedAttributeList Definition Definitions
+ | ε
+[2]	Definition	→	Module
+ | Interface
+ | Exception
+ | Typedef
+ | Valuetype
+ | Const
+[3]	Module	→	"module" identifier "{" Definitions "}" ";"
+[4]	Interface	→	"interface" identifier InterfaceBody ";"
+[5]	InterfaceInheritance	→	":" ScopedNameList
+ | ε
+[6]	InterfaceBody	→	InterfaceInheritance "{" InterfaceMembers "}"
+ | ε
+[7]	InterfaceMembers	→	ExtendedAttributeList InterfaceMember InterfaceMembers
+ | ε
+[8]	InterfaceMember	→	Const
+ | Attribute
+ | Operation
+[9]	Exception	→	"exception" identifier "{" ExceptionMembers "}" ";"
+[10]	ExceptionMembers	→	ExtendedAttributeList ExceptionMember ExceptionMembers
+ | ε
+[11]	Typedef	→	"typedef" Type TypedefRest
+[12]	TypedefRest	→	identifier ";"
+ | "DOMString" ";"
+[13]	Valuetype	→	"valuetype" ValuetypeRest
+[14]	ValuetypeRest	→	identifier BoxedType ";"
+ | "DOMString" "sequence" "<" "unsigned" "short" ">" ";"
+[15]	Const	→	"const" DeclarationType identifier "=" ConstExpr ";"
+[16]	ConstExpr	→	BooleanLiteral
+ | integer
+ | float
+[17]	BooleanLiteral	→	"TRUE"
+ | "FALSE"
+[18]	Attribute	→	ReadOnly "attribute" DeclarationType identifier GetRaises SetRaises ";"
+[19]	ReadOnly	→	"readonly"
+ | ε
+[20]	GetRaises	→	"getraises" ExceptionList
+ | ε
+[21]	SetRaises	→	"setraises" ExceptionList
+ | ε
+[22]	Operation	→	ReturnType identifier "(" ArgumentList ")" Raises ";"
+[23]	Raises	→	"raises" ExceptionList
+ | ε
+[24]	ExceptionList	→	"(" ScopedNameList ")"
+[25]	ArgumentList	→	Argument Arguments
+ | ε
+[26]	Arguments	→	"," Argument Arguments
+ | ε
+[27]	Argument	→	ExtendedAttributeList "in" DeclarationType identifier
+[28]	ExceptionMember	→	DeclarationType identifier ";"
+[29]	ExtendedAttributeList	→	"[" ExtendedAttribute ExtendedAttributes "]"
+ | ε
+[30]	ExtendedAttributes	→	"," ExtendedAttribute ExtendedAttributes
+ | ε
+[31]	ExtendedAttribute	→	"(" ExtendedAttributeInner ")" ExtendedAttributeRest
+ | "[" ExtendedAttributeInner "]" ExtendedAttributeRest
+ | "{" ExtendedAttributeInner "}" ExtendedAttributeRest
+ | Other ExtendedAttributeRest
+[32]	ExtendedAttributeRest	→	ExtendedAttribute
+ | ε
+[33]	ExtendedAttributeInner	→	"(" ExtendedAttributeInner ")" ExtendedAttributeInner
+ | "[" ExtendedAttributeInner "]" ExtendedAttributeInner
+ | "{" ExtendedAttributeInner "}" ExtendedAttributeInner
+ | OtherOrComma ExtendedAttributeInner
+ | ε
+[34]	Other	→	integer
+ | float
+ | identifier
+ | string
+ | other
+ | ":"
+ | "::"
+ | ";"
+ | "<"
+ | "="
+ | ">"
+ | "DOMString"
+ | "FALSE"
+ | "Object"
+ | "TRUE"
+ | "any"
+ | "attribute"
+ | "boolean"
+ | "const"
+ | "exception"
+ | "float"
+ | "getraises"
+ | "in"
+ | "interface"
+ | "long"
+ | "module"
+ | "octet"
+ | "raises"
+ | "sequence"
+ | "setraises"
+ | "short"
+ | "typedef"
+ | "unsigned"
+ | "valuetype"
+[35]	OtherOrComma	→	Other
+ | ","
+[36]	DeclarationType	→	UnsignedIntegerType
+ | ScopedName
+ | "any"
+ | "boolean"
+ | "octet"
+ | "float"
+ | "DOMString"
+ | "Object"
+[37]	BoxedType	→	UnsignedIntegerType
+ | ScopedName
+ | "boolean"
+ | "octet"
+ | "float"
+ | "sequence" "<" Type ">"
+[38]	Type	→	DeclarationType
+ | "sequence" "<" Type ">"
+[39]	UnsignedIntegerType	→	"unsigned" IntegerType
+ | IntegerType
+[40]	IntegerType	→	"short"
+ | "long" OptionalLong
+[41]	OptionalLong	→	"long"
+ | ε
+[42]	ReturnType	→	DeclarationType
+ | "void"
+[43]	ScopedNameList	→	ScopedName ScopedNames
+[44]	ScopedNames	→	"," ScopedName ScopedNames
+ | ε
+[45]	ScopedName	→	"::" ScopedNameAfterColon
+ | identifier ScopedNameParts
+[46]	ScopedNameAfterColon	→	identifier ScopedNameParts
+ | "DOMString"
+[47]	ScopedNameParts	→	"::" ScopedNamePartsAfterColon
+ | ε
+[48]	ScopedNamePartsAfterColon	→	identifier ScopedNameParts
+ | "DOMString"
+[49]	ExtendedAttributeNoArg	→	identifier
+[50]	ExtendedAttributeArgList	→	identifier "(" ArgumentList ")"
+[51]	ExtendedAttributeIdent	→	identifier "=" identifier
+[52]	ExtendedAttributeScopedName	→	identifier "=" ScopedName
+[53]	ExtendedAttributeNamedArgList	→	identifier "=" identifier "(" ArgumentList ")"
