@@ -121,9 +121,9 @@ $(OBJDIR)/widlproc.zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/wi
 	zip -j $@ $^ -x Makefile
 	zip $@ examples/*.widl examples/*.css
 
-SVNFILES = $(shell svn info -R . | sed -n 's/^Path: \(.*\)$$/\1/p')
-SVNBRANCH = $(shell svn info . | sed -n 's|^URL:.*/\([^/]*\)$$|\1|p')
-SVNREV = $(shell svn info -R . | sed -n 's/^Last Changed Rev: \([0-9][0-9]*\)$$/\1/p' | sort -g | tail -1)
+SVNFILES = $(shell test -d .svn && svn info -R . | sed -n 's/^Path: \(.*\)$$/\1/p')
+SVNBRANCH = $(shell test -d .svn && svn info . | sed -n 's|^URL:.*/\([^/]*\)$$|\1|p')
+SVNREV = $(shell test -d .svn && svn info -R . | sed -n 's/^Last Changed Rev: \([0-9][0-9]*\)$$/\1/p' | sort -g | tail -1)
 
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
