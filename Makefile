@@ -119,6 +119,7 @@ test : $(patsubst $(EXAMPLESDIR)/%.widl, test_examples_%, $(wildcard $(EXAMPLESD
 test_examples_% : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD)
 	mkdir -p $(dir $(OBJDIR)/$<)
 	cp $(EXAMPLESDIR)/widlhtml.css $(dir $(OBJDIR)/$<)/
+	cp $(OBJDIR)/widlprocxml.dtd $(dir $(OBJDIR)/$<)/
 	$(WIDLPROC) $< >$(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<)
 	xmllint --noout --dtdvalid $(DTD) $(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<)
 	xsltproc $(SRCDIR)/widlprocxmltohtml.xsl $(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<) > $(patsubst %.widl, $(OBJDIR)/%.html, $<)
