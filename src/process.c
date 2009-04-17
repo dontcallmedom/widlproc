@@ -51,11 +51,13 @@ printtext(const char *s, unsigned int len)
             seq = buf;
             break;
         }
-        fwrite(s, 1, p - s, stdout);
+        if (p - s != fwrite(s, 1, p - s, stdout))
+            errorexit("write error");
         fputs(seq, stdout);
         s = ++p;
     }
-    fwrite(s, 1, p - s, stdout);
+    if (p - s != fwrite(s, 1, p - s, stdout))
+        errorexit("write error");
 }
 
 /***********************************************************************
@@ -226,7 +228,7 @@ processfile(const char *name)
     root = parse();
     processcomments(root);
     printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-           "<!DOCTYPE Definitions SYSTEM \"bondiwidlxml.dtd\">\n");
+           "<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
     output(root, 0, 0);
     lexclose();
 }
