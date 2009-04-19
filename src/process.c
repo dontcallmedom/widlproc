@@ -172,6 +172,7 @@ output(struct node *node, struct node *extendedattributelist,
     case TOK_boolean:
     case TOK_octet:
     case TOK_float:
+    case TOK_double:
     case TOK_Object:
     case TOK_unsigned:
     case TOK_short:

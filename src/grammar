@@ -2,6 +2,7 @@
 # $Id$
 # Cut'n'pasted from W3C Editor's Draft 2 March 2009 of Web IDL at:
 # http://dev.w3.org/2006/webapi/WebIDL/
+# Then edited to include "double" keyword.
 ########################################################################
 
 [1]	Definitions	→	ExtendedAttributeList Definition Definitions
@@ -89,6 +90,7 @@
  | "attribute"
  | "boolean"
  | "const"
+ | "double"
  | "exception"
  | "float"
  | "getraises"
@@ -112,6 +114,7 @@
  | "boolean"
  | "octet"
  | "float"
+ | "double"
  | "DOMString"
  | "Object"
 [37]	BoxedType	→	UnsignedIntegerType
@@ -119,6 +122,7 @@
  | "boolean"
  | "octet"
  | "float"
+ | "double"
  | "sequence" "<" Type ">"
 [38]	Type	→	DeclarationType
  | "sequence" "<" Type ">"

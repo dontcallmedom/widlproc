@@ -23,6 +23,7 @@
     "attribute\0" \
     "boolean\0" \
     "const\0" \
+    "double\0" \
     "exception\0" \
     "float\0" \
     "getraises\0" \
@@ -57,6 +58,7 @@ enum toktype {
     TOK_attribute,
     TOK_boolean,
     TOK_const,
+    TOK_double,
     TOK_exception,
     TOK_float,
     TOK_getraises,

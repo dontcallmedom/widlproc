@@ -45,6 +45,8 @@ limitations under the License.
 <p>
 widlproc is a processor that accepts as input
 <a href="#webidl">Web IDL</a>
+(with extensions used in the
+<a href="#w3cgeo">W3C Geolocation API</a>),
 with comments in a subset of the format used by
 <a href="#doxygen">Doxygen</a>.
 The format it accepts is proposed by Aplix for authoring
@@ -75,9 +77,19 @@ sends its XML output format to stdout.
 
 <p>
 The input format accepted by widlproc is
-<a href="#webidl">Web IDL</a>,
+<a href="#webidl">Web IDL</a>
+(with extensions used in the
+<a href="#w3cgeo">W3C Geolocation API</a>),
 with comments in a subset of the format used by
 <a href="#doxygen">Doxygen</a>.
+</p>
+
+<h3>Web IDL extensions from W3C geolocation API</h3>
+
+<h4>double</h4>
+
+<p>
+<code>double</code> is allowed as a DeclarationType or a BoxedType.
 </p>
 
 <h3>Doxygen subset introduction</h3>
@@ -422,7 +434,8 @@ The terminals
 <em>octet</em>,
 <em>short</em>,
 <em>long</em>,
-<em>float</em> and
+<em>float</em>,
+<em>double</em> and
 <em>Object</em>
 appear as an empty element of the same name.
 </ul>
@@ -691,19 +704,20 @@ this represents the Web IDL
 
 <pre class="dtd">
 &lt;!ELEMENT DeclarationType (UnsignedIntegerType | ScopedName | any
-    | boolean | octet | float | DOMString | Object ) >
+    | boolean | octet | float | double | DOMString | Object ) >
 
 &lt;!ELEMENT any EMPTY >
 &lt;!ELEMENT boolean EMPTY >
 &lt;!ELEMENT octet EMPTY >
 &lt;!ELEMENT float EMPTY >
+&lt;!ELEMENT double EMPTY >
 &lt;!ELEMENT short EMPTY >
 &lt;!ELEMENT long EMPTY >
 &lt;!ELEMENT DOMString EMPTY >
 &lt;!ELEMENT Object EMPTY >
 
 &lt;!ELEMENT BoxedType (UnsignedIntegerType | ScopedName | boolean
-    | octet | float | Type) >
+    | octet | float | double | Type) >
 
 &lt;!ELEMENT Type (DeclarationType | Type) >
 
@@ -804,6 +818,12 @@ BONDI - an open source industry collaboration for widget and web technologies,
 Doxygen Source code documentation generator tool,
 <a href="http://www.stack.nl/~dimitri/doxygen/index.html">
 http://www.stack.nl/~dimitri/doxygen/index.html</a>
+</p>
+
+<p id="w3cgeo">
+W3C Geolocation API Specification Editor's Draft 3 April 2009,
+<a href="http://dev.w3.org/geo/api/spec-source.html">
+http://dev.w3.org/geo/api/spec-source.html</a>
 </p>
 
 <p id="webidl">
