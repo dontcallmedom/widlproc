@@ -71,6 +71,12 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <xsl:apply-templates select="InterfaceMember/Const"/>
         </div>
     </xsl:if>
+    <xsl:if test="InterfaceMember/Const/descriptive">
+        <div class="consts">
+            <h2>Constants</h2>
+            <xsl:apply-templates select="InterfaceMember/Const"/>
+        </div>
+    </xsl:if>
     <xsl:if test="InterfaceMember/Attribute/descriptive">
         <div class="attributes">
             <h2>Attributes</h2>
@@ -92,6 +98,19 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <xsl:if test="ReadOnly">
                 [readonly]
             </xsl:if>
+            <xsl:apply-templates select="DeclarationType"/>
+            <xsl:value-of select="@identifier"/>
+        </h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+    </div>
+</xsl:template>
+
+<!--Const-->
+<xsl:template match="Const">
+    <div class="const">
+        <h3>
             <xsl:apply-templates select="DeclarationType"/>
             <xsl:value-of select="@identifier"/>
         </h3>

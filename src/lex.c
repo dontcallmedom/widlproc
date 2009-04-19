@@ -413,8 +413,8 @@ lex(void)
             break;
         }
         /* Handle things that start with '-', which is either '-' as a token,
-         * or a number. */
-        if (ch == '-')
+         * or a number. Handle numbers. */
+        if (ch == '-' || (unsigned)(ch - '0') < 10)
             return lexnumber(p);
         /* Handle string. */
         if (ch == '"')

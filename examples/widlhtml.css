@@ -4,8 +4,8 @@
 body { font-family : "DejaVu Sans", Verdana, Helvetica, sans-serif; font-size: 12px; }
 
 h1 { text-align: center; }
-.idesc, .attributes, .methods { margin: 1em; padding: 0.4em; }
-.method, .attribute  { background: #D5E1E8; padding-bottom:0.5em; margin: 0.6em; -moz-border-radius: 10px; border: solid thin #84B0C7; }
+.idesc, .attributes, .consts, .methods { margin: 1em; padding: 0.4em; }
+.method, .attribute, .const  { background: #D5E1E8; padding-bottom:0.5em; margin: 0.6em; -moz-border-radius: 10px; border: solid thin #84B0C7; }
 .description, .parameters, .returntype, .example, .synopsis { padding: 0.3em; border-top: solid thin #84B0C7; border-bottom: solid thin #84B0C7; background: #EEF3F5; }
 .idesc { -moz-border-radius: 2px; padding: 0.7em; border-bottom: thin solid black; border-top: thin solid black;}
 h3 { padding-left: 0.3em }
