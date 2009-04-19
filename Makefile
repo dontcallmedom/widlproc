@@ -115,15 +115,15 @@ clean :
 veryclean :
 	rm -rf $(OBJDIR)
 
-zip : $(OBJDIR)/widlproc.zip
-$(OBJDIR)/widlproc.zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl Makefile
-	rm -f $@
-	zip -j $@ $^ -x Makefile
-	zip $@ examples/*.widl examples/*.css
-
 SVNFILES = $(shell test -d .svn && svn info -R . | sed -n 's/^Path: \(.*\)$$/\1/p')
 SVNBRANCH = $(shell test -d .svn && svn info . | sed -n 's|^URL:.*/\([^/]*\)$$|\1|p')
 SVNREV = $(shell test -d .svn && svn info -R . | sed -n 's/^Last Changed Rev: \([0-9][0-9]*\)$$/\1/p' | sort -g | tail -1)
+
+zip : $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip
+$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl Makefile
+	rm -f $@
+	zip -j $@ $^ -x Makefile
+	zip $@ examples/*.widl examples/*.css
 
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
