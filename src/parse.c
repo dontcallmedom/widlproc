@@ -199,6 +199,9 @@ restart:
                 }
             }
             tok = lexnocomment();
+        } else {
+            tokerrorexit(tok, "unexpected token '%.*s'",
+                    tok->len, tok->start);
         }
     }
 end:
