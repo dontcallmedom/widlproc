@@ -20,60 +20,60 @@
 /**
  * \brief Provides a persistence API to access the file system.
  *
- * api-feature http://bondi.omtp.org/api/filesystem.mount
- * \n Call to FileSystemManager.mount
- * \n Device Capability: io.file.read
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.mount
+ * Call to FileSystemManager.mount
+ * \device-cap io.file.read
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
- * \n Call to FileSystemManager.registerEventListener
- * \n Device Capability: io.file.read
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
+ * Call to FileSystemManager.registerEventListener
+ * \device-cap io.file.read
  *
- * api-feature http://bondi.omtp.org/api/filesystem.listFiles
- * \n Call to File.listFiles
- * \n Device Capability: io.file.read
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.listFiles
+ * Call to File.listFiles
+ * \device-cap io.file.read
  *
- * api-feature http://bondi.omtp.org/api/filesystem.resolve
- * \n Call to File.resolve
- * \n Device Capability: io.file.read
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.resolve
+ * Call to File.resolve
+ * \device-cap io.file.read
  *
- * api-feature http://bondi.omtp.org/api/filesystem.open
- * \n Call to File.open
- * \n Device Capability: io.file.read
- * \n Device Capability: io.file.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.open
+ * Call to File.open
+ * \device-cap io.file.read if the open mode includes reading
+ * \device-cap io.file.write if the open mode includes writing
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.copyTo
- * \n Call to File.copyTo
- * \n Device Capabilities: io.file.read for the source and io.file.write for the target
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.copyTo
+ * Call to File.copyTo
+ * \device-cap io.file.read for the source
+ * \device-cap io.file.write for the target
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.moveTo
- * \n Call to File.moveTo
- * \n Device Capabilities: io.file.read for the source and io.file write for the target
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.moveTo
+ * Call to File.moveTo
+ * \device-cap io.file.read for the source
+ * \device-cap io.file.write for the target
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.createDirectory
- * \n Call to File.createDirectory
- * \n Device Capability: io.file.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.createDirectory
+ * Call to File.createDirectory
+ * \device-cap io.file.write
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.createFile
- * \n Call to File.createFile
- * \n Device Capability: io.file.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.createFile
+ * Call to File.createFile
+ * \device-cap io.file.write
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
- * \n Call to File.deleteDirectory
- * \n Device Capability: io.file.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
+ * Call to File.deleteDirectory
+ * \device-cap io.file.write
  * 
- * api-feature http://bondi.omtp.org/api/filesystem.deleteFile
- * \n Call to File.deleteFile
- * \n Device Capability: io.file.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteFile
+ * Call to File.deleteFile
+ * \device-cap io.file.write
  *
- * device-cap io.file.read
- * \n Read directory or file
- * \n      Security Parameters:
- * \n          - DOMString name:  Name of directory or file, in virtual filesystem, ie /rootname/filename
+ * \def-device-cap io.file.read
+ * Read directory or file
+ * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
  * 
- * device-cap io.file.write
- * \n Write directory or file
- * \n      Security Parameters:
- * \n          - DOMString name:  Name of directory or file, in virtual filesystem, ie /rootname/filename
+ * \def-device-cap io.file.write
+ * Write directory or file
+ * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
  *
  * \author Paddy Byers paddy@aplixcorp.com
  * \author Anselm R Garbe anselm@aplixcorp.com
@@ -202,7 +202,7 @@ module filesystem {
 		 * Mounts the given system location and returns a file handle of this
 		 * mount point on success. 
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.mount 
+		 * \api-feature http://bondi.omtp.org/api/filesystem.mount 
 		 *
 		 * \code
 		 *    var location = fs.getDefaultLocation('temp');
@@ -233,7 +233,7 @@ module filesystem {
 		/**
 		 * \brief Registers a filesystem event listener.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
+		 * \api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
 		 *
 		 * \code
 		 *   var listener = { mountEvent: function(e) { alert('mounted ' + e); },
@@ -467,7 +467,7 @@ module filesystem {
 		 * The list of files contains directories and files, it does
 		 * not contain the directories "." and "..".
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.listFiles
+		 * \api-feature http://bondi.omtp.org/api/filesystem.listFiles
 		 *
 		 * \code
 		 *    var files = dir.listFiles();
@@ -487,7 +487,7 @@ module filesystem {
 		 * \brief Opens the file in the given mode supporting the given
 		 * encoding.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.open
+		 * \api-feature http://bondi.omtp.org/api/filesystem.open
 		 *
 		 * \code
 		 *    // opens file for reading
@@ -515,7 +515,7 @@ module filesystem {
 		 *
 		 * The copy will be created in the given path.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.moveTo
+		 * \api-feature http://bondi.omtp.org/api/filesystem.moveTo
 		 *
 		 * \code
 		 *    // copies this file to /temp/file.copy
@@ -541,7 +541,7 @@ module filesystem {
 		 * different to copyTo and deleting the old file, because this
 		 * operation does not need extra disk space on certain platforms.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.moveTo
+		 * \api-feature http://bondi.omtp.org/api/filesystem.moveTo
 		 *
 		 * \code
 		 *    // moves this file to /temp/file.move
@@ -566,7 +566,7 @@ module filesystem {
 		 * The new directory be created as a sub-directory of this. The
 		 * name is not allowed to contain "/".
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.createDirectory
+		 * \api-feature http://bondi.omtp.org/api/filesystem.createDirectory
 		 *
 		 * \code
 		 *    var newDir = dir.createDirectory("newDir");
@@ -586,7 +586,7 @@ module filesystem {
 		 * The new empty file is created in this directory. The
 		 * name is not allowed to contain "/".
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.createFile
+		 * \api-feature http://bondi.omtp.org/api/filesystem.createFile
 		 *
 		 * \code
 		 *    var newFile = dir.createFile("newFile");
@@ -605,7 +605,7 @@ module filesystem {
 		 * 
 		 * The filePath is not allowed to contain "/./" or "/../"
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.resolve
+		 * \api-feature http://bondi.omtp.org/api/filesystem.resolve
 		 *
 		 * \code
 		 *    var hellofile = dir.resolve("hello.txt");
@@ -624,7 +624,7 @@ module filesystem {
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
+		 * \api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
 		 *
 		 * \code
 		 *    var fullPath = dir.fullPath;
@@ -648,7 +648,7 @@ module filesystem {
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * api-feature http://bondi.omtp.org/api/filesystem.deleteFile
+		 * \api-feature http://bondi.omtp.org/api/filesystem.deleteFile
 		 *
 		 * \code
 		 *    var fullPath = dir.fullPath;

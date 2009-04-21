@@ -80,7 +80,7 @@ The input format accepted by widlproc is
 <a href="#webidl">Web IDL</a>
 (with an extension used in the
 <a href="#w3cgeo">W3C Geolocation API</a>),
-with comments in a subset of the format used by
+with comments in a format reminiscent of that used by
 <a href="#doxygen">Doxygen</a>.
 </p>
 
@@ -92,11 +92,12 @@ with comments in a subset of the format used by
 <code>double</code> is allowed as a DeclarationType or a BoxedType.
 </p>
 
-<h3>Doxygen subset introduction</h3>
+<h3>Doxygen-like comment introduction</h3>
 
 <p>
 Only a small subset of Doxygen functionality is supported by
-widlproc.
+widlproc, plus additions to handle the BONDI concepts of API features
+and device capabilities.
 </p>
 
 <p>
@@ -213,16 +214,30 @@ A blank line (other than in a
 implicitly closes any open HTML elements, thus ending the paragraph.
 </p>
 
-<h3>Doxygen commands</h3>
+<h3>Doxygen-like commands</h3>
 
 <p>
-widlproc supports a small subset of Doxygen commands.
+widlproc supports a small subset of Doxygen commands, plus some additions
+to handle BONDI API features and device capabilities.
 </p>
 
 <p>
 A command is always introduced with a <code>\</code> character.
 The Doxygen alternative (from JavaDoc) of <code>@</code> is not
 supported.
+</p>
+
+<h4 id="def-api-feature">\def-api-feature</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of the API feature
+which is defined here. The description is an <em>def-api-feature block</em>,
+consisting of the
+remainder of the paragraph, together with
+further paragraphs in the same block comment each of which is a plain
+paragraph, a paragraph started due to HTML markup, or a
+<a href="#device-cap"><code>\device-cap</code></a>
+paragraph.
 </p>
 
 <h4>\author</h4>
@@ -266,6 +281,18 @@ Within the code block, whitespace and newlines are passed verbatim into
 the output.
 </p>
 
+<h4>\def-device-cap</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of the device capability
+which is defined here. The description consists of the
+remainder of the paragraph, together with
+further paragraphs in the same block comment each of which is a plain
+paragraph, a paragraph started due to HTML markup, or a
+<a href="#param"><code>\param</code></a>
+paragraph.
+</p>
+
 <h4>\n</h4>
 
 <p>
@@ -283,7 +310,7 @@ to get a package name such as <code>bondi.filesystem</code>?
 </span>
 </p>
 
-<h4>\param</h4>
+<h4 id="param">\param</h4>
 
 <p>
 Starts a new paragraph. This takes the following word as the name of
@@ -306,6 +333,28 @@ exception thrown by the entity being documented, and the remainder of
 the paragraph documents that exception (in the <code>raises</code> list of
 an <code>operation</code>, or the <code>setraises</code>
 clause of an <code>attribute</code>).
+</p>
+
+<h4 id="api-feature">\api-feature</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of an API feature
+used by the method being documented. The remainder of the paragraph is
+any description required of how (eg in what circumstance) the API feature
+is used.
+</p>
+
+<h4 id="device-cap">\device-cap</h4>
+
+<p>
+Starts a new paragraph.
+This command can appear only inside an
+<a href="#def-api-feature">def-api-feature block</a>.
+The following word is the name of a device capability
+used by the API feature being documented.
+The remainder of the paragraph is
+any description required of how (eg in what circumstance) the device capability
+is used.
 </p>
 
 <h4>\version</h4>
@@ -516,7 +565,7 @@ for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
 &lt;!ELEMENT Definitions (Definition+) >
 
 &lt;!ELEMENT Definition (ExtendedAttributeList?, (Module | Interface
-    | Exception | Typedef | Valuetype | Const )) >
+    | Exception | Typedef | Valuetype | Const | def-api-feature | def-device-cap)) >
 </pre>
 
 <h4>Module</h4>
@@ -749,16 +798,35 @@ giving the full scoped name. The element is otherwise empty.
 &lt;!ATTLIST ScopedName identifier CDATA #REQUIRED >
 </pre>
 
+<h4>def-api-feature and def-device-cap</h4>
+
+<p>
+These two elements arise from the corresponding Doxygen-like commands,
+but each occurrence is treated as a definition with its own descriptive
+elements.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT def-api-feature (descriptive?, device-cap*) >
+&lt;!ATTLIST def-api-feature identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT def-device-cap (descriptive?, param*) >
+&lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
+</pre>
+
 <h4>Descriptive elements</h4>
 
 <p>
 The following elements contain documentation, extracted from the
-Doxygen-like comments in the input:
+Doxygen-like comments in the input. <code>&lt;param></code>
+derives only from a <code>\param</code> command used inside a
+<code>\def-device-cap</code> block; any other <code>\param</code> command
+is linked to a parameter (argument) of the method being documented.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
-    | version | Code)* >
+    | version | Code | api-feature)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -771,6 +839,16 @@ Doxygen-like comments in the input:
 &lt;!ELEMENT version %Inline; >
 
 &lt;!ELEMENT Code %Inline; >
+
+&lt;!ELEMENT api-feature %Inline; >
+&lt;!ATTLIST api-feature identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT device-cap %Inline; >
+&lt;!ATTLIST device-cap identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT param %Inline; >
+&lt;!ATTLIST param identifier CDATA #REQUIRED >
+
 </pre>
 
 <h4>XHTML elements</h4>

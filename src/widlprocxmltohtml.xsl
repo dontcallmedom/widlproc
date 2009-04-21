@@ -148,6 +148,14 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="ArgumentList"/>
         <xsl:apply-templates select="ReturnType"/>
         <xsl:apply-templates select="Raises[ExceptionList/ScopedNameList]"/>
+        <xsl:if test="descriptive/api-feature">
+            <div class="api-features">
+                <h4>Api features</h4>
+                <dl>
+                    <xsl:apply-templates select="descriptive/api-feature"/>
+                </dl>
+            </div>
+        </xsl:if>
         <xsl:apply-templates select="descriptive/Code"/>
     </div>
 </xsl:template>
@@ -275,8 +283,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:apply-templates/>
 </xsl:template>
 
-<!--descriptive. This does not output any brief or Code element;
-    they are handled by descriptive's parent.-->
+<!--descriptive. This does not output any brief or Code or api-feature
+    element; they are handled by descriptive's parent.-->
 <xsl:template match="descriptive">
     <xsl:apply-templates select="description"/>
     <xsl:if test="author">
@@ -345,6 +353,16 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             Version: <xsl:apply-templates/>
         </p>
     </div>
+</xsl:template>
+
+<!--api-feature-->
+<xsl:template match="api-feature">
+    <dt>
+        <xsl:value-of select="@identifier"/>
+    </dt>
+    <dd>
+        <xsl:apply-templates/>
+    </dd>
 </xsl:template>
 
 <!--html elements-->

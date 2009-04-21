@@ -32,8 +32,17 @@ struct cnode {
 struct cnodefuncs {
     int notindesc; /* non-zero if it outputs its own xml element that does
                       not want to be inside <description> */
+    int needpara; /* non-zero if text must be in a para node that is a child
+                     of this one */
+    int (*askend)(struct cnode *cnode, const struct cnodefuncs *type);
     void (*end)(struct cnode *cnode);
     void (*output)(struct cnode *cnode, unsigned int indent);
+};
+
+struct paramcnode {
+    struct cnode cn;
+    int inout;
+    char name[1];
 };
 
 /* struct comment : a doxygen comment */
@@ -231,6 +240,35 @@ outputchildren(struct cnode *cnode, unsigned int indent)
 }
 
 /***********************************************************************
+ * default_askend : ask node if it wants to end at a para start (default
+ *                  implementation)
+ *
+ * Enter:   cnode
+ *          type = 0 else cnodefuncs for newly starting para
+ *
+ * Return:  non-zero if this node wants to end
+ */
+static int
+default_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    return 1;
+}
+
+/***********************************************************************
+ * root_askend : ask root node if it wants to end at a para start
+ *
+ * Enter:   cnode for root
+ *          type = 0 else cnodefuncs for newly starting para
+ *
+ * Return:  non-zero if this node wants to end
+ */
+static int
+root_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    return 0;
+}
+
+/***********************************************************************
  * root_output : output root cnode
  *
  * Enter:   cnode for root
@@ -247,6 +285,8 @@ root_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs root_funcs = {
     0, /* !notindesc */
+    1, /* needpara */
+    &root_askend,
     0, /* end */
     &root_output,
 };
@@ -270,6 +310,8 @@ desc_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs desc_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &desc_output,
 };
@@ -370,6 +412,8 @@ para_end(struct cnode *cnode)
  */
 static const struct cnodefuncs para_funcs = {
     1, /* notindesc */
+    0, /* !needpara */
+    &default_askend,
     &para_end, /* end */
     &para_output,
 };
@@ -393,6 +437,8 @@ brief_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs brief_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &brief_output,
 };
@@ -416,6 +462,8 @@ return_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs return_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &return_output,
 };
@@ -439,6 +487,8 @@ author_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs author_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &author_output,
 };
@@ -462,6 +512,8 @@ version_output(struct cnode *cnode, unsigned int indent)
  */
 static const struct cnodefuncs version_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &version_output,
 };
@@ -501,6 +553,8 @@ code_output(struct cnode *cnode, unsigned int indent)
 
 static const struct cnodefuncs code_funcs = {
     0, /* notindesc */
+    0, /* !needpara */
+    &default_askend,
     &code_end, /* end */
     &code_output,
 };
@@ -517,7 +571,7 @@ static struct cnode *
 startpara(struct cnode *cnode, const struct cnodefuncs *type)
 {
     struct cnode *newcnode;
-    while (cnode->funcs != &root_funcs)
+    while ((*cnode->funcs->askend)(cnode, type))
         cnode = endcnode(cnode);
     newcnode = memalloc(sizeof(struct cnode));
     newcnode->funcs = type;
@@ -576,6 +630,8 @@ text_output(struct cnode *cnode, unsigned int indent)
 
 static const struct cnodefuncs text_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     &text_end, /* end */
     &text_output,
 };
@@ -629,6 +685,8 @@ html_output(struct cnode *cnode, unsigned int indent)
 
 static const struct cnodefuncs html_funcs = {
     1, /* notindesc */
+    0, /* !needpara */
+    &default_askend,
     &html_end, /* end */
     &html_output,
 };
@@ -660,7 +718,7 @@ starthtmlcnode(struct cnode *cnode, const struct htmleldesc *htmleldesc,
             if (!(htmleldesc->flags & HTMLEL_INLINE)) {
                 if (!(htmleldesc->flags & HTMLEL_BLOCK))
                     locerrorexit(filename, linenum, "<%s> not valid here", htmleldesc->name);
-                while (cnode->funcs != &root_funcs)
+                while ((*cnode->funcs->askend)(cnode, 0))
                     cnode = endcnode(cnode);
             } else {
                 while (cnode->funcs == &text_funcs)
@@ -690,14 +748,10 @@ starthtmlcnode(struct cnode *cnode, const struct htmleldesc *htmleldesc,
 /***********************************************************************
  * cnode type param
  */
-struct paramcnode {
-    struct cnode cn;
-    int inout;
-    char name[1];
-};
-
 static const struct cnodefuncs param_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &return_output,
 };
@@ -707,6 +761,8 @@ static const struct cnodefuncs param_funcs = {
  */
 static const struct cnodefuncs throw_funcs = {
     0, /* !notindesc */
+    0, /* !needpara */
+    &default_askend,
     0, /* end */
     &return_output,
 };
@@ -734,6 +790,146 @@ startparamcnode(struct cnode *cnode, const char *word, unsigned int wordlen,
     paramcnode->inout = inout;
     return startcnode(cnode, &paramcnode->cn);
 }
+
+/***********************************************************************
+ * api_feature_output : output api-feature cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+api_feature_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<api-feature identifier=\"%s\">\n", indent, "", paramcnode->name);
+    outputchildren(cnode, indent);
+    printf("%*s</api-feature>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type api_feature
+ */
+static const struct cnodefuncs api_feature_funcs = {
+    0, /* !notindesc */
+    1, /* needpara */
+    &default_askend,
+    0, /* end */
+    &api_feature_output,
+};
+
+/***********************************************************************
+ * device_cap_output : output device-cap cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+device_cap_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<device-cap identifier=\"%s\">\n", indent, "", paramcnode->name);
+    outputchildren(cnode, indent);
+    printf("%*s</device-cap>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type device_cap
+ */
+static const struct cnodefuncs device_cap_funcs = {
+    0, /* !notindesc */
+    1, /* needpara */
+    &default_askend,
+    0, /* end */
+    &device_cap_output,
+};
+
+/***********************************************************************
+ * def_api_feature_askend : ask if def-api-feature cnode wants to end at new para
+ *
+ * Enter:   cnode for def-api-feature
+ *          type = cnodefuncs for new para (0 if html block element)
+ *
+ * Return:  non-zero to end the def-api-feature
+ */
+static int
+def_api_feature_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    /* A def-api-feature does not end at a plain para, an html block element,
+     * or a device-cap. */
+    if (!type || type == &para_funcs || type == &device_cap_funcs)
+        return 0;
+    return 1;
+}
+
+/***********************************************************************
+ * def_api_feature_output : output def-api-feature cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+def_api_feature_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<def-api-feature identifier=\"%s\">\n", indent, "", paramcnode->name);
+    outputchildren(cnode, indent);
+    printf("%*s</def-api-feature>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type def_api_feature
+ */
+static const struct cnodefuncs def_api_feature_funcs = {
+    0, /* !notindesc */
+    1, /* needpara */
+    &def_api_feature_askend,
+    0, /* end */
+    &def_api_feature_output,
+};
+
+/***********************************************************************
+ * def_device_cap_askend : ask if def-device-cap cnode wants to end at new para
+ *
+ * Enter:   cnode for def-device-cap
+ *          type = cnodefuncs for new para (0 if html block element)
+ *
+ * Return:  non-zero to end the def-device-cap
+ */
+static int
+def_device_cap_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    /* A def-device-cap does not end at a plain para, an html block element,
+     * or a param. */
+    if (!type || type == &para_funcs || type == &param_funcs)
+        return 0;
+    return 1;
+}
+
+/***********************************************************************
+ * def_device_cap_output : output def_device-cap cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+def_device_cap_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<def-device-cap identifier=\"%s\">\n", indent, "", paramcnode->name);
+    outputchildren(cnode, indent);
+    printf("%*s</def-device-cap>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type def_device_cap
+ */
+static const struct cnodefuncs def_device_cap_funcs = {
+    0, /* !notindesc */
+    1, /* needpara */
+    &def_device_cap_askend,
+    0, /* end */
+    &def_device_cap_output,
+};
 
 /***********************************************************************
  * addtext : add text to current text node, starting one if necessary
@@ -811,7 +1007,8 @@ parseword(const char **pp)
         ch = *++p;
     word = p;
     while ((unsigned)((ch & ~0x20) - 'A') <= 'Z' - 'A'
-            || (unsigned)(ch - '0') < 10 || ch == '_' || ch == '.')
+            || (unsigned)(ch - '0') < 10 || ch == '_' || ch == '.'
+            || ch == ':' || ch == '/' || ch == '-')
     {
         ch = *++p;
     }
@@ -948,7 +1145,7 @@ dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
     if (!word)
         locerrorexit(filename, linenum, "expected word after \\param");
     /* Close any open nodes. */
-    while (cnode->funcs != &root_funcs)
+    while ((*cnode->funcs->askend)(cnode, type))
         cnode = endcnode(cnode);
     /* Create a new param cnode. */
     cnode = startparamcnode(cnode, word, p - word, inout, type);
@@ -981,7 +1178,7 @@ dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, u
     if (!word)
         locerrorexit(filename, linenum, "expected word after \\throw");
     /* Close any open nodes. */
-    while (cnode->funcs != &root_funcs)
+    while ((*cnode->funcs->askend)(cnode, type))
         cnode = endcnode(cnode);
     /* Create a new throw cnode. */
     cnode = startparamcnode(cnode, word, p - word, 0, type);
@@ -1000,16 +1197,20 @@ struct command {
     const char *name;
 };
 static const struct command commands[] = {
+    { &dox_throw, &def_api_feature_funcs, 15, "def-api-feature" },
     { &dox_para, &author_funcs, 6, "author" },
     { &dox_b, 0, 1, "b" },
     { &dox_para, &brief_funcs, 5, "brief" },
     { &dox_code, 0, 4, "code" },
+    { &dox_throw, &def_device_cap_funcs, 14, "def-device-cap" },
     { &dox_endcode, 0, 7, "endcode" },
     { &dox_n, 0, 1, "n" },
     { &dox_package, 0, 7, "package" },
     { &dox_param, &param_funcs, 5, "param" },
     { &dox_para, &return_funcs, 6, "return" },
     { &dox_throw, &throw_funcs, 5, "throw" },
+    { &dox_throw, &api_feature_funcs, 11, "api-feature" },
+    { &dox_throw, &device_cap_funcs, 10, "device-cap" },
     { &dox_para, &version_funcs, 7, "version" },
     { 0, 0, 0 }
 };
@@ -1181,13 +1382,13 @@ checkforlineofstars:
         if (!incode && !inhtmlblock && ch == '\n') {
             /* Blank line -- finish any para, but only if not in code and
              * not in any HTML block element. */
-            while (cnode->funcs != &root_funcs)
+            while ((*cnode->funcs->askend)(cnode, 0))
                 cnode = endcnode(cnode);
             p++;
             continue;
         }
         /* Start new para if there isn't already one going. */
-        if (cnode->funcs == &root_funcs)
+        if (cnode->funcs->needpara)
             cnode = startpara(cnode, &para_funcs);
         /* Process text on the line. */
         starttext = p;
@@ -1237,7 +1438,7 @@ checkforlineofstars:
                 const struct command *command;
                 ch = *p;
                 while ((unsigned)((ch & ~0x20) - 'A') <= 'Z' - 'A'
-                        || (unsigned)(ch - '0') < 10 || ch == '_')
+                        || (unsigned)(ch - '0') < 10 || ch == '_' || ch == '-')
                 {
                     ch = *++p;
                 }
@@ -1263,8 +1464,12 @@ checkforlineofstars:
                 starttext = p;
             }
         }
-        if (p - starttext)
+        if (p - starttext) {
+            /* Start new para if there isn't already one going. */
+            if (cnode->funcs->needpara)
+                cnode = startpara(cnode, &para_funcs);
             cnode = addtext(cnode, starttext, p - starttext);
+        }
         if (!ch)
             break;
         if (cnode->funcs == &text_funcs)
@@ -1412,7 +1617,8 @@ attachcomments(struct comment *comment, struct node *root)
 {
     while (comment) {
         struct comment *next = comment->next;
-        /* See if there are any \param or \return cnodes to detach and attach
+        /* See if there are any \param, \return, \throw, \def-api-feature or
+         * \def-device-cap cnodes to detach and attach
          * elsewhere. */
         struct cnode **pcnode = &comment->root.children;
         struct cnode *desccnode = 0, **pchild = 0;
@@ -1454,6 +1660,23 @@ attachcomments(struct comment *comment, struct node *root)
                 cnode->next = 0;
                 /* Attach the new comment struct to the parse node. */
                 attachcommenttonode(node, newcomment);
+            } else if (cnode->funcs == &def_api_feature_funcs
+                    || cnode->funcs == &def_device_cap_funcs)
+            {
+                /* This is an \def-api-feature or \def-device-cap. */
+                /* For now just detach and discard it. */
+                *pcnode = cnode->next;
+                /* We convert it into
+                 * a new node, as if it had been part of the Web IDL syntax
+                 * tree. *
+                 * Detach the cnode from its old comment. *
+                *pcnode = cnode->next;
+                cnode->next = 0;
+                 * Create a new node and add to the parse tree. *
+                ??
+                */
+
+
             } else if (cnode->funcs->notindesc) {
                 /* This cnode is marked as needing to be in a <description>
                  * element, so ensure we are in one. */

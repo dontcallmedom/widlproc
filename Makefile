@@ -24,7 +24,7 @@ OBJDIR = obj
 #
 ifneq (,$(filter Linux%, $(UNAME))) 
 
-CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
+CFLAGS = -g -Wall -Werror $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
 LIBS = -lefence
@@ -137,6 +137,7 @@ test_examples_% : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD)
 	cp $(EXAMPLESDIR)/widlhtml.css $(dir $(OBJDIR)/$<)/
 	cp $(OBJDIR)/widlprocxml.dtd $(dir $(OBJDIR)/$<)/
 	$(WIDLPROC) $< >$(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<)
+	cp $(OBJDIR)/widlprocxml.dtd $(dir $(OBJDIR)/$<)/
 	xmllint --noout --dtdvalid $(DTD) $(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<)
 	xsltproc $(SRCDIR)/widlprocxmltohtml.xsl $(patsubst %.widl, $(OBJDIR)/%.widlprocxml, $<) > $(patsubst %.widl, $(OBJDIR)/%.html, $<)
 	@echo "$@ pass"
