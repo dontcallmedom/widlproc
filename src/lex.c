@@ -135,7 +135,7 @@ lexblockcomment(const char *start)
         if (eof)
             lexerrorexit("unterminated block comment");
         offset = p - start;
-        start = readmore(start, p);
+        start = readmore(start, p + (*p != 0));
         p = start + offset - 1;
     }
     p += 2;
