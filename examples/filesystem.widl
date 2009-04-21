@@ -1,4 +1,4 @@
-/*
+/** 
  * Licensed to OMTP Ltd. (OMTP) under one or more contributor license agreements. 
  * See the NOTICE file distributed with this work for additional information regarding 
  * copyright ownership. 
@@ -18,70 +18,66 @@
  */
 
 /**
- * \package org.omtp.bondi.filesystem
  * \brief Provides a persistence API to access the file system.
  *
- * \n 
- * \n Permission(s):
- * \n
- * \n API Features
- * \n - http://bondi.omtp.org/api/filesystem.mount
- * \n   Call to FileSystemManager.mount
- * \n   Device Capability: io.file.read
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.registerEventListener
- * \n   Call to FileSystemManager.registerEventListener
- * \n   Device Capability: io.file.read
- * \b
- * \n - http://bondi.omtp.org/api/filesystem.getFiles
- * \n   Call to File.getFiles
- * \n   Device Capability: io.file.read
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.find
- * \n   Call to File.find
- * \n   Device Capability: io.file.read
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.open
- * \n   Call to File.open
- * \n   Device Capability: io.file.read
- * \n   Device Capability: io.file.write
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.copyTo
- * \n   Call to File.copyTo
- * \n   Device Capabilities: io.file.read for the source and io.file.write for the target
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.moveTo
- * \n   Call to File.moveTo
- * \n   Device Capabilities: io.file.read for the source and io.file write for the target
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.createDirectory
- * \n   Call to File.createDirectory
- * \n   Device Capability: io.file.write
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.createFile
- * \n   Call to File.createFile
- * \n   Device Capability: io.file.write
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.deleteDirectory
- * \n   Call to File.deleteDirectory
- * \n   Device Capability: io.file.write
- * \n
- * \n - http://bondi.omtp.org/api/filesystem.deleteFile
- * \n   Call to File.deleteFile
- * \n   Device Capability: io.file.write
- * \n
- * \n Device Capabilities:
- * \n - io.file.read: Read directory or file
+ * api-feature http://bondi.omtp.org/api/filesystem.mount
+ * \n Call to FileSystemManager.mount
+ * \n Device Capability: io.file.read
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
+ * \n Call to FileSystemManager.registerEventListener
+ * \n Device Capability: io.file.read
+ *
+ * api-feature http://bondi.omtp.org/api/filesystem.listFiles
+ * \n Call to File.listFiles
+ * \n Device Capability: io.file.read
+ *
+ * api-feature http://bondi.omtp.org/api/filesystem.resolve
+ * \n Call to File.resolve
+ * \n Device Capability: io.file.read
+ *
+ * api-feature http://bondi.omtp.org/api/filesystem.open
+ * \n Call to File.open
+ * \n Device Capability: io.file.read
+ * \n Device Capability: io.file.write
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.copyTo
+ * \n Call to File.copyTo
+ * \n Device Capabilities: io.file.read for the source and io.file.write for the target
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.moveTo
+ * \n Call to File.moveTo
+ * \n Device Capabilities: io.file.read for the source and io.file write for the target
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.createDirectory
+ * \n Call to File.createDirectory
+ * \n Device Capability: io.file.write
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.createFile
+ * \n Call to File.createFile
+ * \n Device Capability: io.file.write
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
+ * \n Call to File.deleteDirectory
+ * \n Device Capability: io.file.write
+ * 
+ * api-feature http://bondi.omtp.org/api/filesystem.deleteFile
+ * \n Call to File.deleteFile
+ * \n Device Capability: io.file.write
+ *
+ * device-cap io.file.read
+ * \n Read directory or file
  * \n      Security Parameters:
  * \n          - DOMString name:  Name of directory or file, in virtual filesystem, ie /rootname/filename
- * \n
- * \n - io.file.write: Write directory or file
+ * 
+ * device-cap io.file.write
+ * \n Write directory or file
  * \n      Security Parameters:
  * \n          - DOMString name:  Name of directory or file, in virtual filesystem, ie /rootname/filename
  *
  * \author Paddy Byers paddy@aplixcorp.com
  * \author Anselm R Garbe anselm@aplixcorp.com
- * \version 0.5
+ * \version 0.6
  */
 module filesystem {
 
@@ -89,30 +85,15 @@ module filesystem {
 	typedef Object              Date;
 	typedef sequence<DOMString> StringArray;
 	typedef sequence<File>      FileArray;
-	typedef sequence<short>     ByteArray;
 
 	[Callback] interface FileSystemSuccessCallback {
-		void onSuccess(in Object ob);
+		void onSuccess(in File file);
 	};
 
-	[Callback] interface FileSystemFailureCallback {
-		void onFailure(in Object ob);
-	};
-
-	[Callback] interface FileSystemCompleteCallback {
-		void onComplete(in Object ob);
-	};
-
-	exception PermissionDenied {
-		DOMString reason;
-	};
-
-	exception InvalidArgument {
-		DOMString reason;
-	};
-
-	exception IOException {
-		DOMString reason;
+	interface FileSystemError : Error {
+		const unsigned short UNKNOWN_ERROR = 0;
+		const unsigned short IO_ERROR      = 1;
+		readonly attribute unsigned short code;
 	};
 
 	/**
@@ -120,15 +101,8 @@ module filesystem {
 	 *
 	 * This file system API provides basic filesystem access.
 	 *
-	 * \n Requirement(s):
-	 * \n  - (REQ: IFC-PERSIST-270)
-	 * \n  - (REQ: IFC-PERSIST-280)
-	 * \n  - (REQ: IFC-PERSIST-290)
-	 * \n  - (REQ: IFC-PERSIST-300)
-	 * \n  - (REQ: IFC-PERIST-310)
-	 *
 	 * \code
-	 *    bondi.load('fs', { id: 'filesystem', success, failure });
+	 *    bondi.load('fs', { id: 'filesystem', success, error });
 	 *
 	 *    var root = fs.mount(fs.getPersistLocation());
 	 *    for(var i = 0; i < root.length; i++) {
@@ -137,11 +111,12 @@ module filesystem {
 	 *    var file = root.createFile("test.txt");
 	 *    var out  = file.open("w");
 	 *    // writes Hello World to test.txt
-	 *    out.writeLine("Hello World", "UTF-8");
+	 *    out.write("Hello World", "UTF-8");
 	 *    out.close();
 	 * \endcode
 	 */
 	interface FileSystemManager {
+
 		/**
 		 * \brief Contains the implementation dependent maximum path length.
 		 *
@@ -154,65 +129,49 @@ module filesystem {
 		readonly attribute long maxPathLength;
 
 		/**
-		 * \brief Contains the implementation dependent path separator.
+		 * \brief Returns a location path for the given arguments,
+		 * relative to the root locations supported.
 		 *
-		 * This attribute is read-only. Usually on Windows it will be
-		 * <em>\\</em> and on Unix it will be <em>/</em>.
-		 *
-		 * \code
-		 *    var someFile = fs.separator + "path" + fs.separator + "file.name";
-		 * \endcode
-		 */
-		readonly attribute DOMString pathSeparator;
-
-		/**
-		 * \brief Returns a persistent location for the given arguments.
-		 *
-		 * \n Requirements(s):
-		 *   - (REQ: IFC-PERSIST-280.1)
-		 *   - (REQ: IFC-PERSIST-280.2)
+		 * This function resolves location specifiers to location paths.
+		 * The following location specifiers are supported:
+		 * \n "app:package" - the application package directory, this is read-only,
+		 *                    this is identical to the widget directory
+		 * \n "app:private" - the private storage of the current application
+		 * \n "app:public"  - the public storage of the current applicaption
+		 * \n "app:temp"    - the temporary storage of the current applicaption
+		 * \n "documents"   - the documents location, eg resolving to "My Documents"
+		 * \n "pictures"    - the pictures location, eg resolving to "My Pictures"
+		 * \n "videos"      - the videos location, eg resolving to "My Videos"
+		 * \n "temp"        - the temporary storage, eg resolving to "Temp"
 		 *
 		 * \code
-		 *   var location = fs.getPersistLocation('text/plain', false, 0);
+		 *   var location = fs.getDefaultLocation('app:package');
 		 * \endcode
 		 *
-		 * \param mime      - the mime type for the persistent location
-		 * \param exclusive - <em>true</em> if the location must be exclusive
-		 * \param space     - minimum required bytes for this location,
-		 *                <em>0</em> means no limitation
+		 * \param specifier - the location specifier, see above for supported specifiers.
+		 * \param space     - optional, minimum required bytes for this location,
+		 *                    <em>0</em> (default) means no limitation
 		 * \return the persistent location as a string
 		 */
-		DOMString getPersistLocation(in DOMString mime, in boolean exclusive, in long space);
-
-		/**
-		 * \brief Returns a temporary location for the given arguments.
-		 *
-		 * \n Requirements(s):
-		 *   - (REQ: IFC-PERSIST-280.1)
-		 *   - (REQ: IFC-PERSIST-280.2)
-		 *
-		 * \code
-		 *   var location = fs.getTempLocation('text/plain', false, 0);
-		 * \endcode
-		 *
-		 * \param mime      - the mime type for the persistent location
-		 * \param exclusive - <em>true</em> if the location must be exclusive
-		 * \param space     - minimum required bytes for this location, <em>0</em> means no limitation
-		 * \return the temporary location as a string
-		 */
-		DOMString getTempLocation(in DOMString mime, in boolean exclusive, in long space);
+		DOMString getDefaultLocation(in DOMString specifier, in long space);
 
 		/**
 		 * \brief Returns all mountable root locations.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-270.1)
-		 *   - (REQ: IFC-PERSIST-270.2)
+		 * Usually the following root locations will be supported,
+		 * though their physical location is implementation dependent:
+		 * \n "appdata"   - this often represents the "Application Data" directory
+		 * \n "documents" - this often represents the "My Documents" directory
+		 * \n "pictures"  - this often represents the "My Pictures" directory
+		 * \n "videos"    - this often represents the "My Videos" directory
+		 * \n "temp"      - this often represents the "Temp" directory
+		 *
+		 * See also the getDefaultLocation method.
 		 *
 		 * \code
 		 *   var locations = fs.getRootLocations();
 		 *   for(var i = 0; i < locations.length; i++) {
-		 *     // locations[i] is a mountable root location
+		 *   	// locations[i] is a mountable root location
 		 *   }
 		 * \endcode
 		 *
@@ -226,10 +185,6 @@ module filesystem {
 		 * Returns all mount points currently in use by this FileSystem service
 		 * instance.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-270.1)
-		 *   - (REQ: IFC-PERSIST-270.2)
-		 *
 		 * \code
 		 *   var mounts = fs.getMountPoints();
 		 *   for(var i = 0; i < mounts.length; i++) {
@@ -242,39 +197,30 @@ module filesystem {
 		FileArray getMountPoints();
 
 		/**
-		 * \brief Mounts a system location.
+		 * \brief Mounts a iystem location.
 		 *
 		 * Mounts the given system location and returns a file handle of this
-		 * mount polong on success. 
+		 * mount point on success. 
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-270)
-		 *   - (REQ: IFC-PERSIST-280)
-		 *   - (REQ: IFC-PERSIST-290)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.mount 
+		 * api-feature http://bondi.omtp.org/api/filesystem.mount 
 		 *
 		 * \code
-		 *    var home = fs.mount('home');
+		 *    var location = fs.getDefaultLocation('temp');
+		 *    var temp = fs.mount(location);
 		 * \endcode
 		 *
 		 * \param location - the location to mount. Must be absolute in the file system.
-		 * \return the mount polong as a file object.
-		 * \throw PermissionDenied if io.file.read permission is denied.
-		 * \throw InvalidArgument if invalid location was given.
+		 * \return the mount point as a file object.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied.
+		 * \throw BONDIError with code INVALID_ARGUMENT if invalid location was given.
 		 */
 		File mount(in DOMString location)
-			raises(PermissionDenied, InvalidArgument);
+			raises(BONDIError);
 
 		/**
-		 * \brief Unmounts the given mount polong.
+		 * \brief Unmounts the given mount point.
 		 *
 		 * Always succeeds.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-270)
-		 *   - (REQ: IFC-PERSIST-280)
-		 *   - (REQ: IFC-PERSIST-290)
 		 *
 		 * \code
 		 *    fs.unmount(home);
@@ -287,10 +233,7 @@ module filesystem {
 		/**
 		 * \brief Registers a filesystem event listener.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-290.5)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.registerEventListener
+		 * api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
 		 *
 		 * \code
 		 *   var listener = { mountEvent: function(e) { alert('mounted ' + e); },
@@ -299,28 +242,20 @@ module filesystem {
 		 * \endcode
 		 *
 		 * \param listener - the listener interface implementation
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0.
 		 */
 		void registerEventListener(in FileSystemListener listener);
 
 		/**
 		 * \brief Unregisters a filesystem event listener.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-290.5)
-		 *
 		 * \code
 		 *   fs.unregisterEventListener(listener);
 		 * \endcode
 		 *
 		 * \param listener - the listener interface implementation
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0.
 		 */
 		void unregisterEventListener(in FileSystemListener listener);
 	};
-
 
 	/**
 	 * \brief FileSystemListener API.
@@ -328,9 +263,6 @@ module filesystem {
 	 * This file system event API listens for file system events.
 	 * Currently mount and unmount events only. It is supposed to be
 	 * implemented in JavaScript.
-	 *
-	 * \n Requirement(s):
-	 * \n - (REQ: IFC-PERSIST-290.5)
 	 *
 	 * \code
 	 *   var fsEventImpl = {
@@ -342,17 +274,13 @@ module filesystem {
 	 *   	}
 	 *   };
 	 * \endcode
-	 *
-	 * \n Remark: Not implemented in BONDI 1.0.
 	 */
 	interface FileSystemListener {
+
 		/**
 		 * \brief Called when a new location gets available.
 		 *
 		 * A new location could be a storage card for example.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-290.5)
 		 *
 		 * \param location - the newly available location
 		 */
@@ -363,34 +291,26 @@ module filesystem {
 		 *
 		 * Such a location could be a storage card for example.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-290.5)
-		 *
 		 * \param location - the location which is becoming unavailable
 		 */
 		void unmountEvent(in DOMString location);
-	}
+	};
 
 	/**
 	 * \brief File API.
 	 *
-	 * This file system API is the file system service provider.
+	 * This interface represents the file abstraction.
 	 *
-	 * \n Requirement(s):
-	 * \n  - (REQ: IFC-PERSIST-300.1)
-	 * \n  - (REQ: IFC-PERIST-310.1)
-	 * \n  - (REQ: IFC-PERIST-310.2)
+	 * It requires that "/" is used as platform-agnostic path separator.
 	 */
 	interface File {
+
 		/**
 		 * \brief Parent directory handle.
 		 *
 		 * This attribute is read-only.
 		 *
 		 * <em>null</em> if there is no parent directory.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
 		 *
 		 * \code
 		 *    var parent = file.parent;
@@ -402,13 +322,10 @@ module filesystem {
 		readonly attribute File parent;
 
 		/**
-		 * \brief File access state.
+		 * \brief File/directory access state.
 		 *
-		 * <em>false</em> if there is no write access.
+		 * <em>false</em> if there is write access.
 		 * This attribute is read-only.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
 		 *
 		 * \code
 		 *    if(file.readOnly) {
@@ -424,9 +341,6 @@ module filesystem {
 		 * <em>false</em> if the file is a directory.
 		 * This attribute is read-only.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
-		 *
 		 * \code
 		 *    if(file.isFile) {
 		 *      // is a file
@@ -441,9 +355,6 @@ module filesystem {
 		 * <em>true</em> if the file is a directory.
 		 * This attribute is read-only.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
-		 *
 		 * \code
 		 *    if(file.isDirectory) {
 		 *      // is a directory
@@ -451,20 +362,6 @@ module filesystem {
 		 * \endcode
 		 */
 		readonly attribute boolean isDirectory;
-		
-		/**
-		 * \brief File archive state.
-		 *
-		 * <em>true</em> if the file is an archive.
-		 * This attribute is read-only.
-		 *
-		 * \code
-		 *    if(file.isArchive) {
-		 *      // file is an archive
-		 *    }
-		 * \endcode
-		 */
-		readonly attribute boolean isArchive;
 
 		/**
 		 * \brief Creation timestamp.
@@ -472,14 +369,10 @@ module filesystem {
 		 * The creation timestamp of this file.
 		 * This attribute is read-only.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
-		 *
 		 * \code
 		 *    alert(file.created); // displays the creation timestamp
 		 * \endcode
 		 *
-		 * \n Remark: Not implemented in BONDI 1.0
 		 */
 		readonly attribute Date created;
 
@@ -489,30 +382,12 @@ module filesystem {
 		 * The modification timestamp of this file.
 		 * This attribute is read-only.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
-		 *
 		 * \code
 		 *    alert(file.modified); // displays the modification timestamp
 		 * \endcode
 		 *
-		 * \n Remark: Not implemented in BONDI 1.0
 		 */
 		readonly attribute Date modified;
-
-		/**
-		 * \brief Basename of this file.
-		 *
-		 * Assumed the file is called <em>foo.bar</em>, then the basename is <em>foo</em>.
-		 * This attribute is read-only.
-		 *
-		 * \code
-		 *    alert(file.basename); // should be foo if the file is foo.bar
-		 * \endcode
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0
-		 */
-		readonly attribute DOMString baseName;
 
 		/**
 		 * \brief Extension of this file.
@@ -564,224 +439,197 @@ module filesystem {
 		readonly attribute DOMString fullPath;
 
 		/**
-		 * \brief Size of this file.
+		 * \brief Size in bytes of this file.
 		 *
-		 * <em>null</em> if this file is a directory.
+		 * This attribute does not exist if this file is a directory.
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.size); // displays the file size
+		 *    alert(file.fileSize); // displays the file size
 		 * \endcode
 		 */
-		readonly attribute long size;
+		readonly attribute long fileSize;
 
 		/**
-		 * \brief Returns file metadata.
+		 * \brief Files metadata.
 		 *
-		 * The result is implementation dependent.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.1)
+		 * The actual map contents are implementation dependent.
 		 *
 		 * \code
-		 *    alert(file.name); // should be foo.bar if the file is /baz/blah/foo.bar
+		 *    alert(file.metadata.author); // should display the file author
 		 * \endcode
-		 *
-		 * \return map of meta data, implementation dependent.
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0
 		 */
-		Map getMetaData();
+		readonly attribute Map metadata;
 
 		/**
-		 * \brief Returns all files of this directory.
+		 * \brief Returns list of all files of this directory.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.1)
+		 * The list of files contains directories and files, it does
+		 * not contain the directories "." and "..".
 		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.getFiles
+		 * api-feature http://bondi.omtp.org/api/filesystem.listFiles
 		 *
 		 * \code
-		 *    var files = dir.getFiles();
+		 *    var files = dir.listFiles();
 		 *    for(var i = 0; i < files.length; i++) {
 		 *      // files[i] iterate over all files of this directory
 		 *    }
-		 *
-		 *    // alternatively the same can be achieved using:
-		 *    for(var i = 0; i < dir.length; i++) {
-		 *      // dir[i] iterate over all files of this directory
-		 *    }
 		 * \endcode
 		 *
-		 * \return array of files of this directory.
-		 * \throw IOException if this is not a directory.
-		 * \throw PermissionDenied if io.file.read permission is denied 
-		 *
-		 * \n Remark: Deprecated, use the alternate approach in your code.
+		 * \return array of contents of this directory.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied 
+		 * \throw FileSystemError with code IO_ERROR if this is not a directory.
 		 */
-		FileArray getFiles()
-			raises(PermissionDenied, IOException);
+		FileArray listFiles()
+			raises(BONDIError, FileSystemError);
 
 		/**
-		 * \brief Opens the file in the given mode.
+		 * \brief Opens the file in the given mode supporting the given
+		 * encoding.
 		 *
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.open
+		 * api-feature http://bondi.omtp.org/api/filesystem.open
 		 *
 		 * \code
 		 *    // opens file for reading
-		 *    var in = file.open("r");
-		 *    // opens file for appending
-		 *    var out = file.open("a");
+		 *    var in = file.open("r", "UTF-8");
 		 * \endcode
 		 *
 		 * \param mode - the mode for opening a file
 		 * \n  - "r" for reading
 		 * \n  - "a" for appending
 		 * \n  - "w" for [over]writing
-		 * \n  - "rb" for binary reading
-		 * \n  - "ab" for binary appending
-		 * \n  - "wb" for binary writing
-		 * \n  - "rw" for read write
-		 * \n  - "rwb" for binary read write
+		 * \param encoding - the encoding for read/write operations on the file,
+		 *                   supported encodings are:
+		 * \n  - "UTF-8" default encoding
+		 * \n  - "ISO8859-1" latin1 encoding
 		 * \return file stream handle to read/write from/to.
-		 * \throw IOException if this is not a file.
-		 * \throw InvalidArgument if invalid mode is supplied.
-		 * \throw PermissionDenied if io.file.read or io.file.write permission is denied.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read or io.file.write permission is denied.
+		 * \throw BONDIError with code INVALID_ARGUMENT if invalid mode is supplied.
+		 * \throw FileSystemError with code IO_ERROR if this is not a file.
 		 */
-		FileStream open(in DOMString mode)
-			raises(PermissionDenied, InvalidArgument, IOException);
+		FileStream open(in DOMString mode, in DOMString encoding)
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Copies this file.
 		 *
-		 * The copy will be created in the given directory.
+		 * The copy will be created in the given path.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.copyTo
+		 * api-feature http://bondi.omtp.org/api/filesystem.moveTo
 		 *
 		 * \code
-		 *    // copies this file to baz
-		 *    var newFile = file.copyTo(file.parent, 'baz', true);
+		 *    // copies this file to /temp/file.copy
+		 *    var op = file.copyTo(function(copiedFile) { // copiedFile is handle of copy }, null, "/temp/file.copy", false);
 		 * \endcode
 		 *
-		 * \param directory - the directory to copy the file to.
-		 * \param name - the new file name.
+		 * \param successCallback - called when the file has been copied.
+		 * \param errorCallback - called if an error occured.
+		 * \param filePath - the new file path, [a-Z0-9_- /]+ are allowed 
 		 * \param overwrite - <em>true</em> enforces overwriting an existing file.
-		 * \param completeCallback - called when the file has been copied.
-		 * \param failureCallback - called if an error occured.
-		 * \return file handle of the copy.
-		 * \throw IOException if this is not a file.
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \return pending operation handle
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if it is attempted to move to a directory.
+		 * \throw FileSystemError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
 		 */
-		File copyTo(in File directory, in DOMString name, in boolean overwrite, in FileSystemCompleteCallback completeCallback, in FileSystemFailureCallback failureCallback)
-			raises(PermissionDenied, IOException);
+		BONDIPendingOperation copyTo(in FileSystemSuccessCallback successCallback, in BONDIErrorCallback errorCallback, in DOMString filePath, in boolean overwrite)
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Moves this file.
 		 *
-		 * The new file will be created in the given directory. Will implicitely delete() this file.
+		 * The file will be moved atomically to the given path. This is
+		 * different to copyTo and deleting the old file, because this
+		 * operation does not need extra disk space on certain platforms.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.moveTo
+		 * api-feature http://bondi.omtp.org/api/filesystem.moveTo
 		 *
 		 * \code
-		 *    // moves this file to baz
-		 *    var newFile = file.moveTo(file.parent, 'baz', true);
+		 *    // moves this file to /temp/file.move
+		 *    var op = file.moveTo(function(movedFile) { file = movedFile; }, null, "/temp/file.move");
 		 * \endcode
 		 *
-		 * \param directory - the directory to copy the file to.
-		 * \param name - the new file name
+		 * \param successCallback - called when the file has been copied.
+		 * \param errorCallback - called if an error occured.
+		 * \param filePath - the new file name, [a-Z0-9_- /]+ are allowed
 		 * \param overwrite - <em>true</em> enforces overwriting an existing file.
-		 * \param completeCallback - called when the file has been copied.
-		 * \param failureCallback - called if an error occured.
-		 * \return file handle of this new file
-		 * \throw IOException if it is attempted to move to a directory, or
-		 * if overwrite is <em>false</em> and target file exists.
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \return pending operation handle
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if it is attempted to move to a directory.
+		 * \throw FileSystemError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
 		 */
-		File moveTo(in File directory, in DOMString name, in boolean overwrite, in FileSystemCompleteCallback completeCallback, in FileSystemFailureCallback failureCallback)
-			raises(PermissionDenied, IOException);
+		BONDIPendingOperation moveTo(in FileSystemSuccessCallback successCallback, in BONDIErrorCallback errorCallback, in DOMString filePath, in boolean overwrite)
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Creates a directory.
 		 *
-		 * The new directory be created as a sub-directory of this.
+		 * The new directory be created as a sub-directory of this. The
+		 * name is not allowed to contain "/".
 		 *
-		 * \n Requirement(s):
-		 * \n  - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.createDirectory
+		 * api-feature http://bondi.omtp.org/api/filesystem.createDirectory
 		 *
 		 * \code
 		 *    var newDir = dir.createDirectory("newDir");
 		 * \endcode
 		 *
-		 * \param name - the new directory name
+		 * \param name - the new directory name, can consist of [a-Z0-9_- ]+
 		 * \return file handle of the new directory
-		 * \throw IOException if this is not a directory or if a file with the same name exists.
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if this is not a directory or if a file with the same name exists.
 		 */
 		File createDirectory(in DOMString name)
-			raises(PermissionDenied, IOException);
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Creates a new empty file.
 		 *
-		 * The new empty file is created in this directory.
+		 * The new empty file is created in this directory. The
+		 * name is not allowed to contain "/".
 		 *
-		 * \n Requirement(s):
-		 * \n  - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Feature: http://bondi.omtp.org/api/filesystem.createFile
+		 * api-feature http://bondi.omtp.org/api/filesystem.createFile
 		 *
 		 * \code
 		 *    var newFile = dir.createFile("newFile");
 		 * \endcode
 		 *
-		 * \param name - the new file name
+		 * \param name - the new file name, can consist of [a-Z0-9_- ]+
 		 * \return file handle of the new empty file
-		 * \throw IOException if this is not a directory or if a file or directory with the same name exists.
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if this is not a directory or if a file or directory with the same name exists.
 		 */
 		File createFile(in DOMString name)
-			raises(PermissionDenied, IOException);
+			raises(BONDIError, FileSystemError);
 
 		/**
-		 * \brief Finds an existing file or directory.
+		 * \brief Resolves an existing file or directory.
+		 * 
+		 * The filePath is not allowed to contain "/./" or "/../"
+		 *
+		 * api-feature http://bondi.omtp.org/api/filesystem.resolve
 		 *
 		 * \code
-		 *    var hellofile = dir.find("hello.txt");
+		 *    var hellofile = dir.resolve("hello.txt");
 		 * \endcode
 		 *
-		 * \param name - the file name
-		 * \return file handle of the file or null if it does not exist.
-		 * \throw IOException if this is not a directory.
+		 * \param filePath - the relative file/directory path to resolve.
+		 * \return file handle of the file or <em>null</em> if it cannot be resolved.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if this is not a directory.
 		 */
-		File find(in DOMString name)
-			raises(IOException);
+		File resolve(in DOMString filePath)
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Deletes this directory.
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Features: http://bondi.omtp.org/api/filesystem.deleteDirectory
+		 * api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
 		 *
 		 * \code
 		 *    var fullPath = dir.fullPath;
 		 *    if(dir.deleteDirectory(true)) {
-		 *      // subsequent accesses to dir will throw an exception
+		 *      // subsequent accesses to dir will throw an error
 		 *      alert(fullPath + ' deleted');
 		 *    }
 		 * \endcode
@@ -789,87 +637,53 @@ module filesystem {
 		 * \param recursive - <em>true</em> means do a recursive deletion, this
 		 *                    will destroy all data recursively, use with caution.
 		 * \return <em>true</em> on success
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError withd code IO_ERROR if this is a file.
 		 */
 		boolean deleteDirectory(in boolean recursive)
-			raises(PermissionDenied);
+			raises(BONDIError, FileSystemError);
 
 		/**
 		 * \brief Deletes this file.
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-300.2)
-		 *
-		 * \n API Features: http://bondi.omtp.org/api/filesystem.deleteFile
+		 * api-feature http://bondi.omtp.org/api/filesystem.deleteFile
 		 *
 		 * \code
 		 *    var fullPath = dir.fullPath;
 		 *    if(dir.deleteFile()) {
-		 *      // subsequent accesses to dir will throw an exception
+		 *      // subsequent accesses to dir will throw an error
 		 *      alert(fullPath + ' deleted');
 		 *    }
 		 * \endcode
 		 *
 		 * \return <em>true</em> on success
-		 * \throw PermissionDenied if io.file.write permission is denied.
+		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw FileSystemError with code IO_ERROR if this is a directory.
 		 */
 		boolean deleteFile()
-			raises(PermissionDenied);
-
-		/**
-		 * \brief Downloads a file from the given URL to this directory.
-		 *
-		 * Returns <em>true</em> if download has been issued.
-		 *
-		 * \code
-		 *    function completed(file) {
-		 *    	// file is handle to the downloaded file
-		 *    }
-		 *
-		 *    function failed(x) {
-		 *    	// error during download
-		 *    }
-		 *    if(dir.urlDownloadToFile("http://www.example.com/index.html", "newfile.html", completed, failed)) {
-		 *    	// notify user that download has been issued
-		 *    }
-		 * \endcode
-		 *
-		 * \return <em>true</em> if download has been issued.
-		 * \throw PermissionDenied if io.file.write permission is denied.
-		 *
-		 * \n Remark: No official BONDI 1.0 feature.
-		 */
-		boolean urlDownloadToFile()
-			raises(PermissionDenied, IOException);
+			raises(BONDIError, FileSystemError);
 	};
 
 	/**
 	 * \brief FileStream API.
 	 *
 	 * A FileStream represents a handle to a File opened for read and/or write.
-	 * Read and write operations are performed relative to a file polonger which
+	 * Read and write operations are performed relative to a file pointer which
 	 * represents the current position in the file.
 	 * 
 	 * A series of read/write methods are available that permit both binary and
 	 * text to be processed. In the latter case, multiple encodings are supported.
 	 *
-	 * \n Requirement(s):
-	 * \n  - (REQ: IFC-PERSIST-310.1)
-	 * \n  - (REQ: IFC-PERSIST-310.2)
-	 *
 	 */
 	interface FileStream {
 
 		/**
-		 * \brief Indicates whether or not the current file polonger is at the end
+		 * \brief Indicates whether or not the current file pointer is at the end
 		 * of the file.
 		 * 
 		 * <em>true</em> if the position is at the end of the current file stream.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.1)
 		 *
 		 * \code
 		 *   if(stream.eof) {
@@ -887,9 +701,6 @@ module filesystem {
 		 * from the stream, the operation will take place from the position
 		 * in the position attribute.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.1)
-		 *
 		 * \code
 		 *   alert(stream.position); // displays current stream position
 		 *   // alters current stream position to the begin of the file,
@@ -899,7 +710,7 @@ module filesystem {
 		 * \throw FileSystemError with code IO_ERROR if invalid position was given.
 		 */
 		attribute long position
-			setraises(FileSystemError);
+			raises(FileSystemError);
 
 		/**
 		 * \brief Returns the number of bytes that are available for reading from 
@@ -907,24 +718,17 @@ module filesystem {
 		 * 
 		 * -1 if eof is <em>true</em>.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.1)
-		 *
 		 * \code
 		 *   alert(stream.availble); // displays the available bytes to be read
 		 * \endcode
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0.
 		 */
 		readonly attribute long bytesAvailable;
 		
 		/**
 		 * \brief Closes this FileStream.
 		 * 
-		 * Flushes any pending buffered writes and closes the File.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
+		 * Flushes any pending buffered writes and closes the File. Always succeeds.
+		 * Note that pending writes might not succeed.
 		 *
 		 * \code
 		 *   stream.close(); // closes this stream, no subsequent access to stream allowed
@@ -939,55 +743,19 @@ module filesystem {
 		 * The resulting string length might be shorter than charCount if eof
 		 * is <em>true</em>.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
-		 *
 		 * \code
-		 *   var text = stream.read(0, "UTF-8");
+		 *   var text = stream.read(0);
 		 *   stream.close();
 		 * \endcode
 		 *
 		 * \param charCount - number of characters being read, if
 		 *                    <em>0</em> it will read as long as bytes are available.
-		 * \param encoding - the encoding used by the read operation.
 		 * \return the result of read characters as a string.
-		 *
-		 * \n Remark: The value of the encoding is expected to be "UTF-8" in BONDI 1.0.
 		 */
-		DOMString read(in long charCount, in DOMString encoding);
-
-		/**
-		 * \brief Reads a line of text from this FileStream, up to the
-		 * specified number of characters in length.
-		 * 
-		 * This method will read up to the first occurrence of a line
-		 * terminator (combination) like CR, LF, CR+LF, or LF+CR. The returned
-		 * result will not include the terminating CR/LF combination, but the
-		 * stream position will polong to the next character after the line
-		 * terminator.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
-		 *
-		 * \code
-		 *   // reads the next line from the stream
-		 *   var text = stream.readLine(0, "UTF-8");
-		 * \endcode
-		 *
-		 * \param charCount - number of characters being read, if
-		 *                    <em>0</em> it will read as long as bytes are available.
-		 * \param encoding - the encoding used by the read operation.
-		 * \return the result of read characters as a string.
-		 *
-		 * \n Remark: The value of the encoding is expected to be "UTF-8" in BONDI 1.0.
-		 */
-		DOMString readLine(in long charCount, in DOMString encoding);
+		DOMString read(in long charCount);
 
 		/**
 		 * \brief Reads the specified number of bytes from this FileStream.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
 		 *
 		 * \code
 		 *   // reads up to 256 bytes from the stream
@@ -999,17 +767,12 @@ module filesystem {
 		 *
 		 * \param byteCount - number of bytes being read. Must not be <em>0</em>.
 		 * \return the result of read bytes as a byte (or number) array.
-		 *
-		 * \n Remark: Not fully implemented in BONDI 1.0.
 		 */
 		ByteArray readBytes(in long byteCount);
 
 		/**
 		 * \brief Reads the specified number of bytes from this FileStream, encoding
 		 * the result in base64.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
 		 *
 		 * \code
 		 *   // reads up to 256 bytes from the stream
@@ -1024,45 +787,17 @@ module filesystem {
 		/**
 		 * \brief Writes the specified DOMString to this FileStream.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
-		 *
 		 * \code
 		 *   var text = "Hello world";
-		 *   stream.write(text, "UTF-8");
+		 *   stream.write(text);
 		 * \endcode
 		 *
 		 * \param stringData - the actual string to be written.
-		 * \param encoding - the encoding the string data is encoded in.
-		 *
-		 * \n Remark: The value of the encoding is expected to be "UTF-8" in BONDI 1.0.
 		 */
-		void write(in DOMString stringData, in DOMString encoding);
+		void write(in DOMString stringData);
 		
 		/**
-		 * \brief Writes the specified DOMString, followed by a platform-specific linefeed sequence
-		 * to this FileStream.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
-		 *
-		 * \code
-		 *   var text = "Hello world";
-		 *   stream.writeLine(text, "UTF-8"); // will result in a separate line in the file containing "Hello world"
-		 * \endcode
-		 *
-		 * \param stringData - the actual string to be written.
-		 * \param encoding - the encoding the string data is encoded in.
-		 *
-		 * \n Remark: The value of the encoding is expected to be "UTF-8" in BONDI 1.0.
-		 */
-		void writeLine(in DOMString stringData, in DOMString encoding);
-
-		/**
 		 * \brief Writes the specified bytes to this FileStream.
-		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
 		 *
 		 * \code
 		 *   var bytes = in.readBytes(256);
@@ -1077,17 +812,12 @@ module filesystem {
 		 * \brief Converts the specified base64 DOMString to bytes and writes the 
 		 * result to this FileStream.
 		 *
-		 * \n Requirement(s):
-		 *   - (REQ: IFC-PERSIST-310.2)
-		 *
 		 * \code
 		 *   var base64 = in.readBase64(256);
 		 *   out.write(base64); // writes the base64 data read from in to out
 		 * \endcode
 		 *
 		 * \param base64Data - the base64 data being written.
-		 *
-		 * \n Remark: Not implemented in BONDI 1.0.
 		 */
 		void writeBase64(in DOMString base64Data);
 	};

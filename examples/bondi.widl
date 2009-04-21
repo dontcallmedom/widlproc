@@ -1,0 +1,118 @@
+/** 
+ * Licensed to OMTP Ltd. (OMTP) under one or more contributor license agreements. 
+ * See the NOTICE file distributed with this work for additional information regarding 
+ * copyright ownership. 
+ * 
+ * The Reference Implementation (save for such parts of the reference implementation made 
+ * available under separate terms and conditions) is made available under the terms of the 
+ * Apache License, version 2.0, subject to the condition that any "Works" and "Derivative 
+ * Works" used or distributed for commercial purposes must be and remain compliant with the
+ * BONDI specification as promulgated by OMTP in each release. Your implementation of the 
+ * Reference Implementation (whether object or source) must malongain these conditions, and 
+ * you must notify any recipient of this condition in a conspicuous way.
+ * 
+ * You may not use this BONDI Reference Implementation except in compliance with the License. 
+ * 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 or at 
+ * http://bondi.omtp.org/BONDI-LICENSE-2.0 
+ */
+
+module bondi {
+
+	typedef Object              Map;
+	typedef Object              Date;
+	typedef sequence<DOMString> StringArray;
+	typedef sequence<octet>     ByteArray;
+
+	/**
+	 * \brief Generic success callback interface.
+	 */
+	[Callback] interface BONDISuccessCallback {
+		void onSuccess(in Object ob);
+	};
+
+	/**
+	 * \brief Generic error callback interface.
+	 */
+	[Callback] interface BONDIErrorCallback {
+		void onError(in Error ob);
+	};
+
+	/**
+	 * \brief Generic error interface.
+	 */
+	interface BONDIError : Error {
+		const unsigned short UNKNOWN_ERROR = 0;
+		const unsigned short INVALID_ARGUMENT = 1;
+		const unsigned short NOT_FOUND = 2;
+		readonly attribute unsigned short code;
+	};
+
+	/**
+	 * \brief Security error interface.
+	 */
+	interface BONDISecurityError : Error {
+		const unsigned short PERMISSION_DENIED = 0;
+	};
+
+	/**
+	 * \brief BONDIPendingOperation.
+	 *
+	 * Interface that is returned by asynchronous operations in order to provide a
+	 * cancellation operation.
+	 */
+	interface BONDIPendingOperation {
+		/**
+		 * \brief Call to cancel the underlying asynchronous operation.
+		 *
+		 * If successful, no pending callbacks will be called, otherwise
+		 * this operation has no effect.
+		 *
+		 * \return <em>true</em> if the cancellation was successful, <em>false</em> otherwise.
+		 */
+		boolean cancel();
+	};
+
+	/**
+	 * \brief BONDI root API.
+	 */
+	[NoInterfaceObject]
+	interface BONDI {
+		/**
+		 * \brief Requests a feature.
+		 *
+		 * This function requests a feature addressed by name
+		 * asynchronously and returns a pending operation object.
+		 * If it succeeds it calls the successCallback and passes in
+		 * the object of the requested feature. If it fails it calls
+		 * the errorCallback passing in a BONDIError providing an error
+		 * message and error code about what went wrong.
+		 *
+		 * If the requested feature binds itself to a root namespace,
+		 * e.g. "bondi.pim.contact", then this will happen prior to the
+		 * successCallback.
+		 *
+		 * \param successCallback - the success callback function
+		 * \param errorCallback   - the error callback function
+		 * \param name            - the feature name IRI
+		 *
+		 * \return BONDIPendingOperation enabling the requester to cancel this request.
+		 *
+		 * The errorCallback will receive one of the following errors:
+		 * \n BONDIError with code INVALID_ARGUMENT if a malformed
+		 * argument has been supplied or a required argument has been omitted.
+		 * \n BONDIError with code NOT_FOUND if the requested feature could not be found.
+		 * \n BONDISecurityError with code PERMISSION_DENIED if the
+		 * requested feature is not been permitted to load/bind or that
+		 * access to a required device capability has been denied.
+		 * \n BONDIError with code UNKNOWN_ERROR if any other error occured.
+		 * \throw BONDIError with code UNKNOWN_ERROR if an error occured and a pending
+		 * operation object can't be returned.
+		 */
+		 A feature is requested by calling requestFeature.
+		BONDIPendingOperation requestFeature(BONDISuccessCallback successCallback,
+		                                     BONDIErrorCallback   errorCallback,
+		                                     DOMString            name)
+			raises(BONDIError, BONDISecurityError);
+	};
+};
