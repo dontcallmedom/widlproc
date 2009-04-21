@@ -1361,13 +1361,13 @@ findparamidentifier(struct node *node, const char *name)
 static struct node *
 findthrowidentifier(struct node *node, const char *name)
 {
-    if (node->parent->type != NT_Operation)
+    if (node->parent->type != NT_Operation && node->parent->type != NT_Attribute)
         return 0;
     do {
         node = node->next;
         if (!node)
             return 0;
-    } while (node->type != NT_Raises);
+    } while (node->type != NT_Raises && node->type != NT_SetRaises);
     node = node->children->next;
     assert(node->type == NT_ExceptionList);
     node = node->children->next;

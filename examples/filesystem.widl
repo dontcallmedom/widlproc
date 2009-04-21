@@ -896,8 +896,10 @@ module filesystem {
 		 *   // like seek() in C
 		 *   stream.position = 0;
 		 * \endcode
+		 * \throw FileSystemError with code IO_ERROR if invalid position was given.
 		 */
-		attribute long position;
+		attribute long position
+			setraises(FileSystemError);
 
 		/**
 		 * \brief Returns the number of bytes that are available for reading from 

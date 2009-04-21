@@ -103,6 +103,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         </h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="GetRaises[ExceptionList/ScopedNameList]"/>
+        <xsl:apply-templates select="SetRaises[ExceptionList/ScopedNameList]"/>
         <xsl:apply-templates select="descriptive/Code"/>
     </div>
 </xsl:template>
