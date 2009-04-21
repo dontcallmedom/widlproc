@@ -109,10 +109,9 @@ module bondi {
 		 * \throw BONDIError with code UNKNOWN_ERROR if an error occured and a pending
 		 * operation object can't be returned.
 		 */
-		 A feature is requested by calling requestFeature.
-		BONDIPendingOperation requestFeature(BONDISuccessCallback successCallback,
-		                                     BONDIErrorCallback   errorCallback,
-		                                     DOMString            name)
+		BONDIPendingOperation requestFeature(in BONDISuccessCallback successCallback,
+		                                     in BONDIErrorCallback   errorCallback,
+		                                     in DOMString            name)
 			raises(BONDIError, BONDISecurityError);
 	};
 };

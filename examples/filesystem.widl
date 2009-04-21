@@ -710,7 +710,7 @@ module filesystem {
 		 * \throw FileSystemError with code IO_ERROR if invalid position was given.
 		 */
 		attribute long position
-			raises(FileSystemError);
+			setraises(FileSystemError);
 
 		/**
 		 * \brief Returns the number of bytes that are available for reading from 
