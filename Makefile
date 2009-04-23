@@ -24,7 +24,7 @@ OBJDIR = obj
 #
 ifneq (,$(filter Linux%, $(UNAME))) 
 
-CFLAGS = -g -Wall -Werror $(patsubst %, -I%, $(INCDIRS))
+CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
 LIBS = -lefence
