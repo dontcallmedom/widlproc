@@ -63,6 +63,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="*[name() != 'descriptive']"/>
     </div>
 </xsl:template>
+<xsl:template match="Interface[not(descriptive)]">
+</xsl:template>
 
 <xsl:template match="InterfaceMembers">
     <xsl:if test="InterfaceMember/Const/descriptive">
