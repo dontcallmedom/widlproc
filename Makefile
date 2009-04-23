@@ -41,8 +41,8 @@ CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
 OBJOPTION = -o
-# Anyone got any better idea for putting a space on the end of a variable?!
-EXEOPTION = -o$(subst ,, )
+# The -o in the following line has a space after it, which must not be removed.
+EXEOPTION = -o 
 
 else
 ########################################################################
