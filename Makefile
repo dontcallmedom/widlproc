@@ -33,6 +33,18 @@ EXEOPTION = -o
 
 else
 ########################################################################
+# Darwin configuration
+#
+ifneq (,$(filter Darwin%, $(UNAME))) 
+
+CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
+OBJSUFFIX = .o
+EXESUFFIX =
+OBJOPTION = -o
+EXEOPTION = -o
+
+else
+########################################################################
 # Windows (cygwin but using MS compiler) configuration
 #
 ifneq (,$(filter CYGWIN%, $(UNAME))) 
@@ -54,6 +66,7 @@ EXESUFFIX = .exe
 OBJOPTION = /Fo
 EXEOPTION = /Fe
 
+endif
 endif
 endif
 
