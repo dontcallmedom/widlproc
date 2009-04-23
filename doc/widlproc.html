@@ -227,19 +227,6 @@ The Doxygen alternative (from JavaDoc) of <code>@</code> is not
 supported.
 </p>
 
-<h4 id="def-api-feature">\def-api-feature</h4>
-
-<p>
-Starts a new paragraph. The following word is the name of the API feature
-which is defined here. The description is an <em>def-api-feature block</em>,
-consisting of the
-remainder of the paragraph, together with
-further paragraphs in the same block comment each of which is a plain
-paragraph, a paragraph started due to HTML markup, or a
-<a href="#device-cap"><code>\device-cap</code></a>
-paragraph.
-</p>
-
 <h4>\author</h4>
 
 <p>
@@ -281,6 +268,20 @@ Within the code block, whitespace and newlines are passed verbatim into
 the output.
 </p>
 
+<h4 id="def-api-feature">\def-api-feature</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of the API feature
+which is defined here. The description is an <em>def-api-feature block</em>,
+consisting of the
+remainder of the paragraph, together with
+further paragraphs in the same block comment each of which is a plain
+paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
+paragraph, or a
+<a href="#device-cap"><code>\device-cap</code></a>
+paragraph.
+</p>
+
 <h4>\def-device-cap</h4>
 
 <p>
@@ -288,7 +289,8 @@ Starts a new paragraph. The following word is the name of the device capability
 which is defined here. The description consists of the
 remainder of the paragraph, together with
 further paragraphs in the same block comment each of which is a plain
-paragraph, a paragraph started due to HTML markup, or a
+paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
+paragraph, or a
 <a href="#param"><code>\param</code></a>
 paragraph.
 </p>
@@ -565,7 +567,7 @@ for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
 &lt;!ELEMENT Definitions (Definition+) >
 
 &lt;!ELEMENT Definition (ExtendedAttributeList?, (Module | Interface
-    | Exception | Typedef | Valuetype | Const | def-api-feature | def-device-cap)) >
+    | Exception | Typedef | Valuetype | Const)) >
 </pre>
 
 <h4>Module</h4>
@@ -798,22 +800,6 @@ giving the full scoped name. The element is otherwise empty.
 &lt;!ATTLIST ScopedName identifier CDATA #REQUIRED >
 </pre>
 
-<h4>def-api-feature and def-device-cap</h4>
-
-<p>
-These two elements arise from the corresponding Doxygen-like commands,
-but each occurrence is treated as a definition with its own descriptive
-elements.
-</p>
-
-<pre class="dtd">
-&lt;!ELEMENT def-api-feature (descriptive?, device-cap*) >
-&lt;!ATTLIST def-api-feature identifier CDATA #REQUIRED >
-
-&lt;!ELEMENT def-device-cap (descriptive?, param*) >
-&lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
-</pre>
-
 <h4>Descriptive elements</h4>
 
 <p>
@@ -826,7 +812,8 @@ is linked to a parameter (argument) of the method being documented.
 
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
-    | version | Code | api-feature)* >
+    | version | Code | api-feature | device-cap | def-api-feature
+    | def-device-cap | param)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -849,6 +836,11 @@ is linked to a parameter (argument) of the method being documented.
 &lt;!ELEMENT param %Inline; >
 &lt;!ATTLIST param identifier CDATA #REQUIRED >
 
+&lt;!ELEMENT def-api-feature (descriptive?) >
+&lt;!ATTLIST def-api-feature identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT def-device-cap (descriptive?) >
+&lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
 </pre>
 
 <h4>XHTML elements</h4>

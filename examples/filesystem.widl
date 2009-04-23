@@ -21,58 +21,61 @@
  * \brief Provides a persistence API to access the file system.
  *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.mount
- * Call to FileSystemManager.mount
+ * \brief Call to FileSystemManager.mount
  * \device-cap io.file.read
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
- * Call to FileSystemManager.registerEventListener
+ * \brief Call to FileSystemManager.registerEventListener
  * \device-cap io.file.read
  *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.listFiles
- * Call to File.listFiles
+ * \brief Call to File.listFiles
  * \device-cap io.file.read
  *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.resolve
- * Call to File.resolve
+ * \brief Call to File.resolve
  * \device-cap io.file.read
  *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.open
- * Call to File.open
+ * \brief Call to File.open
+ *
+ * One or both of the listed device capabilities are required for this
+ * API feature, depending on the open mode.
  * \device-cap io.file.read if the open mode includes reading
  * \device-cap io.file.write if the open mode includes writing
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.copyTo
- * Call to File.copyTo
+ * \brief Call to File.copyTo
  * \device-cap io.file.read for the source
  * \device-cap io.file.write for the target
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.moveTo
- * Call to File.moveTo
+ * \brief Call to File.moveTo
  * \device-cap io.file.read for the source
  * \device-cap io.file.write for the target
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.createDirectory
- * Call to File.createDirectory
+ * \brief Call to File.createDirectory
  * \device-cap io.file.write
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.createFile
- * Call to File.createFile
+ * \brief Call to File.createFile
  * \device-cap io.file.write
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
- * Call to File.deleteDirectory
+ * \brief Call to File.deleteDirectory
  * \device-cap io.file.write
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteFile
- * Call to File.deleteFile
+ * \brief Call to File.deleteFile
  * \device-cap io.file.write
  *
  * \def-device-cap io.file.read
- * Read directory or file
+ * \brief Read directory or file
  * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
  * 
  * \def-device-cap io.file.write
- * Write directory or file
+ * \brief Write directory or file
  * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
  *
  * \author Paddy Byers paddy@aplixcorp.com

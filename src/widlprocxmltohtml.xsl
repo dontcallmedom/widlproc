@@ -39,14 +39,61 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:if test="descriptive/def-api-feature">
+            <div class="def-api-features">
+                <h3>API features</h3>
+                <xsl:apply-templates select="descriptive/def-api-feature"/>
+            </div>
+        </xsl:if>
+        <xsl:if test="descriptive/def-device-cap">
+            <div class="def-device-caps">
+                <h2>Device capabilities</h2>
+                <xsl:apply-templates select="descriptive/def-device-cap"/>
+            </div>
+        </xsl:if>
         <xsl:apply-templates select="*[name() != 'descriptive']"/>
+    </div>
+</xsl:template>
+
+<!--def-api-feature-->
+<xsl:template match="def-api-feature">
+    <div class="def-api-feature">
+        <h3><xsl:value-of select="@identifier"/></h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:if test="descriptive/device-cap">
+            <div class="device-caps">
+                <h4>Device capabilities used</h4>
+                <ul>
+                    <xsl:apply-templates select="descriptive/device-cap"/>
+                </ul>
+            </div>
+        </xsl:if>
+    </div>
+</xsl:template>
+
+<!--def-device-cap-->
+<xsl:template match="def-device-cap">
+    <div class="def-device-cap">
+        <h3><xsl:value-of select="@identifier"/></h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:if test="descriptive/param">
+            <div class="device-caps">
+                <h4>Security parameters</h4>
+                <ul>
+                    <xsl:apply-templates select="descriptive/param"/>
+                </ul>
+            </div>
+        </xsl:if>
     </div>
 </xsl:template>
 
 <!--Exception: not implemented-->
 <!--Typedef: not implemented-->
 <!--Valuetype: not implemented-->
-<!--Const: not implemented-->
 <xsl:template match="Exception|Typedef|Valuetype|Const">
     <xsl:if test="descriptive">
         <xsl:message terminate="yes">element <xsl:value-of select="name()"/> not supported</xsl:message>
@@ -365,6 +412,22 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <dd>
         <xsl:apply-templates/>
     </dd>
+</xsl:template>
+
+<!--device-cap-->
+<xsl:template match="device-cap">
+    <li>
+        <xsl:value-of select="@identifier"/>:
+        <xsl:apply-templates/>
+    </li>
+</xsl:template>
+
+<!--param-->
+<xsl:template match="param">
+    <li>
+        <xsl:value-of select="@identifier"/>:
+        <xsl:apply-templates/>
+    </li>
 </xsl:template>
 
 <!--html elements-->
