@@ -78,7 +78,7 @@ readinput(const char *const *argv)
         file->filename = filename;
         file->pos = file->buf = buf;
         file->end = buf + len;
-        file->linenum = 0;
+        file->linenum = 1;
     }
     *pfile = 0;
     firstfile = file;
