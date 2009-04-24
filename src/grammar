@@ -132,7 +132,7 @@
  | "long" OptionalLong
 [41]	OptionalLong	→	"long"
  | ε
-[42]	ReturnType	→	DeclarationType
+[42]	ReturnType	→	Type
  | "void"
 [43]	ScopedNameList	→	ScopedName ScopedNames
 [44]	ScopedNames	→	"," ScopedName ScopedNames
