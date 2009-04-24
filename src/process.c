@@ -225,20 +225,19 @@ outputchildren(struct node *node, struct node *identifier, unsigned int indent)
 }
 
 /***********************************************************************
- * processfile : process one input file
+ * processfiles : process input files
  *
  * Enter:   name = filename
  */
 void
-processfile(const char *name)
+processfiles(const char *const *names)
 {
     struct node *root;
-    lexopen(name);
+    readinput(names);
     root = parse();
     processcomments(root);
     printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
            "<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
     output(root, 0, 0);
-    lexclose();
 }
 

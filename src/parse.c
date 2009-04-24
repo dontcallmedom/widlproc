@@ -39,7 +39,7 @@ tokerrorexit(struct tok *tok, const char *format, ...)
 {
     va_list ap;
     va_start(ap, format);
-    vlocerrorexit(filename, tok->linenum, format, ap);
+    vlocerrorexit(tok->filename, tok->linenum, format, ap);
     va_end(ap);
 }
 

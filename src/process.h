@@ -28,7 +28,7 @@ struct node {
 };
 
 void printtext(const char *s, unsigned int len);
-void processfile(const char *name);
+void processfiles(const char *const *names);
 
 #endif /* ndef process_h */
 

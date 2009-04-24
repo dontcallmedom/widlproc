@@ -80,6 +80,7 @@ enum toktype {
 
 struct tok {
     enum toktype type;
+    const char *filename;
     unsigned int linenum;
     const char *start;
     unsigned int len;
@@ -87,8 +88,7 @@ struct tok {
 
 extern const char *filename;
 
-void lexopen(const char *name);
-void lexclose(void);
+void readinput(const char *const *argv);
 struct tok *lex(void);
 
 #endif /* ndef lex_h */

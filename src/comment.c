@@ -26,6 +26,7 @@ struct cnode {
     struct cnode *children;
     struct cnode *parent;
     const struct cnodefuncs *funcs;
+    const char *filename;
     unsigned int linenum;
 };
 
@@ -50,6 +51,7 @@ struct comment {
     struct comment *next;
     struct node *node;
     unsigned int type;
+    const char *filename;
     unsigned int linenum;
     struct cnode root;
     int back; /* Whether the comment refers back rather than forward. */
@@ -120,13 +122,14 @@ addcomment(struct tok *tok)
         memcpy(comment->text, tok->start, tok->len);
         comment->text[tok->len] = 0;
         comment->type = tok->type;
+        comment->filename = tok->filename;
         comment->linenum = tok->linenum;
         comment->node = 0;
         comment->back = 0;
         if (comment->text[1] == '<') {
             comment->back = 1;
             if (!lastidentifier) {
-                locerrorexit(filename, comment->linenum,
+                locerrorexit(comment->filename, comment->linenum,
                     "no identifier to attach doxygen comment to");
             }
             comment->node = lastidentifier;
@@ -177,6 +180,7 @@ joininlinecomments(struct comment *comments)
             pcomment = &comment->next;
         } else if (!comment->back && (!comment->next
                 || comment->next->type != TOK_INLINECOMMENT
+                || comment->next->filename != comment->filename
                 || comment->next->linenum != comment->linenum + 1))
         {
             /* Discard single // comment that does not refer back. */
@@ -189,6 +193,7 @@ joininlinecomments(struct comment *comments)
              * to join. Note that the list is still in reverse order,
              * so we expect the line number to decrease by 1 each time. */
             struct comment *newcomment = 0, *comment2;
+            const char *filename = comment->filename;
             unsigned int linenum = comment->linenum;
             for (;;) {
                 char *wp = newcomment->text;
@@ -200,7 +205,8 @@ joininlinecomments(struct comment *comments)
                     wp += len;
                     linenum--;
                     comment2 = comment2->next;
-                } while (comment2 && comment2->linenum == linenum
+                } while (comment2 && comment2->filename == filename
+                            && comment2->linenum == linenum
                             && comment2->node == comment->node);
                 /* Finished a pass. */
                 if (newcomment) {
@@ -211,6 +217,7 @@ joininlinecomments(struct comment *comments)
                                 + wp - newcomment->text);
                 newcomment->node = comment->node;
                 newcomment->type = comment->type;
+                newcomment->filename = filename;
                 newcomment->linenum = linenum + 1;
             }
             /* Replace the scanned comment struct with newcomment in the
@@ -332,13 +339,13 @@ endcnode(struct cnode *cnode)
  *
  * Enter:   cnode = current cnode
  *          type = type of node to end
- *          linenum = line number (for error reporting)
+ *          filename, linenum = filename and line number (for error reporting)
  *
  * Return:  new current cnode
  */
 static struct cnode *
 endspecificcnode(struct cnode *cnode, const struct cnodefuncs *type,
-                 unsigned int linenum)
+                 const char *filename, unsigned int linenum)
 {
     while (cnode->funcs != type) {
         if (cnode->funcs == &root_funcs)
@@ -517,7 +524,7 @@ code_end(struct cnode *cnode)
     if (incode) {
         /* The incode flag has not been cleared, so this code cnode is
          * being ended implicitly. We complain about that. */
-        locerrorexit(filename, cnode->linenum, "mismatched \\code");
+        locerrorexit(cnode->filename, cnode->linenum, "mismatched \\code");
     }
 }
 
@@ -683,13 +690,15 @@ static const struct cnodefuncs html_funcs = {
  *          htmleldesc = html element descriptor
  *          attrs = attributes text
  *          attrslen = length of attributes text
+ *          filename
  *          linenum = line number
  *
  * Return:  new current cnode
  */
 static struct cnode *
 starthtmlcnode(struct cnode *cnode, const struct htmleldesc *htmleldesc,
-               const char *attrs, unsigned int attrslen, unsigned int linenum)
+               const char *attrs, unsigned int attrslen,
+               const char *filename, unsigned int linenum)
 {
     struct htmlcnode *htmlcnode;
     /* First close enough elements to get to a content
@@ -722,6 +731,7 @@ starthtmlcnode(struct cnode *cnode, const struct htmleldesc *htmleldesc,
     htmlcnode = memalloc(sizeof(struct htmlcnode) + attrslen);
     htmlcnode->desc = htmleldesc;
     htmlcnode->cn.funcs = &html_funcs;
+    htmlcnode->cn.filename = filename;
     htmlcnode->cn.linenum = linenum;
     memcpy(htmlcnode->attrs, attrs, attrslen);
     htmlcnode->attrs[attrslen] = 0;
@@ -1032,7 +1042,7 @@ parseword(const char **pp)
  * Enter:   p = text just after command
  *          *pcnode = pointer to current cnode struct
  *          type = 0 else cnodefuncs pointer for type of node to start
- *          linenum = current line number (for error reporting)
+ *          filename, linenum = current filename and line number (for error reporting)
  *
  * Return:  p = updated if extra text was eaten
  *
@@ -1044,14 +1054,14 @@ parseword(const char **pp)
  */
 static const char *
 dox_b(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-      unsigned int linenum)
+      const char *filename, unsigned int linenum)
 {
     struct cnode *cnode = *pcnode;
     const char *word = parseword(&p);
     /* Silently ignore \b with no following word. */
     if (word) {
         struct cnode *mycnode;
-        mycnode = cnode = starthtmlcnode(cnode, HTMLELDESC_B, 0, 0, linenum);
+        mycnode = cnode = starthtmlcnode(cnode, HTMLELDESC_B, 0, 0, filename, linenum);
         cnode = addtext(cnode, word, p - word);
         while (cnode != mycnode)
             cnode = endcnode(cnode);
@@ -1066,10 +1076,10 @@ dox_b(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_n(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-      unsigned int linenum)
+      const char *filename, unsigned int linenum)
 {
     struct cnode *cnode = *pcnode;
-    cnode = starthtmlcnode(cnode, HTMLELDESC_BR, 0, 0, linenum);
+    cnode = starthtmlcnode(cnode, HTMLELDESC_BR, 0, 0, filename, linenum);
     cnode = endcnode(cnode);
     *pcnode = cnode;
     return p;
@@ -1080,9 +1090,10 @@ dox_n(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-         unsigned int linenum)
+         const char *filename, unsigned int linenum)
 {
     *pcnode = startpara(*pcnode, &code_funcs);
+    (*pcnode)->filename = filename;
     (*pcnode)->linenum = linenum; /* for reporting mismatched \code error */
     incode = 1;
     return p;
@@ -1093,10 +1104,10 @@ dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_endcode(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-            unsigned int linenum)
+            const char *filename, unsigned int linenum)
 {
     incode = 0;
-    *pcnode = endspecificcnode(*pcnode, &code_funcs, linenum);
+    *pcnode = endspecificcnode(*pcnode, &code_funcs, filename, linenum);
     return p;
 }
 
@@ -1105,7 +1116,7 @@ dox_endcode(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_package(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-            unsigned int linenum)
+            const char *filename, unsigned int linenum)
 {
     const char *word;
     word = parseword(&p);
@@ -1124,7 +1135,7 @@ dox_package(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-          unsigned int linenum)
+          const char *filename, unsigned int linenum)
 {
     struct cnode *cnode = *pcnode;
     unsigned int inout = 0;
@@ -1157,6 +1168,7 @@ dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
         cnode = endcnode(cnode);
     /* Create a new param cnode. */
     cnode = startparamcnode(cnode, word, p - word, inout, type);
+    cnode->filename = filename;
     cnode->linenum = linenum;
     *pcnode = cnode;
     return p;
@@ -1167,7 +1179,7 @@ dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_para(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-         unsigned int linenum)
+         const char *filename, unsigned int linenum)
 {
     *pcnode = startpara(*pcnode, type);
     return p;
@@ -1177,7 +1189,8 @@ dox_para(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  * Doxygen command handler : \throw
  */
 static const char *
-dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, unsigned int linenum)
+dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
+          const char *filename, unsigned int linenum)
 {
     struct cnode *cnode = *pcnode;
     const char *word;
@@ -1190,6 +1203,7 @@ dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, u
         cnode = endcnode(cnode);
     /* Create a new throw cnode. */
     cnode = startparamcnode(cnode, word, p - word, 0, type);
+    cnode->filename = filename;
     cnode->linenum = linenum;
     *pcnode = cnode;
     return p;
@@ -1199,7 +1213,7 @@ dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, u
  * commands : table of Doxygen commands
  */
 struct command {
-    const char *(*func)(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, unsigned int linenum);
+    const char *(*func)(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, const char *filename, unsigned int linenum);
     const struct cnodefuncs *type;
     unsigned int namelen;
     const char *name;
@@ -1228,13 +1242,15 @@ static const struct command commands[] = {
  *
  * Enter:   start = start of tag, the '<' char
  *          *pcnode = current cnode
+ *          filename = filename
  *          *plinenum = current line number
  *
  * Return:  just after the tag
  *          *pcnode and *plinenum updated if applicable
  */
 static const char *
-parsehtmltag(const char *start, struct cnode **pcnode, unsigned int *plinenum)
+parsehtmltag(const char *start, struct cnode **pcnode,
+             const char *filename, unsigned int *plinenum)
 {
     struct cnode *cnode = *pcnode;
     const char *end = start + 1, *endname = 0, *name = end;
@@ -1311,7 +1327,7 @@ parsehtmltag(const char *start, struct cnode **pcnode, unsigned int *plinenum)
         cnode = endcnode(cnode);
     } else {
         /* Opening tag. */
-        cnode = starthtmlcnode(cnode, htmleldesc, endname, end - 1 - endname, *plinenum);
+        cnode = starthtmlcnode(cnode, htmleldesc, endname, end - 1 - endname, filename, *plinenum);
         if (close == 2 || (htmleldesc->content & HTMLEL_EMPTY)) {
             /* Empty element -- close it again. */
             cnode = endcnode(cnode);
@@ -1409,7 +1425,7 @@ checkforlineofstars:
             if (p - starttext)
                 cnode = addtext(cnode, starttext, p - starttext);
             if (ch == '$')
-                locerrorexit(filename, linenum, "use \\$ instead of $");
+                locerrorexit(comment->filename, linenum, "use \\$ instead of $");
             /* See if it is a backslash escape sequence. */
             if (ch == '\\') {
                 const char *match = "\\@&$#<>%";
@@ -1434,7 +1450,7 @@ checkforlineofstars:
                     continue;
                 }
                 /* It's an html tag. */
-                p = parsehtmltag(p, &cnode, &linenum);
+                p = parsehtmltag(p, &cnode, comment->filename, &linenum);
                 ch = *p;
                 starttext = p;
                 continue;
@@ -1452,12 +1468,12 @@ checkforlineofstars:
                 }
                 cmdlen = p - start;
                 if (!cmdlen)
-                    locerrorexit(filename, linenum, "\\ or @ without Doxygen command");
+                    locerrorexit(comment->filename, linenum, "\\ or @ without Doxygen command");
                 /* Look it up in the table. */
                 command = commands;
                 for (;;) {
                     if (!command->namelen) {
-                        locerrorexit(filename, linenum, "unrecognized Doxygen command '%.*s'",
+                        locerrorexit(comment->filename, linenum, "unrecognized Doxygen command '%.*s'",
                                 cmdlen + 1, start - 1);
                     }
                     if (command->namelen == cmdlen
@@ -1467,7 +1483,8 @@ checkforlineofstars:
                     }
                     command++;
                 }
-                p = (*command->func)(p, &cnode, command->type, linenum);
+                p = (*command->func)(p, &cnode, command->type,
+                        comment->filename, linenum);
                 ch = *p;
                 starttext = p;
             }
@@ -1647,16 +1664,16 @@ attachcomments(struct comment *comment, struct node *root)
                     node = findparamidentifier(comment->node,
                         ((struct paramcnode *)cnode)->name);
                     if (!node)
-                        locerrorexit(filename, cnode->linenum, "no parameter '%s' found", ((struct paramcnode *)cnode)->name);
+                        locerrorexit(comment->filename, cnode->linenum, "no parameter '%s' found", ((struct paramcnode *)cnode)->name);
                 } else if (cnode->funcs == &return_funcs) {
                     node = findreturntype(comment->node);
                     if (!node)
-                        locerrorexit(filename, cnode->linenum, "no return type found");
+                        locerrorexit(comment->filename, cnode->linenum, "no return type found");
                 } else {
                     node = findthrowidentifier(comment->node,
                         ((struct paramcnode *)cnode)->name);
                     if (!node)
-                        locerrorexit(filename, cnode->linenum, "no exception '%s' found", ((struct paramcnode *)cnode)->name);
+                        locerrorexit(comment->filename, cnode->linenum, "no exception '%s' found", ((struct paramcnode *)cnode)->name);
                 }
                 /* Detach the cnode from its old comment. */
                 *pcnode = cnode->next;

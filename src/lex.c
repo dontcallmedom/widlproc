@@ -17,11 +17,68 @@
 #include "lex.h"
 #include "misc.h"
 
-static FILE *file;
-const char *filename;
-static char *buf;
-unsigned int bufmax, buflen, pos, linenum;
-int eof;
+struct file {
+    struct file *next;
+    const char *filename;
+    char *buf;
+    const char *pos, *end;
+    unsigned int linenum;
+};
+
+static struct file *file;
+
+/***********************************************************************
+ * readinput : read all input files into memory
+ *
+ * Enter:   argv = 0-terminated array of filenames
+ */
+void
+readinput(const char *const *argv)
+{
+    struct file **pfile = &file;
+    for (;;) {
+        struct file *file;
+        const char *filename = *argv++;
+        char *buf = 0;
+        int len = 0, thislen, isstdin;
+        FILE *handle;
+        if (!filename)
+            break;
+        /* Read the file. */
+        isstdin = !strcmp(filename, "-");
+        if (isstdin) {
+            handle = stdin;
+            filename = "<stdin>";
+        } else {
+            handle = fopen(filename, "rb");
+            if (!handle)
+                errorexit("%s: %s", filename, strerror(errno));
+        }
+        for (;;) {
+            thislen = len ? len * 2 : 4096;
+            buf = memrealloc(buf, len + thislen + 1);
+            thislen = fread(buf + len, 1, thislen, handle);
+            if (!thislen)
+                break;
+            len += thislen;
+        }
+        if (ferror(handle))
+            errorexit("%s: I/O error", filename);
+        if (!isstdin)
+            fclose(handle);
+        buf[len] = 0;
+        buf = memrealloc(buf, len + 1);
+        /* Create the file struct for it. */
+        file = memalloc(sizeof(struct file));
+        *pfile = file;
+        pfile = &file->next;
+        file->filename = filename;
+        file->pos = file->buf = buf;
+        file->end = buf + len;
+        file->linenum = 0;
+    }
+    *pfile = 0;
+}
 
 /***********************************************************************
  * lexerrorexit : error and exit with line number
@@ -31,77 +88,8 @@ lexerrorexit(const char *format, ...)
 {
     va_list ap;
     va_start(ap, format);
-    vlocerrorexit(filename, linenum, format, ap);
+    vlocerrorexit(file->filename, file->linenum, format, ap);
     va_end(ap);
-}
-
-/***********************************************************************
- * lexopen : open input file and prepare to lex it
- *
- * Enter:   name = filename
- */
-void
-lexopen(const char *name)
-{
-    filename = name;
-    file = fopen(name, "rb");
-    if (!file)
-        errorexit("%s: %s", filename, strerror(errno));
-    bufmax = 4096;
-    buf = memalloc(bufmax + 1);
-    buflen = pos = 0;
-    linenum = 1;
-    eof = 0;
-}
-
-/***********************************************************************
- * lexclose : close current input file
- */
-void
-lexclose(void)
-{
-    fclose(file);
-    file = 0;
-    filename = 0;
-}
-
-/***********************************************************************
- * readmore : read more data from the input file
- *
- * Enter:   start = start of token currently being lexed
- *          p = position reached in buffer when 0 byte was found
- *
- * Return:  start of token after moving in buffer
- *
- * p should be at the end of the buffer, since we detected a 0
- * byte. If we're not at the end of the buffer, then the input has
- * a 0 byte in, which we can't cope with.
- */
-static const char *
-readmore(const char *start, const char *p)
-{
-    unsigned int readlen;
-    if (p != buf + buflen)
-        lexerrorexit("\\0 byte not allowed");
-    /* Shift the part token we have so far down to the bottom of the
-     * buffer. */
-    buflen = p - start;
-    memmove(buf, start, buflen);
-    /* If the buffer is still full, double the size of it. */
-    if (buflen == bufmax) {
-        bufmax *= 2;
-        buf = memrealloc(buf, bufmax);
-    }
-    /* Read the next chunk of file. */
-    readlen = fread(buf + buflen, 1, bufmax - buflen, file);
-    if (!readlen) {
-        if (ferror(file))
-            errorexit("%s: I/O error", filename);
-        eof = 1;
-    }
-    buflen += readlen;
-    buf[buflen] = 0;
-    return buf;
 }
 
 /***********************************************************************
@@ -116,30 +104,25 @@ lexblockcomment(const char *start)
 {
     static struct tok tok;
     const char *p = start + 1;
-    tok.linenum = linenum;
+    tok.filename = file->filename;
+    tok.linenum = file->linenum;
     for (;;) {
         int ch = *++p;
-        unsigned int offset;
-        if (ch) {
-            if (ch != '*') {
-                if (ch == '\n')
-                    linenum++;
-                continue;
-            }
-            ch = p[1];
-            if (ch == '/')
-                break;
-            if (ch)
-                continue;
-        }
-        if (eof)
+        if (!ch)
             lexerrorexit("unterminated block comment");
-        offset = p - start;
-        start = readmore(start, p + (*p != 0));
-        p = start + offset - 1;
+        if (ch != '*') {
+            if (ch == '\n')
+                file->linenum++;
+            continue;
+        }
+        ch = p[1];
+        if (!ch)
+            lexerrorexit("unterminated block comment");
+        if (ch == '/')
+            break;
     }
     p += 2;
-    pos = p - buf;
+    file->pos = p;
     tok.type = TOK_BLOCKCOMMENT;
     tok.start = start + 2;
     tok.len = p - start - 4;
@@ -161,24 +144,16 @@ lexinlinecomment(const char *start)
     p = start + 1;
     for (;;) {
         int ch = *++p;
-        unsigned int offset;
-        if (ch) {
-            if (ch == '\n')
-                break;
-            continue;
-        }
-        if (eof)
+        if (!ch || ch == '\n')
             break;
-        offset = p - start;
-        start = readmore(start, p);
-        p = start + offset - 1;
     }
     p++;
-    pos = p - buf;
+    file->pos = p;
     tok.type = TOK_INLINECOMMENT;
     tok.start = start + 2;
     tok.len = p - start - 2;
-    tok.linenum = linenum++;
+    tok.filename = file->filename;
+    tok.linenum = file->linenum++;
     return &tok;
 }
 
@@ -205,23 +180,15 @@ lexnumber(const char *start)
                 } state = STATE_START;
         if (ch == '-')
             ch = *++p;
-        if (!ch) {
-            start = readmore(start, p);
-            continue;
-        }
         if (ch == '0') {
             state = STATE_OCTAL;
             ch = *++p;
-            if (!ch) {
-                start = readmore(start, p);
-                continue;
-            }
             if ((ch & ~0x20) == 'X') {
                 state = STATE_HEX;
                 ch = *++p;
             }
         }
-        while (ch) {
+        for (;;) {
             if ((unsigned)(ch - '0') >= 8) {
                 if ((ch & -2) == '8') {
                     if (state == STATE_OCTAL) {
@@ -250,10 +217,6 @@ lexnumber(const char *start)
                 state = STATE_INT;
             else if (state == STATE_EXPSTART || state == STATE_EXPSIGN)
                 state = STATE_EXP;
-        }
-        if (!ch && !eof) {
-            start = readmore(start, p);
-            continue;
         }
         switch (state) {
         case STATE_START:
@@ -287,8 +250,9 @@ lexnumber(const char *start)
         }
         tok.start = start;
         tok.len = p - start;
-        tok.linenum = linenum;
-        pos = p - buf;
+        tok.filename = file->filename;
+        tok.linenum = file->linenum;
+        file->pos = p;
         return &tok;
     }
 }
@@ -307,22 +271,22 @@ lexstring(const char *start)
     for (;;) {
         const char *p = start + 1;
         int ch = *p;
-        while (ch) {
-            if (ch == '\n')
+        for (;;) {
+            if (!ch || ch == '\n')
                 lexerrorexit("unterminated string");
             if (ch == '"') {
                 tok.type = TOK_STRING;
                 tok.start = start + 1;
                 tok.len = p - start - 1;
-                tok.linenum = linenum;
-                pos = p + 1 - buf;
+                tok.filename = file->filename;
+                tok.linenum = file->linenum;
+                file->pos = p + 1;
                 return &tok;
             }
             /* Note the IDL spec doesn't seem to allow for escape sequences
              * in strings. */
             ch = *++p;
         }
-        start = readmore(start, p);
     }
 }
 
@@ -340,11 +304,7 @@ lexidentifier(const char *start)
     const char *p = start + 1;
     for (;;) {
         int ch = *p;
-        if (!ch) {
-            if (eof)
-                break;
-            p = start = readmore(start, p);
-        } else if (ch != '_' && (unsigned)(ch - '0') >= 10
+        if (ch != '_' && (unsigned)(ch - '0') >= 10
                 && (unsigned)((ch & ~0x20) - 'A') > 'Z' - 'A')
         {
             break;
@@ -354,8 +314,9 @@ lexidentifier(const char *start)
     tok.type = TOK_IDENTIFIER;
     tok.start = start;
     tok.len = p - start;
-    tok.linenum = linenum;
-    pos = p - buf;
+    tok.filename = file->filename;
+    tok.linenum = file->linenum;
+    file->pos = p;
     /* See if this is a keyword. (This search is a bit n-squared.) */
     {
         unsigned int type = TOK_DOMString;
@@ -384,34 +345,38 @@ struct tok *
 lex(void)
 {
     static struct tok tok;
-    const char *p, *start;
-    /* Multiple tries until we get a complete token in the buffer. */
+    const char *p;
+    int ch;
     for (;;) {
-        int ch;
-        p = buf + pos;
-        start = p;
+        if (!file) {
+            tok.type = TOK_EOF;
+            tok.start = "end of file";
+            tok.len = strlen(tok.start);
+            return &tok;
+        }
+        p = file->pos;
         /* Flush whitespace. */
         while ((ch = *p) == ' ' || ch == '\t' || ch == '\r'
-                || (ch == '\n' && ++linenum))
+                || (ch == '\n' && ++file->linenum))
         {
             p++;
         }
-        start = p;
-        /* See if we have a comment. */
-        if (ch == '/') {
-            switch (*++p) {
-            case 0:
-                if (!eof)
-                    goto readmore;
-                break;
-            case '*':
-                return lexblockcomment(p - 1);
-            case '/':
-                return lexinlinecomment(p - 1);
-            }
-            tok.type = '/';
+        if (ch)
             break;
+        if (p != file->end)
+            lexerrorexit("\\0 byte not allowed");
+        file = file->next;
+    }
+    /* See if we have a comment. */
+    if (ch == '/') {
+        switch (*++p) {
+        case '*':
+            return lexblockcomment(p - 1);
+        case '/':
+            return lexinlinecomment(p - 1);
         }
+        tok.type = '/';
+    } else {
         /* Handle things that start with '-', which is either '-' as a token,
          * or a number. Handle numbers. */
         if (ch == '-' || (unsigned)(ch - '0') < 10)
@@ -425,38 +390,20 @@ lex(void)
         /* The only multi-symbol token is :: */
         if (ch == ':') {
             tok.type = ':';
-            switch (*++p) {
-            case 0:
-                if (!eof)
-                    goto readmore;
-                break;
-            case ':':
+            if (*++p == ':') {
                 tok.type = TOK_DOUBLECOLON;
                 p++;
-                break;
             }
-            break;
         }
-        if (!ch) {
-            if (eof) {
-                tok.type = TOK_EOF;
-                tok.start = "end of file";
-                tok.len = strlen(tok.start);
-                return &tok;
-            }
-            goto readmore;
-        }
-        /* Single symbol token. */
-        tok.type = ch;
-        tok.linenum = linenum;
-        tok.start = p;
-        tok.len = 1;
-        p++;
-        break;
-readmore:
-        readmore(start, p);
     }
-    pos = p - buf;
+    /* Single symbol token. */
+    tok.type = ch;
+    tok.filename = file->filename;
+    tok.linenum = file->linenum;
+    tok.start = p;
+    tok.len = 1;
+    p++;
+    file->pos = p;
     return &tok;
 }
 

@@ -52,12 +52,10 @@ int
 main(int argc, char **argv)
 {
     const char *const *parg;
-    const char *arg;
     parg = options((const char *const *)argv);
     if (!*parg)
         errorexit("expected at least one argument");
-    while ((arg = *parg++) != 0)
-        processfile(arg);
+    processfiles(parg);
     return 0;
 }
 
