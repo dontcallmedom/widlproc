@@ -1732,8 +1732,20 @@ outputdescriptive(struct node *node, unsigned int indent)
     int indescriptive = 0;
     while (comment) {
         struct cnode *root = &comment->root;
-        if (!indescriptive)
+        if (!indescriptive) {
+            struct node *parent = node->parent;
             printf("%*s<descriptive>\n", indent, "");
+            /* When generating the <webidl> element, go up two levels
+             * in the parse tree if the second one is a Definition.
+             * This ensures that any extended attributes are included. */
+            if (parent->parent && parent->parent->type == NT_Definition)
+                parent = parent->parent;
+            if (parent->start) {
+                printf("%*s  <webidl>", indent, "");
+                outputwidl(parent->start, parent->end);
+                printf("</webidl>\n");
+            }
+        }
         indescriptive = 1;
         (*root->funcs->output)(root, indent + 2);
         comment = comment->next;

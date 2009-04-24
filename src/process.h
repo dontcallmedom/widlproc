@@ -24,6 +24,7 @@ struct node {
     struct node *children;
     struct comment *comments; /* list of comments attached to this node */
     unsigned int type;
+    const char *start, *end; /* start and end of web idl input resulting in this node */
     char name[1];
 };
 

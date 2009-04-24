@@ -30,16 +30,18 @@ static const char ntnames[] = { NTNAMES };
  *          len = number of bytes
  *
  * This also escapes double quote mark so it can be used for an
- * attribute value.
+ * attribute value. It also turns a tab into spaces.
  */
 void
 printtext(const char *s, unsigned int len)
 {
     const char *p = s, *end = s + len;
+    unsigned int count = 0;
     while (p != end) {
         int ch = *p;
-        char buf[6];
+        char buf[9];
         const char *seq = 0;
+        count++;
         switch (ch) {
         case '<':
             seq = "&lt;";
@@ -50,12 +52,20 @@ printtext(const char *s, unsigned int len)
         case '"':
             seq = "&quot;";
             break;
+        case '\n':
+            p++;
+            count = 0;
+            continue;
+        case '\t':
+            seq = "        " + ((count - 1) & 7);
+            count = 0;
+            break;
         default:
-            if ((unsigned char)ch >= 0x20 || ch == '\n') {
+            if ((unsigned char)ch >= 0x20) {
                 p++;
                 continue;
             }
-            snprintf(buf, 6, "&#%i;", ch);
+            snprintf(buf, 9, "&#%i;", ch);
             seq = buf;
             break;
         }
@@ -120,6 +130,8 @@ static void
 output(struct node *node, struct node *extendedattributelist,
        unsigned int indent)
 {
+    if (extendedattributelist)
+        node->start = extendedattributelist->start;
     if (node->type == NT_ExtendedAttribute) {
         printf("%*s<ExtendedAttribute value=\"", indent, "");
         outputnodeastext(node, 0);

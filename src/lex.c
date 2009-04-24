@@ -11,11 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***********************************************************************/
+#include <assert.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include "lex.h"
 #include "misc.h"
+#include "process.h"
 
 struct file {
     struct file *next;
@@ -25,7 +27,8 @@ struct file {
     unsigned int linenum;
 };
 
-static struct file *file;
+static struct file *file, *firstfile;
+static struct tok tok;
 
 /***********************************************************************
  * readinput : read all input files into memory
@@ -78,6 +81,7 @@ readinput(const char *const *argv)
         file->linenum = 0;
     }
     *pfile = 0;
+    firstfile = file;
 }
 
 /***********************************************************************
@@ -102,7 +106,6 @@ lexerrorexit(const char *format, ...)
 static struct tok *
 lexblockcomment(const char *start)
 {
-    static struct tok tok;
     const char *p = start + 1;
     tok.filename = file->filename;
     tok.linenum = file->linenum;
@@ -139,7 +142,6 @@ lexblockcomment(const char *start)
 static struct tok *
 lexinlinecomment(const char *start)
 {
-    static struct tok tok;
     const char *p = start + 2;
     p = start + 1;
     for (;;) {
@@ -170,7 +172,6 @@ lexinlinecomment(const char *start)
 static struct tok *
 lexnumber(const char *start)
 {
-    static struct tok tok;
     for (;;) {
         const char *p = start;
         const char *octalend = start;
@@ -267,7 +268,6 @@ lexnumber(const char *start)
 static struct tok *
 lexstring(const char *start)
 {
-    static struct tok tok;
     for (;;) {
         const char *p = start + 1;
         int ch = *p;
@@ -300,7 +300,6 @@ lexstring(const char *start)
 static struct tok *
 lexidentifier(const char *start)
 {
-    static struct tok tok;
     const char *p = start + 1;
     for (;;) {
         int ch = *p;
@@ -344,7 +343,6 @@ lexidentifier(const char *start)
 struct tok *
 lex(void)
 {
-    static struct tok tok;
     const char *p;
     int ch;
     for (;;) {
@@ -354,13 +352,23 @@ lex(void)
             tok.len = strlen(tok.start);
             return &tok;
         }
-        p = file->pos;
+        tok.prestart = p = file->pos;
         /* Flush whitespace. */
-        while ((ch = *p) == ' ' || ch == '\t' || ch == '\r'
-                || (ch == '\n' && ++file->linenum))
-        {
-            p++;
+        for (;;) {
+            ch = *p++;
+            switch (ch) {
+            case ' ':
+            case '\t':
+            case '\r':
+                continue;
+            case '\n':
+                ++file->linenum;
+                tok.prestart = p;
+                continue;
+            }
+            break;
         }
+        p--;
         if (ch)
             break;
         if (p != file->end)
@@ -405,5 +413,91 @@ lex(void)
     p++;
     file->pos = p;
     return &tok;
+}
+
+/***********************************************************************
+ * outputwidl : output literal Web IDL input that node was parsed from
+ *
+ * Enter:   start, end pointers
+ */
+void
+outputwidl(const char *start, const char *end)
+{
+    /* Find the file that start is in. */
+    struct file *file = firstfile;
+    while (start < file->buf || start >= file->end) {
+        file = file->next;
+        assert(file);
+    }
+    /* Output until we get to the end. This has to cope with the text
+     * spanning multiple input files. */
+    for (;;) {
+        int final = end >= file->buf && end <= file->end;
+        const char *thisend = final ? end : file->end;
+        /* Output the Web IDL, omitting comments. */
+        while (start != end) {
+            const char *p = memchr(start, '/', thisend - start);
+            const char *comment, *endcomment;
+            int ch;
+            if (!p) {
+                printtext(start, thisend - start);
+                break;
+            }
+            /* See if we're at the start of a comment. If so find the end. */
+            comment = 0;
+            if (p + 1 != thisend) {
+                switch (p[1]) {
+                case '*':
+                    /* Block comment. */
+                    comment = p;
+                    p++;
+                    do 
+                        p = memchr(p + 1, '*', thisend - p - 1);
+                    while (p[1] != '/');
+                    endcomment = p + 2;
+                    break;
+                case '/':
+                    /* Inline comment. */
+                    comment = p;
+                    p = memchr(p, '\n', thisend - p);
+                    if (!p)
+                        p = thisend;
+                    endcomment = p;
+                    break;
+                }
+            }
+            if (!comment) {
+                /* Not at start of comment. */
+                p++;
+                printtext(start, p - start);
+                start = p;
+                continue;
+            }
+            /* If the comment has only whitespace before it on the line,
+             * eat that up. */
+            p = comment;
+            while (p != start && ((ch = p[-1]) == ' ' || ch == '\t'))
+                p--;
+            if (p == start || p[-1] == '\n') {
+                comment = p;
+                /* If the comment has only whitespace after it to the end
+                 * of the line, eat that and the newline up. This always
+                 * happens for an inline comment on a line by itself. */
+                p = endcomment;
+                while (p != thisend && ((ch = *p) == ' ' || ch == '\t'))
+                    p++;
+                if (p != thisend && *p == '\n')
+                    p++;
+                endcomment = p;
+            }
+            printtext(start, comment - start);
+            start = endcomment;
+        }
+        if (final)
+            break;
+        file = file->next;
+        assert(file);
+        start = file->buf;
+    }
 }
 

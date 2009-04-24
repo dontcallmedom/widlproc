@@ -105,6 +105,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <div class="interface">
         <h1><xsl:value-of select="@identifier"/></h1>
         <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive/webidl"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
         <xsl:apply-templates select="*[name() != 'descriptive']"/>
@@ -333,7 +334,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <!--descriptive. This does not output any brief or Code or api-feature
-    element; they are handled by descriptive's parent.-->
+    or webidl element; they are handled by descriptive's parent.-->
 <xsl:template match="descriptive">
     <xsl:apply-templates select="description"/>
     <xsl:if test="author">
@@ -385,6 +386,11 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <h4>Code example</h4>
         <pre class="examplecode"><xsl:apply-templates/></pre>
     </div>
+</xsl:template>
+
+<!--webidl : literal Web IDL from input-->
+<xsl:template match="webidl">
+    <pre class="webidl"><xsl:value-of select="text()"/></pre>
 </xsl:template>
 
 <!--author-->

@@ -28,6 +28,7 @@ memalloc(size_t size)
     void *ptr = malloc(size);
     if (!ptr)
         errorexit("out of memory");
+    /* Zero initialise memory from memalloc. */
     memset(ptr, 0, size);
     return ptr;
 }

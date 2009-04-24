@@ -126,6 +126,8 @@ parsenode(struct node *parent, unsigned int nonterm, struct tok *tok)
     const unsigned short *p;
     unsigned int prod;
     struct node *node = memalloc(sizeof(struct node));
+    node->start = tok->prestart;
+    node->end = tok->start + tok->len;
     node->type = nonterm + NT_START;
     node->name[0] = 0;
     node->children = 0;
@@ -176,6 +178,8 @@ restart:
             struct node *node2 = memalloc(sizeof(struct node) + tok->len);
             memcpy(node2->name, tok->start, tok->len);
             node2->name[tok->len] = 0;
+            node2->start = tok->prestart;
+            node2->end = tok->start + tok->len;
             node2->type = tok->type;
             node2->children = 0;
             node2->comments = 0;
@@ -269,15 +273,20 @@ reversechildren(struct node *node)
 {
     struct node *newlist = 0;
     struct node *child = node->children;
+    const char *end = 0;
     while (child) {
         struct node *next = child->next;
         child->parent = node;
         child->next = newlist;
         newlist = child;
         reversechildren(child);
+        if (!end)
+            end = child->end;
         child = next;
     }
     node->children = newlist;
+    if (end)
+        node->end = end;
 }
 
 /***********************************************************************

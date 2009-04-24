@@ -810,10 +810,16 @@ derives only from a <code>\param</code> command used inside a
 is linked to a parameter (argument) of the method being documented.
 </p>
 
+<p>
+The <code>&lt;webidl></code> element contains the literal text of the
+original Web IDL that the parent of the <code>&lt;descriptive></code>
+element was parsed from, minus the comments.
+</p>
+
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
     | version | Code | api-feature | device-cap | def-api-feature
-    | def-device-cap | param)* >
+    | def-device-cap | param | webidl)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -841,6 +847,8 @@ is linked to a parameter (argument) of the method being documented.
 
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT webidl (#PCDATA) >
 </pre>
 
 <h4>XHTML elements</h4>

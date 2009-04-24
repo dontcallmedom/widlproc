@@ -82,6 +82,7 @@ struct tok {
     enum toktype type;
     const char *filename;
     unsigned int linenum;
+    const char *prestart;
     const char *start;
     unsigned int len;
 };
@@ -90,5 +91,6 @@ extern const char *filename;
 
 void readinput(const char *const *argv);
 struct tok *lex(void);
+void outputwidl(const char *start, const char *end);
 
 #endif /* ndef lex_h */
