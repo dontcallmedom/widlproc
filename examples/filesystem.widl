@@ -8,7 +8,7 @@
  * Apache License, version 2.0, subject to the condition that any "Works" and "Derivative 
  * Works" used or distributed for commercial purposes must be and remain compliant with the
  * BONDI specification as promulgated by OMTP in each release. Your implementation of the 
- * Reference Implementation (whether object or source) must malongain these conditions, and 
+ * Reference Implementation (whether object or source) must maintain these conditions, and 
  * you must notify any recipient of this condition in a conspicuous way.
  * 
  * You may not use this BONDI Reference Implementation except in compliance with the License. 
@@ -20,83 +20,45 @@
 /**
  * \brief Provides a persistence API to access the file system.
  *
- * \def-api-feature http://bondi.omtp.org/api/filesystem.mount
- * \brief Call to FileSystemManager.mount
- * \device-cap io.file.read
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
- * \brief Call to FileSystemManager.registerEventListener
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.read
+ * \brief Filesystem read operations, including reading directory listings,
+ *        file contents and mounting root locations.
  * \device-cap io.file.read
  *
- * \def-api-feature http://bondi.omtp.org/api/filesystem.listFiles
- * \brief Call to File.listFiles
- * \device-cap io.file.read
- *
- * \def-api-feature http://bondi.omtp.org/api/filesystem.resolve
- * \brief Call to File.resolve
- * \device-cap io.file.read
- *
- * \def-api-feature http://bondi.omtp.org/api/filesystem.open
- * \brief Call to File.open
- *
- * One or both of the listed device capabilities are required for this
- * API feature, depending on the open mode.
- * \device-cap io.file.read if the open mode includes reading
- * \device-cap io.file.write if the open mode includes writing
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.copyTo
- * \brief Call to File.copyTo
- * \device-cap io.file.read for the source
- * \device-cap io.file.write for the target
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.moveTo
- * \brief Call to File.moveTo
- * \device-cap io.file.read for the source
- * \device-cap io.file.write for the target
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.createDirectory
- * \brief Call to File.createDirectory
- * \device-cap io.file.write
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.createFile
- * \brief Call to File.createFile
- * \device-cap io.file.write
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
- * \brief Call to File.deleteDirectory
- * \device-cap io.file.write
- * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem.deleteFile
- * \brief Call to File.deleteFile
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.write
+ * \brief Filesystem write operations, including creating files/directories,
+ *        writing to files, deleting files/directories, moving and copying
+ *        files.
  * \device-cap io.file.write
  *
  * \def-device-cap io.file.read
  * \brief Read directory or file
- * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
- * 
+ * \param name Name of directory or file, in virtual filesystem, i.e. /rootname/filename
+ *
  * \def-device-cap io.file.write
  * \brief Write directory or file
- * \param name Name of directory or file, in virtual filesystem, ie /rootname/filename
+ * \param name Name of directory or file, in virtual filesystem, i.e. /rootname/filename
  *
- * \author Paddy Byers paddy@aplixcorp.com
- * \author Anselm R Garbe anselm@aplixcorp.com
- * \version 0.6
+ * \author Paddy Byers &lt;paddy@aplixcorp.com&gt;
+ * \author Anselm R Garbe &lt;anselm@aplixcorp.com&gt;
+ * \version 1.0
  */
 module filesystem {
 
-	typedef Object              Map;
-	typedef Object              Date;
-	typedef sequence<DOMString> StringArray;
-	typedef sequence<File>      FileArray;
+	/**
+	 * Array of File.
+	 */
+	typedef sequence<File> FileArray;
 
+	/**
+	 * \brief File system specific success callback.
+	 *
+	 * This callback interface is specific to this filesystem API. It
+	 * specifies a success callback with a function taking a File object as
+	 * input argument.
+	 */
 	[Callback] interface FileSystemSuccessCallback {
 		void onSuccess(in File file);
-	};
-
-	interface FileSystemError : Error {
-		const unsigned short UNKNOWN_ERROR = 0;
-		const unsigned short IO_ERROR      = 1;
-		readonly attribute unsigned short code;
 	};
 
 	/**
@@ -105,17 +67,16 @@ module filesystem {
 	 * This file system API provides basic filesystem access.
 	 *
 	 * \code
-	 *    bondi.load('fs', { id: 'filesystem', success, error });
-	 *
-	 *    var root = fs.mount(fs.getPersistLocation());
-	 *    for(var i = 0; i < root.length; i++) {
-	 *    	alert(root[i].name); // displays name of each file in root directory
-	 *    }
-	 *    var file = root.createFile("test.txt");
-	 *    var out  = file.open("w");
-	 *    // writes Hello World to test.txt
-	 *    out.write("Hello World", "UTF-8");
-	 *    out.close();
+	 * 	var dir = bondi.filesystem.mount(bondi.filesystem.getDefaultLocation("app:public"));
+	 * 	var files = dir.listFiles();
+	 * 	for(var i = 0; i < files.length; i++) {
+	 * 		alert(files[i].name); // displays name of each file in directory
+	 * 	}
+	 * 	var file = dir.createFile("test.txt");
+	 * 	var out  = file.open("w", "UTF-8");
+	 * 	// writes Hello World to test.txt
+	 * 	out.write("Hello World");
+	 * 	out.close();
 	 * \endcode
 	 */
 	interface FileSystemManager {
@@ -126,7 +87,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    fs.maxPathLength;
+		 * 	alert(bondi.filesystem.maxPathLength);
 		 * \endcode
 		 */
 		readonly attribute long maxPathLength;
@@ -135,31 +96,42 @@ module filesystem {
 		 * \brief Returns a location path for the given arguments,
 		 * relative to the root locations supported.
 		 *
+		 * The location path must not represent a physical location
+		 * part, it can consist of an portable identifier.
+		 *
 		 * This function resolves location specifiers to location paths.
 		 * The following location specifiers are supported:
 		 * \n "app:package" - the application package directory, this is read-only,
 		 *                    this is identical to the widget directory
 		 * \n "app:private" - the private storage of the current application
-		 * \n "app:public"  - the public storage of the current applicaption
-		 * \n "app:temp"    - the temporary storage of the current applicaption
-		 * \n "documents"   - the documents location, eg resolving to "My Documents"
-		 * \n "pictures"    - the pictures location, eg resolving to "My Pictures"
-		 * \n "videos"      - the videos location, eg resolving to "My Videos"
-		 * \n "temp"        - the temporary storage, eg resolving to "Temp"
+		 * \n "app:public"  - the public storage of the current application
+		 * \n "app:temp"    - the temporary storage of the current application
+		 * \n "documents"   - the documents location, e.g. resolving to "My Documents"
+		 * \n "pictures"    - the pictures location, e.g. resolving to "My Pictures"
+		 * \n "videos"      - the videos location, e.g. resolving to "My Videos"
+		 * \n "temp"        - the temporary storage, e.g resolving to "Temp"
 		 *
 		 * \code
-		 *   var location = fs.getDefaultLocation('app:package');
+		 * 	var location = bondi.filesystem.getDefaultLocation('app:package');
 		 * \endcode
 		 *
 		 * \param specifier - the location specifier, see above for supported specifiers.
 		 * \param space     - optional, minimum required bytes for this location,
 		 *                    <em>0</em> (default) means no limitation
-		 * \return the persistent location as a string
+		 * \return the location as a string or <em>null</em> if there
+		 *         is no location for the given specifier or if there is not
+		 *         enough space left for the requested space in bytes.
+		 * \throw BONDIError with code INVALID_ARGUMENT if the
+		 *        specifier or space arguments are invalid
 		 */
-		DOMString getDefaultLocation(in DOMString specifier, in long space);
+		DOMString getDefaultLocation(in DOMString specifier, in long space)
+			raises(BONDIError);
 
 		/**
 		 * \brief Returns all mountable root locations.
+		 *
+		 * The root locations can also be retrieved individually using
+		 * the getDefaultLocation method.
 		 *
 		 * Usually the following root locations will be supported,
 		 * though their physical location is implementation dependent:
@@ -172,10 +144,10 @@ module filesystem {
 		 * See also the getDefaultLocation method.
 		 *
 		 * \code
-		 *   var locations = fs.getRootLocations();
-		 *   for(var i = 0; i < locations.length; i++) {
-		 *   	// locations[i] is a mountable root location
-		 *   }
+		 * 	var locations = bondi.filesystem.getRootLocations();
+		 * 	for(var i = 0; i < locations.length; i++) {
+		 * 		// locations[i] is a mountable root location
+		 * 	}
 		 * \endcode
 		 *
 		 * \return string array of root locations.
@@ -185,14 +157,14 @@ module filesystem {
 		/**
 		 * \brief Returns all mount points currently in use.
 		 *
-		 * Returns all mount points currently in use by this FileSystem service
+		 * Returns all mount points currently in use by this filesystem API 
 		 * instance.
 		 *
 		 * \code
-		 *   var mounts = fs.getMountPoints();
-		 *   for(var i = 0; i < mounts.length; i++) {
-		 *     // mounts[i] is mounted location
-		 *   }
+		 * 	var mounts = bondi.filesystem.getMountPoints();
+		 * 	for(var i = 0; i < mounts.length; i++) {
+		 * 		// mounts[i] is mounted location
+		 * 	}
 		 * \endcode
 		 *
 		 * \return file array of current mount points
@@ -200,64 +172,71 @@ module filesystem {
 		FileArray getMountPoints();
 
 		/**
-		 * \brief Mounts a iystem location.
+		 * \brief Mounts a system location.
 		 *
 		 * Mounts the given system location and returns a file handle of this
 		 * mount point on success. 
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.mount 
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
-		 *    var location = fs.getDefaultLocation('temp');
-		 *    var temp = fs.mount(location);
+		 * 	var location = bondi.filesystem.getDefaultLocation('temp');
+		 * 	var temp = bondi.filesystem.mount(location);
 		 * \endcode
 		 *
 		 * \param location - the location to mount. Must be absolute in the file system.
 		 * \return the mount point as a file object.
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.read permission is denied.
 		 * \throw BONDIError with code INVALID_ARGUMENT if invalid location was given.
 		 */
 		File mount(in DOMString location)
-			raises(BONDIError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Unmounts the given mount point.
 		 *
-		 * Always succeeds.
-		 *
 		 * \code
-		 *    fs.unmount(home);
+		 * 	bondi.filesystem.unmount(home);
 		 * \endcode
 		 *
 		 * \param mountpoint - the mountpoint file handle.
+		 * \throw BONDIError with code INVALID_ARGUMENT if the given
+		 *        handle is not a mountpoint.
 		 */
-		void unmount(in File mountpoint);
+		void unmount(in File mountpoint)
+			raises(BONDIError);
 
 		/**
 		 * \brief Registers a filesystem event listener.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.registerEventListener
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
-		 *   var listener = { mountEvent: function(e) { alert('mounted ' + e); },
-		 *                    unmountEvent: function(e) { alert('unmounted ' + e); };
-		 *   fs.registerEventListener(listener);
+		 * 	var listener = { mountEvent: function(e) { alert('mounted ' + e); },
+		 * 	                 unmountEvent: function(e) { alert('unmounted ' + e); };
+		 * 	bondi.filesystem.registerEventListener(listener);
 		 * \endcode
 		 *
 		 * \param listener - the listener interface implementation
+		 * \throw BONDIError with code INVALID_ARGUMENT if the given listener
+		 *        is invalid or not a listener.
 		 */
-		void registerEventListener(in FileSystemListener listener);
+		void registerEventListener(in FileSystemListener listener)
+			raises(BONDIError);
 
 		/**
 		 * \brief Unregisters a filesystem event listener.
 		 *
 		 * \code
-		 *   fs.unregisterEventListener(listener);
+		 * 	bondi.filesystem.unregisterEventListener(listener);
 		 * \endcode
 		 *
 		 * \param listener - the listener interface implementation
+		 * \throw BONDIError with code INVALID_ARGUMENT if the given listener
+		 *        is invalid or not a listener.
 		 */
-		void unregisterEventListener(in FileSystemListener listener);
+		void unregisterEventListener(in FileSystemListener listener)
+			raises(BONDIError);
 	};
 
 	/**
@@ -268,14 +247,14 @@ module filesystem {
 	 * implemented in JavaScript.
 	 *
 	 * \code
-	 *   var fsEventImpl = {
-	 *   	mountEvent: function(location) {
-	 *   		// location has been mounted
-	 *   	},
-	 *   	unmountEvent: function(location) {
-	 *   		// location has been unmounted
-	 *   	}
-	 *   };
+	 * 	var fsEventImpl = {
+	 * 		mountEvent: function(location) {
+	 * 		// location has been mounted
+	 * 		},
+	 * 		unmountEvent: function(location) {
+	 * 			// location has been unmounted
+	 * 		}
+	 * 	};
 	 * \endcode
 	 */
 	interface FileSystemListener {
@@ -305,6 +284,14 @@ module filesystem {
 	 * This interface represents the file abstraction.
 	 *
 	 * It requires that "/" is used as platform-agnostic path separator.
+	 *
+	 * \code
+	 * 	var file = dir.createFile("test.txt");
+	 * 	var out  = file.open("w", "UTF-8");
+	 * 	// writes Hello World to test.txt
+	 * 	out.write("Hello World");
+	 * 	out.close();
+	 * \endcode
 	 */
 	interface File {
 
@@ -315,11 +302,13 @@ module filesystem {
 		 *
 		 * <em>null</em> if there is no parent directory.
 		 *
+		 * If there is no parent directory, this file is a mount point.
+		 *
 		 * \code
-		 *    var parent = file.parent;
-		 *    if(parent != null) {
-		 *      // parent directory handle
-		 *    }
+		 * 	var parent = file.parent;
+		 * 	if(parent != null) {
+		 * 		// parent directory handle
+		 * 	}
 		 * \endcode
 		 */
 		readonly attribute File parent;
@@ -330,10 +319,14 @@ module filesystem {
 		 * <em>false</em> if there is write access.
 		 * This attribute is read-only.
 		 *
+		 * This attribute represents the actual state of a
+		 * file/directory in the filesystem. It does not check if the
+		 * accessor has io.file.write permission.
+		 *
 		 * \code
-		 *    if(file.readOnly) {
-		 *      // file cannot be written
-		 *    }
+		 * 	if(file.readOnly) {
+		 * 		// file cannot be written
+		 * 	}
 		 * \endcode
 		 */
 		readonly attribute boolean readOnly;
@@ -345,9 +338,9 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    if(file.isFile) {
-		 *      // is a file
-		 *    }
+		 * 	if(file.isFile) {
+		 * 		// is a file
+		 * 	}
 		 * \endcode
 		 */
 		readonly attribute boolean isFile;
@@ -359,9 +352,9 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    if(file.isDirectory) {
-		 *      // is a directory
-		 *    }
+		 * 	if(file.isDirectory) {
+		 * 		// is a directory
+		 * 	}
 		 * \endcode
 		 */
 		readonly attribute boolean isDirectory;
@@ -373,7 +366,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.created); // displays the creation timestamp
+		 * 	alert(file.created); // displays the creation timestamp
 		 * \endcode
 		 *
 		 */
@@ -386,7 +379,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.modified); // displays the modification timestamp
+		 * 	alert(file.modified); // displays the modification timestamp
 		 * \endcode
 		 *
 		 */
@@ -400,7 +393,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.extension ); // should be bar if the file is foo.bar
+		 * 	alert(file.extension ); // should be bar if the file is foo.bar
 		 * \endcode
 		 */
 		readonly attribute DOMString extension;
@@ -412,7 +405,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.path); // should be /baz/blah/ if the file is /baz/blah/foo.bar
+		 * 	alert(file.path); // should be /baz/blah/ if the file is /baz/blah/foo.bar
 		 * \endcode
 		 */
 		readonly attribute DOMString path;
@@ -424,7 +417,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.name); // should be foo.bar if the file is /baz/blah/foo.bar
+		 * 	alert(file.name); // should be foo.bar if the file is /baz/blah/foo.bar
 		 * \endcode
 		 */
 		readonly attribute DOMString name;
@@ -436,7 +429,7 @@ module filesystem {
 		 * This attribute is read-only.
 		 *
 		 * \code
-		 *    alert(file.fullPath); // should be foo.bar if the file is /baz/blah/foo.bar
+		 * 	alert(file.fullPath); // should be foo.bar if the file is /baz/blah/foo.bar
 		 * \endcode
 		 */
 		readonly attribute DOMString fullPath;
@@ -444,11 +437,13 @@ module filesystem {
 		/**
 		 * \brief Size in bytes of this file.
 		 *
-		 * This attribute does not exist if this file is a directory.
 		 * This attribute is read-only.
 		 *
+		 * If it is attempted to read this attribute on a directory,
+		 * <em>undefined</em> is returned.
+		 *
 		 * \code
-		 *    alert(file.fileSize); // displays the file size
+		 * 	alert(file.fileSize); // displays the file size
 		 * \endcode
 		 */
 		readonly attribute long fileSize;
@@ -459,7 +454,7 @@ module filesystem {
 		 * The actual map contents are implementation dependent.
 		 *
 		 * \code
-		 *    alert(file.metadata.author); // should display the file author
+		 * 	alert(file.metadata.author); // should display the file author
 		 * \endcode
 		 */
 		readonly attribute Map metadata;
@@ -470,31 +465,32 @@ module filesystem {
 		 * The list of files contains directories and files, it does
 		 * not contain the directories "." and "..".
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.listFiles
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
-		 *    var files = dir.listFiles();
-		 *    for(var i = 0; i < files.length; i++) {
-		 *      // files[i] iterate over all files of this directory
-		 *    }
+		 * 	var files = dir.listFiles();
+		 * 	for(var i = 0; i < files.length; i++) {
+		 * 		// files[i] iterate over all files of this directory
+		 * 	}
 		 * \endcode
 		 *
 		 * \return array of contents of this directory.
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied 
-		 * \throw FileSystemError with code IO_ERROR if this is not a directory.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.read permission is denied 
+		 * \throw BONDIError with code IO_ERROR if this is not a directory.
 		 */
 		FileArray listFiles()
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Opens the file in the given mode supporting the given
 		 * encoding.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.open
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read if opened for reading.
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write if opened for writing.
 		 *
 		 * \code
-		 *    // opens file for reading
-		 *    var in = file.open("r", "UTF-8");
+		 * 	// opens file for reading
+		 * 	var in = file.open("r", "UTF-8");
 		 * \endcode
 		 *
 		 * \param mode - the mode for opening a file
@@ -506,36 +502,42 @@ module filesystem {
 		 * \n  - "UTF-8" default encoding
 		 * \n  - "ISO8859-1" latin1 encoding
 		 * \return file stream handle to read/write from/to.
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read or io.file.write permission is denied.
-		 * \throw BONDIError with code INVALID_ARGUMENT if invalid mode is supplied.
-		 * \throw FileSystemError with code IO_ERROR if this is not a file.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.read or io.file.write permission is denied.
+		 * \throw BONDIError with code INVALID_ARGUMENT if invalid mode
+		 *        or unsupported encoding is supplied.
+		 * \throw BONDIError with code IO_ERROR if this is not a file.
 		 */
 		FileStream open(in DOMString mode, in DOMString encoding)
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
-		/**
-		 * \brief Copies this file.
-		 *
-		 * The copy will be created in the given path.
-		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.moveTo
-		 *
-		 * \code
-		 *    // copies this file to /temp/file.copy
-		 *    var op = file.copyTo(function(copiedFile) { // copiedFile is handle of copy }, null, "/temp/file.copy", false);
-		 * \endcode
-		 *
-		 * \param successCallback - called when the file has been copied.
-		 * \param errorCallback - called if an error occured.
-		 * \param filePath - the new file path, [a-Z0-9_- /]+ are allowed 
-		 * \param overwrite - <em>true</em> enforces overwriting an existing file.
-		 * \return pending operation handle
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if it is attempted to move to a directory.
-		 * \throw FileSystemError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
-		 */
-		BONDIPendingOperation copyTo(in FileSystemSuccessCallback successCallback, in BONDIErrorCallback errorCallback, in DOMString filePath, in boolean overwrite)
-			raises(BONDIError, FileSystemError);
+		//
+		// \brief Copies this file.
+		//
+		// The copy will be created in the given path. If this function
+		// fails and the error callback is called, it will pass an
+		// BONDIError with code IO_ERROR to the callback.
+		//
+		// \api-feature http://bondi.omtp.org/api/filesystem.write
+		//
+		// \code
+		// 	// copies this file to /temp/file.copy
+		// 	var op = file.copyTo(function(copiedFile) { /* XXX */ }, null, "/temp/file.copy", false);
+		// \endcode
+		//
+		// \param successCallback - called when the file has been copied.
+		// \param errorCallback - called if an error occured.
+		// \param filePath - the new file path, [a-Z0-9_- /]+ are allowed 
+		// \param overwrite - <em>true</em> enforces overwriting an existing file.
+		// \return pending operation handle
+		// \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		// \throw BONDIError with code IO_ERROR if it is attempted to move to a directory.
+		// \throw BONDIError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
+		//
+		BONDIPendingOperation copyTo(in FileSystemSuccessCallback successCallback,
+		                             in BONDIErrorCallback errorCallback,
+		                             in DOMString filePath,
+		                             in boolean overwrite)
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Moves this file.
@@ -543,12 +545,14 @@ module filesystem {
 		 * The file will be moved atomically to the given path. This is
 		 * different to copyTo and deleting the old file, because this
 		 * operation does not need extra disk space on certain platforms.
+		 * If this function fails and the error callback is called, it
+		 * will pass an BONDIError with code IO_ERROR to the callback.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.moveTo
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
-		 *    // moves this file to /temp/file.move
-		 *    var op = file.moveTo(function(movedFile) { file = movedFile; }, null, "/temp/file.move");
+		 * 	// moves this file to /temp/file.move
+		 * 	var op = file.moveTo(function(movedFile) { file = movedFile; }, null, "/temp/file.move");
 		 * \endcode
 		 *
 		 * \param successCallback - called when the file has been copied.
@@ -556,12 +560,15 @@ module filesystem {
 		 * \param filePath - the new file name, [a-Z0-9_- /]+ are allowed
 		 * \param overwrite - <em>true</em> enforces overwriting an existing file.
 		 * \return pending operation handle
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if it is attempted to move to a directory.
-		 * \throw FileSystemError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError with code IO_ERROR if it is attempted to move to a directory.
+		 * \throw BONDIError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
 		 */
-		BONDIPendingOperation moveTo(in FileSystemSuccessCallback successCallback, in BONDIErrorCallback errorCallback, in DOMString filePath, in boolean overwrite)
-			raises(BONDIError, FileSystemError);
+		BONDIPendingOperation moveTo(in FileSystemSuccessCallback successCallback,
+		                             in BONDIErrorCallback errorCallback,
+		                             in DOMString filePath,
+		                             in boolean overwrite)
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Creates a directory.
@@ -569,19 +576,19 @@ module filesystem {
 		 * The new directory be created as a sub-directory of this. The
 		 * name is not allowed to contain "/".
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.createDirectory
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
-		 *    var newDir = dir.createDirectory("newDir");
+		 * 	var newDir = dir.createDirectory("newDir");
 		 * \endcode
 		 *
 		 * \param name - the new directory name, can consist of [a-Z0-9_- ]+
 		 * \return file handle of the new directory
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if this is not a directory or if a file with the same name exists.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError with code IO_ERROR if this is not a directory or if a file with the same name exists.
 		 */
 		File createDirectory(in DOMString name)
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Creates a new empty file.
@@ -589,84 +596,84 @@ module filesystem {
 		 * The new empty file is created in this directory. The
 		 * name is not allowed to contain "/".
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.createFile
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
-		 *    var newFile = dir.createFile("newFile");
+		 * 	var newFile = dir.createFile("newFile");
 		 * \endcode
 		 *
 		 * \param name - the new file name, can consist of [a-Z0-9_- ]+
 		 * \return file handle of the new empty file
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if this is not a directory or if a file or directory with the same name exists.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError with code IO_ERROR if this is not a directory or if a file or directory with the same name exists.
 		 */
 		File createFile(in DOMString name)
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Resolves an existing file or directory.
 		 * 
 		 * The filePath is not allowed to contain "/./" or "/../"
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.resolve
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
-		 *    var hellofile = dir.resolve("hello.txt");
+		 * 	var hellofile = dir.resolve("hello.txt");
 		 * \endcode
 		 *
 		 * \param filePath - the relative file/directory path to resolve.
 		 * \return file handle of the file or <em>null</em> if it cannot be resolved.
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.read permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if this is not a directory.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.read permission is denied.
+		 * \throw BONDIError with code IO_ERROR if this is not a directory.
 		 */
 		File resolve(in DOMString filePath)
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Deletes this directory.
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.deleteDirectory
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
-		 *    var fullPath = dir.fullPath;
-		 *    if(dir.deleteDirectory(true)) {
-		 *      // subsequent accesses to dir will throw an error
-		 *      alert(fullPath + ' deleted');
-		 *    }
+		 * 	var fullPath = dir.fullPath;
+		 * 	if(dir.deleteDirectory(true)) {
+		 * 		// subsequent accesses to dir will throw an error
+		 * 		alert(fullPath + ' deleted');
+		 * 	}
 		 * \endcode
 		 *
 		 * \param recursive - <em>true</em> means do a recursive deletion, this
 		 *                    will destroy all data recursively, use with caution.
 		 * \return <em>true</em> on success
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError withd code IO_ERROR if this is a file.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError withd code IO_ERROR if this is a file.
 		 */
 		boolean deleteDirectory(in boolean recursive)
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 
 		/**
 		 * \brief Deletes this file.
 		 *
 		 * Returns <em>true</em> on success.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.deleteFile
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
-		 *    var fullPath = dir.fullPath;
-		 *    if(dir.deleteFile()) {
-		 *      // subsequent accesses to dir will throw an error
-		 *      alert(fullPath + ' deleted');
-		 *    }
+		 * 	var fullPath = dir.fullPath;
+		 * 	if(dir.deleteFile()) {
+		 * 		// subsequent accesses to dir will throw an error
+		 * 		alert(fullPath + ' deleted');
+		 * 	}
 		 * \endcode
 		 *
 		 * \return <em>true</em> on success
-		 * \throw BONDIError with code PERMISSION_DENIED if io.file.write permission is denied.
-		 * \throw FileSystemError with code IO_ERROR if this is a directory.
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError with code IO_ERROR if this is a directory.
 		 */
 		boolean deleteFile()
-			raises(BONDIError, FileSystemError);
+			raises(BONDISecurityError, BONDIError);
 	};
 
 	/**
@@ -679,6 +686,9 @@ module filesystem {
 	 * A series of read/write methods are available that permit both binary and
 	 * text to be processed. In the latter case, multiple encodings are supported.
 	 *
+	 * Once a file stream is closed, any operation attempted on this stream
+	 * will result in a normal JavaScript error.
+	 *
 	 */
 	interface FileStream {
 
@@ -689,9 +699,9 @@ module filesystem {
 		 * <em>true</em> if the position is at the end of the current file stream.
 		 *
 		 * \code
-		 *   if(stream.eof) {
-		 *      // file has been read completely
-		 *   }
+		 * 	if(stream.eof) {
+		 * 		// file has been read completely
+		 * 	}
 		 * \endcode
 		 */
 		readonly attribute boolean eof;
@@ -705,15 +715,15 @@ module filesystem {
 		 * in the position attribute.
 		 *
 		 * \code
-		 *   alert(stream.position); // displays current stream position
-		 *   // alters current stream position to the begin of the file,
-		 *   // like seek() in C
-		 *   stream.position = 0;
+		 * 	alert(stream.position); // displays current stream position
+		 * 	// alters current stream position to the begin of the file,
+		 * 	// like seek() in C
+		 * 	stream.position = 0;
 		 * \endcode
-		 * \throw FileSystemError with code IO_ERROR if invalid position was given.
+		 * \throw BONDIError with code IO_ERROR if invalid position was given.
 		 */
 		attribute long position
-			setraises(FileSystemError);
+			setraises(BONDIError);
 
 		/**
 		 * \brief Returns the number of bytes that are available for reading from 
@@ -722,11 +732,11 @@ module filesystem {
 		 * -1 if eof is <em>true</em>.
 		 *
 		 * \code
-		 *   alert(stream.availble); // displays the available bytes to be read
+		 * 	alert(stream.bytesAvailable); // displays the available bytes to be read
 		 * \endcode
 		 */
 		readonly attribute long bytesAvailable;
-		
+
 		/**
 		 * \brief Closes this FileStream.
 		 * 
@@ -734,11 +744,11 @@ module filesystem {
 		 * Note that pending writes might not succeed.
 		 *
 		 * \code
-		 *   stream.close(); // closes this stream, no subsequent access to stream allowed
+		 * 	stream.close(); // closes this stream, no subsequent access to stream allowed
 		 * \endcode
 		 */
 		void close();
-		
+
 		/**
 		 * \brief Reads the specified number of characters.
 		 *
@@ -747,8 +757,8 @@ module filesystem {
 		 * is <em>true</em>.
 		 *
 		 * \code
-		 *   var text = stream.read(0);
-		 *   stream.close();
+		 * 	var text = stream.read(0);
+		 * 	stream.close();
 		 * \endcode
 		 *
 		 * \param charCount - number of characters being read, if
@@ -761,11 +771,11 @@ module filesystem {
 		 * \brief Reads the specified number of bytes from this FileStream.
 		 *
 		 * \code
-		 *   // reads up to 256 bytes from the stream
-		 *   var raw = stream.readBytes(256);
-		 *   for(var i = 0; i < raw.length; i++) {
-		 *     // raw[i] contains the i-th byte of the current data chunk
-		 *   }
+		 * 	// reads up to 256 bytes from the stream
+		 * 	var raw = stream.readBytes(256);
+		 * 	for(var i = 0; i < raw.length; i++) {
+		 * 		// raw[i] contains the i-th byte of the current data chunk
+		 * 	}
 		 * \endcode
 		 *
 		 * \param byteCount - number of bytes being read. Must not be <em>0</em>.
@@ -778,8 +788,8 @@ module filesystem {
 		 * the result in base64.
 		 *
 		 * \code
-		 *   // reads up to 256 bytes from the stream
-		 *   var base64 = stream.readBytes(256);
+		 * 	// reads up to 256 bytes from the stream
+		 * 	var base64 = stream.readBase64(256);
 		 * \endcode
 		 *
 		 * \param byteCount - number of bytes being read. Must not be <em>0</em>.
@@ -791,20 +801,20 @@ module filesystem {
 		 * \brief Writes the specified DOMString to this FileStream.
 		 *
 		 * \code
-		 *   var text = "Hello world";
-		 *   stream.write(text);
+		 * 	var text = "Hello world";
+		 * 	stream.write(text);
 		 * \endcode
 		 *
 		 * \param stringData - the actual string to be written.
 		 */
 		void write(in DOMString stringData);
-		
+
 		/**
 		 * \brief Writes the specified bytes to this FileStream.
 		 *
 		 * \code
-		 *   var bytes = in.readBytes(256);
-		 *   out.write(bytes); // writes the bytes read from in to out
+		 * 	var bytes = in.readBytes(256);
+		 * 	out.writeBytes(bytes); // writes the bytes read from in to out
 		 * \endcode
 		 *
 		 * \param byteData - the byte data array being written.
@@ -816,8 +826,8 @@ module filesystem {
 		 * result to this FileStream.
 		 *
 		 * \code
-		 *   var base64 = in.readBase64(256);
-		 *   out.write(base64); // writes the base64 data read from in to out
+		 * 	var base64 = in.readBase64(256);
+		 * 	out.writeBase64(base64); // writes the base64 data read from in to out
 		 * \endcode
 		 *
 		 * \param base64Data - the base64 data being written.
