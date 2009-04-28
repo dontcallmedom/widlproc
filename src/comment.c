@@ -616,7 +616,7 @@ text_output(struct cnode *cnode, unsigned int indent)
         memcpy((void *)&thisptr, p + 1, sizeof(void *));
         p += 1 + sizeof(void *);
         len -= 1 + sizeof(void *);
-        printtext(thisptr, thislen);
+        printtext(thisptr, thislen, 0);
     }
 }
 

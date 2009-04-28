@@ -440,7 +440,7 @@ outputwidl(const char *start, const char *end)
             const char *comment, *endcomment;
             int ch;
             if (!p) {
-                printtext(start, thisend - start);
+                printtext(start, thisend - start, 1);
                 break;
             }
             /* See if we're at the start of a comment. If so find the end. */
@@ -469,7 +469,7 @@ outputwidl(const char *start, const char *end)
             if (!comment) {
                 /* Not at start of comment. */
                 p++;
-                printtext(start, p - start);
+                printtext(start, p - start, 1);
                 start = p;
                 continue;
             }
@@ -490,7 +490,7 @@ outputwidl(const char *start, const char *end)
                     p++;
                 endcomment = p;
             }
-            printtext(start, comment - start);
+            printtext(start, comment - start, 1);
             start = endcomment;
         }
         if (final)

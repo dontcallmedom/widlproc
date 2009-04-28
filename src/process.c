@@ -28,12 +28,13 @@ static const char ntnames[] = { NTNAMES };
  *
  * Enter:   s = text
  *          len = number of bytes
+ *          escamp = whether to escape &
  *
  * This also escapes double quote mark so it can be used for an
  * attribute value. It also turns a tab into spaces.
  */
 void
-printtext(const char *s, unsigned int len)
+printtext(const char *s, unsigned int len, int escamp)
 {
     const char *p = s, *end = s + len;
     unsigned int count = 0;
@@ -47,7 +48,7 @@ printtext(const char *s, unsigned int len)
             seq = "&lt;";
             break;
         case '&':
-            seq = "&amp;";
+            seq = escamp ? "&amp;" : "&";
             break;
         case '"':
             seq = "&quot;";
@@ -79,7 +80,7 @@ printtext(const char *s, unsigned int len)
 }
 
 /***********************************************************************
- * outputnodeastext : output parse node and descendents as deparsed text
+ * outputnodeastext : output parse node and descendants as deparsed text
  *
  * Enter:   node = parse node
  *          needspace = true if last output char was an identifier char
@@ -110,7 +111,7 @@ outputnodeastext(struct node *node, int needspace)
             {
                 needspace = 1;
             }
-            printtext(node->name, len);
+            printtext(node->name, len, 1);
         }
     }
     return needspace;
@@ -159,7 +160,7 @@ output(struct node *node, struct node *extendedattributelist,
         /* Output identifier if any as attribute. */
         if (identifier) {
             printf(" identifier=\"");
-            printtext(identifier->name, strlen(identifier->name));
+            printtext(identifier->name, strlen(identifier->name), 1);
             printf("\"");
         }
         if (!identifier && !extendedattributelist && !node->children && !node->comments)
@@ -194,17 +195,17 @@ output(struct node *node, struct node *extendedattributelist,
         break;
     case TOK_INTEGER:
         printf("%*s<integer value=\"", indent, "");
-        printtext(node->name, strlen(node->name));
+        printtext(node->name, strlen(node->name), 1);
         printf("\"/>\n");
         break;
     case TOK_FLOAT:
         printf("%*s<Float value=\"", indent, "");
-        printtext(node->name, strlen(node->name));
+        printtext(node->name, strlen(node->name), 1);
         printf("\"/>\n");
         break;
     case TOK_STRING:
         printf("%*s<string value=\"", indent, "");
-        printtext(node->name, strlen(node->name));
+        printtext(node->name, strlen(node->name), 1);
         printf("\"/>\n");
         break;
     }
