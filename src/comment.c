@@ -86,6 +86,7 @@ struct htmleldesc {
 };
 
 static const struct htmleldesc htmleldescs[] = {
+    { 1, "a", HTMLEL_INLINE, 0 },
     { 1, "b", HTMLEL_INLINE, 0 },
     { 1, "br", HTMLEL_INLINE | HTMLEL_EMPTY, 0 },
     { 2, "dd", HTMLEL_DLCONTENTS, HTMLEL_FLOW },
@@ -101,8 +102,8 @@ static const struct htmleldesc htmleldescs[] = {
     { 2, "ul", HTMLEL_BLOCK, HTMLEL_LI },
     { 0, 0, 0, 0 }
 };
-#define HTMLELDESC_B (htmleldescs + 0)
-#define HTMLELDESC_BR (htmleldescs + 1)
+#define HTMLELDESC_B (htmleldescs + 1)
+#define HTMLELDESC_BR (htmleldescs + 2)
 
 /***********************************************************************
  * addcomment : add a comment to the list of comments if it has doxygen syntax
@@ -662,7 +663,7 @@ html_output(struct cnode *cnode, unsigned int indent)
     if (!(htmlcnode->desc->flags & HTMLEL_INLINE))
         printf("%*s", indent, "");
     if (htmlcnode->cn.children) {
-        printf("<%s>", htmlcnode->desc->name);
+        printf("<%s%s>", htmlcnode->desc->name, htmlcnode->attrs);
         if (!(htmlcnode->desc->flags & HTMLEL_INLINE))
             putchar('\n');
         outputchildren(&htmlcnode->cn, indent, 1);
@@ -670,7 +671,7 @@ html_output(struct cnode *cnode, unsigned int indent)
             printf("%*s", indent, "");
         printf("</%s>", htmlcnode->desc->name);
     } else
-        printf("<%s/>", htmlcnode->desc->name);
+        printf("<%s%s/>", htmlcnode->desc->name, htmlcnode->attrs);
     if (!(htmlcnode->desc->flags & HTMLEL_INLINE))
         putchar('\n');
 }

@@ -20,6 +20,8 @@
 /**
  * \brief Provides a persistence API to access the file system.
  *
+ * See also <a href="http://webvm.net/">WebVM</a>.
+ *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.read
  * \brief Filesystem read operations, including reading directory listings,
  *        file contents and mounting root locations.

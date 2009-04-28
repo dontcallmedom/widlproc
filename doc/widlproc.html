@@ -549,7 +549,7 @@ element, where <i>val</i> is either <code>TRUE</code> or <code>FALSE</code>.
 <pre class="dtd">
 &lt;!ENTITY % block 'dl | p | table | ul' >
 &lt;!ENTITY % Block '(%block;)*' >
-&lt;!ENTITY % inline 'b | br | em' >
+&lt;!ENTITY % inline 'a | b | br | em' >
 &lt;!ENTITY % Inline '(#PCDATA | %inline;)*' >
 &lt;!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
 </pre>
@@ -858,6 +858,9 @@ The following XHTML elements are part of widlprocxml:
 </p>
 
 <pre class="dtd">
+&lt;!ELEMENT a %Inline; >
+&lt;!ATTLIST a href CDATA #REQUIRED >
+
 &lt;!ELEMENT b %Inline; >
 
 &lt;!ELEMENT br EMPTY >
