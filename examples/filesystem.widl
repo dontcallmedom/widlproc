@@ -33,11 +33,11 @@
  *
  * \def-device-cap io.file.read
  * \brief Read directory or file
- * \param name Name of directory or file, in virtual filesystem, i.e. /rootname/filename
+ * \param name - Name of directory or file, in virtual filesystem, i.e. /rootname/filename
  *
  * \def-device-cap io.file.write
  * \brief Write directory or file
- * \param name Name of directory or file, in virtual filesystem, i.e. /rootname/filename
+ * \param name - Name of directory or file, in virtual filesystem, i.e. /rootname/filename
  *
  * \author Paddy Byers &lt;paddy@aplixcorp.com&gt;
  * \author Anselm R Garbe &lt;anselm@aplixcorp.com&gt;
@@ -510,29 +510,29 @@ module filesystem {
 		FileStream open(in DOMString mode, in DOMString encoding)
 			raises(BONDISecurityError, BONDIError);
 
-		//
-		// \brief Copies this file.
-		//
-		// The copy will be created in the given path. If this function
-		// fails and the error callback is called, it will pass an
-		// BONDIError with code IO_ERROR to the callback.
-		//
-		// \api-feature http://bondi.omtp.org/api/filesystem.write
-		//
-		// \code
-		// 	// copies this file to /temp/file.copy
-		// 	var op = file.copyTo(function(copiedFile) { /* XXX */ }, null, "/temp/file.copy", false);
-		// \endcode
-		//
-		// \param successCallback - called when the file has been copied.
-		// \param errorCallback - called if an error occured.
-		// \param filePath - the new file path, [a-Z0-9_- /]+ are allowed 
-		// \param overwrite - <em>true</em> enforces overwriting an existing file.
-		// \return pending operation handle
-		// \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
-		// \throw BONDIError with code IO_ERROR if it is attempted to move to a directory.
-		// \throw BONDIError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
-		//
+		/**
+		 * \brief Copies this file.
+		 *
+		 * The copy will be created in the given path. If this function
+		 * fails and the error callback is called, it will pass an
+		 * BONDIError with code IO_ERROR to the callback.
+		 *
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
+		 *
+		 * \code
+		 * 	// copies this file to /temp/file.copy
+		 * 	var op = file.copyTo(function(copiedFile) { ... }, null, "/temp/file.copy", false);
+		 * \endcode
+		 *
+		 * \param successCallback - called when the file has been copied.
+		 * \param errorCallback - called if an error occured.
+		 * \param filePath - the new file path, [a-Z0-9_- /]+ are allowed 
+		 * \param overwrite - <em>true</em> enforces overwriting an existing file.
+		 * \return pending operation handle
+		 * \throw BONDISecurityError with code PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw BONDIError with code IO_ERROR if it is attempted to move to a directory.
+		 * \throw BONDIError with code IO_ERROR if overwrite is <em>false</em> and target file exists.
+		 */
 		BONDIPendingOperation copyTo(in FileSystemSuccessCallback successCallback,
 		                             in BONDIErrorCallback errorCallback,
 		                             in DOMString filePath,
