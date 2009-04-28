@@ -45,7 +45,8 @@ limitations under the License.
 <p>
 widlproc is a processor that accepts as input
 <a href="#webidl">Web IDL</a>
-(with small extensions),
+(with an extension used in the
+<a href="#w3cgeo">W3C Geolocation API</a>),
 with comments in a subset of the format used by
 <a href="#doxygen">Doxygen</a>.
 The format it accepts is proposed by Aplix for authoring
@@ -77,25 +78,18 @@ sends its XML output format to stdout.
 <p>
 The input format accepted by widlproc is
 <a href="#webidl">Web IDL</a>
-(with small extensions),
+(with an extension used in the
+<a href="#w3cgeo">W3C Geolocation API</a>),
 with comments in a format reminiscent of that used by
 <a href="#doxygen">Doxygen</a>.
 </p>
 
-<h3>Extensions to Web IDL</h3>
+<h3>Web IDL extension from W3C geolocation API</h3>
 
 <h4>double</h4>
 
 <p>
 <code>double</code> is allowed as a DeclarationType or a BoxedType.
-This extension is taken from the
-<a href="#w3cgeo">W3C Geolocation API</a>.
-</p>
-
-<h4>sequence in return value</h4>
-
-<p>
-A <code>sequence</code> is allowed as the return type of an operation.
 </p>
 
 <h3>Doxygen-like comment introduction</h3>
@@ -787,7 +781,7 @@ this represents the Web IDL
 
 &lt;!ELEMENT OptionalLong (long) >
 
-&lt;!ELEMENT ReturnType (descriptive?, (Type | void)) >
+&lt;!ELEMENT ReturnType (descriptive?, (DeclarationType | void)) >
 
 &lt;!ELEMENT void EMPTY >
 </pre>
