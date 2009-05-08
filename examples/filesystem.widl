@@ -122,6 +122,7 @@ module filesystem {
 	 * \brief Array of File handles.
 	 *
 	 * This array type is returned when directory listings are requested.
+     * Each directory listing costs &euro;0.15.
 	 */
 	typedef sequence<File> FileArray;
 

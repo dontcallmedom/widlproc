@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "comment.h"
+#include "entities.h"
 #include "lex.h"
 #include "misc.h"
 #include "os.h"
@@ -58,6 +59,7 @@ struct comment {
     char *text;
     char *package;
 };
+
 
 static struct node *lastidentifier;
 static struct comment *comments;
@@ -1418,7 +1420,9 @@ checkforlineofstars:
         /* Process text on the line. */
         starttext = p;
         while (ch && ch != '\n') {
-            if (ch != '\\' && ch != '<' /* && ch != '@' */ && ch != '$') {
+            if (ch != '\\' && ch != '<' /* && ch != '@' */ && ch != '$'
+                    && ch != '&')
+            {
                 ch = *++p;
                 continue;
             }
@@ -1427,8 +1431,34 @@ checkforlineofstars:
                 cnode = addtext(cnode, starttext, p - starttext);
             if (ch == '$')
                 locerrorexit(comment->filename, linenum, "use \\$ instead of $");
+            /* See if it is an html named entity. */
+            if (ch == '&' && p[1] != '#') {
+                const char *entity = ENTITIES;
+                /* This search could be faster if the entity names were put
+                 * in a hash table or something. */
+                const char *semicolon = strchr(p, ';');
+                unsigned int len;
+                if (!semicolon)
+                    locerrorexit(comment->filename, linenum, "unterminated HTML entity");
+                p++;
+                for (;;) {
+                    len = strlen(entity);
+                    if (!len)
+                        locerrorexit(comment->filename, linenum, "unrecognised HTML entity &%.*s;", semicolon - p, p);
+                    if (len == semicolon - p && !memcmp(p, entity, len))
+                        break;
+                    entity += len + 1;
+                    entity += strlen(entity) + 1;
+                }
+                entity += len + 1;
+                cnode = addtext(cnode, entity, strlen(entity));
+                p = semicolon + 1;
+                ch = *p;
+                starttext = p;
+                continue;
+            }
             /* See if it is a backslash escape sequence. */
-            if (ch == '\\') {
+            else if (ch == '\\') {
                 const char *match = "\\@&$#<>%";
                 const char *pos;
                 ch = p[1];
