@@ -51,7 +51,13 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:apply-templates select="descriptive/def-device-cap"/>
             </div>
         </xsl:if>
-        <xsl:apply-templates select="*[name() != 'descriptive']"/>
+        <xsl:if test="Definitions/Definition/Typedef[TypedefRest/descriptive]">
+            <div class="typedefs">
+                <h2>Typedefs</h2>
+                <xsl:apply-templates select="Definitions/Definition/Typedef[TypedefRest/descriptive]"/>
+            </div>
+        </xsl:if>
+        <xsl:apply-templates select="Definitions/Definition/Interface"/>
     </div>
 </xsl:template>
 
@@ -92,12 +98,22 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <!--Exception: not implemented-->
-<!--Typedef: not implemented-->
 <!--Valuetype: not implemented-->
-<xsl:template match="Exception|Typedef|Valuetype|Const">
+<xsl:template match="Exception|Valuetype|Const">
     <xsl:if test="descriptive">
         <xsl:message terminate="yes">element <xsl:value-of select="name()"/> not supported</xsl:message>
     </xsl:if>
+</xsl:template>
+
+<!--Typedef.-->
+<xsl:template match="Typedef[TypedefRest/descriptive]">
+    <div class="typedef">
+        <h3><xsl:value-of select="TypedefRest/@identifier"/></h3>
+        <xsl:apply-templates select="TypedefRest/descriptive/brief"/>
+        <xsl:apply-templates select="TypedefRest/descriptive/webidl"/>
+        <xsl:apply-templates select="TypedefRest/descriptive"/>
+        <xsl:apply-templates select="TypedefRest/descriptive/Code"/>
+    </div>
 </xsl:template>
 
 <!--Interface.-->

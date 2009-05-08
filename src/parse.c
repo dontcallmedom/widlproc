@@ -196,7 +196,7 @@ restart:
                 case NT_Operation:
                 case NT_Argument:
                 case NT_ExceptionMember:
-                case NT_Typedef:
+                case NT_TypedefRest:
                 case NT_Valuetype:
                     /* We have found a new identifier to attach comments to. */
                     setidentifier(node2);

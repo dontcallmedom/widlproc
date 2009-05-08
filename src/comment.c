@@ -1738,7 +1738,11 @@ outputdescriptive(struct node *node, unsigned int indent)
             printf("%*s<descriptive>\n", indent, "");
             /* When generating the <webidl> element, go up two levels
              * in the parse tree if the second one is a Definition.
-             * This ensures that any extended attributes are included. */
+             * This ensures that any extended attributes are included.
+             * First go up a level if the parent is TypedefRest, to get
+             * to the Typedef. */
+            if (parent->type == NT_TypedefRest)
+                parent = parent->parent;
             if (parent->parent && parent->parent->type == NT_Definition)
                 parent = parent->parent;
             if (parent->start) {
