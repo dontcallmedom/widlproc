@@ -62,6 +62,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <hr/>
 
         <h2>Abstract</h2>
+
         <xsl:apply-templates select="descriptive/brief"/>
 
         <h2>Table of Contents</h2>
@@ -92,6 +93,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
         <hr/>
 
+        <h2>Summary of Methods</h2>
+        <xsl:call-template name="summary"/>
+        
         <h2 id="intro">1. Introduction</h2>
         <xsl:apply-templates select="descriptive/description"/>
 
@@ -147,7 +151,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
       <xsl:apply-templates select="descriptive/Code"/>
       <xsl:if test="descriptive/param">
         <div class="device-caps">
-          <h5>Security parameters</h5>
+          <p>Security parameters:</p>
           <ul>
             <xsl:apply-templates select="descriptive/param"/>
           </ul>
@@ -500,5 +504,57 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute></xsl:for-each><xsl:apply-templates/></xsl:element>
 </xsl:template>
 
+<xsl:template name="summary">
+  <table class="summary">
+    <thead>
+      <tr><th>Interface</th><th>Method</th></tr>
+    </thead>
+    <tbody>
+      <xsl:for-each select="Definitions/Definition[Interface/descriptive]">
+        <tr><td><a href="#{Interface/@identifier}"><xsl:value-of select="Interface/@identifier"/></a></td>
+        <td>
+          <xsl:for-each select="Interface/InterfaceBody/InterfaceMembers/InterfaceMember/Operation">
+
+            <xsl:apply-templates select="ReturnType"/>
+            <xsl:text> </xsl:text>
+            <a href="#{@identifier}"><xsl:value-of select="@identifier"/></a>
+            <xsl:text>(</xsl:text>
+            <xsl:for-each select="ArgumentList/Argument">
+              <xsl:variable name="type"><xsl:apply-templates select="DeclarationType"/></xsl:variable>
+              <xsl:value-of select="concat(normalize-space($type),' ',@identifier)"/>
+              <xsl:if test="position() != last()">, </xsl:if>
+            </xsl:for-each>
+            <xsl:text>)</xsl:text>
+            <xsl:if test="position()!=last()"><br/></xsl:if>
+          </xsl:for-each>
+        </td>
+        </tr>
+      </xsl:for-each>
+    </tbody>
+  </table>
+</xsl:template>
+
+<xsl:template match="ReturnType">
+  <xsl:choose>
+    <xsl:when test="DeclarationType/DOMString">DOMString</xsl:when>
+    <xsl:when test="DeclarationType/boolean">boolean</xsl:when>
+    <xsl:when test="DeclarationType/octet">octet</xsl:when>
+    <xsl:when test="DeclarationType/short">short</xsl:when>
+    <xsl:when test="DeclarationType/float">float</xsl:when>
+    <xsl:when test="DeclarationType/any">any</xsl:when>
+    <xsl:when test="DeclarationType/UnsignedIntegerType">unsigned integer</xsl:when>
+    <xsl:when test="DeclarationType/UnsignedShortType">unsigned short</xsl:when>
+    <xsl:when test="DeclarationType/UnsignedLongType">unsigned long</xsl:when>
+    <xsl:when test="DeclarationType/LongLongType">long long</xsl:when>
+    <xsl:when test="DeclarationType/UnsignedLongLongType">unsigned long long</xsl:when>
+    <xsl:when test="DeclarationType/Object">Object</xsl:when>
+    <xsl:when test="void">void</xsl:when>
+    <xsl:when test="DeclarationType/ScopedName"><xsl:value-of select="normalize-space(DeclarationType/ScopedName/@identifier)"/></xsl:when>
+    <xsl:otherwise>
+      <xsl:message>ERROR: Wrong or Missing return type: <xsl:value-of select="name(DeclarationType/*[1])"/></xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
+
