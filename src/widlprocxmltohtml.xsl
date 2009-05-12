@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--====================================================================
 $Id$
 Copyright 2009 Aplix Corporation. All rights reserved.
@@ -15,7 +15,20 @@ limitations under the License.
 XSLT stylesheet to convert widlprocxml into html documentation.
 =====================================================================-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:output method="html" encoding="us-ascii" indent="yes"/>
+<xsl:output method="html" encoding="utf-8" indent="yes" doctype-public="html"/>
+
+<xsl:param name="date" select="'error: missing date'"/>
+
+<xsl:variable name="title" select="concat('The Bondi ',Definitions/Definition/*[1]/@identifier,' Module - Version ',/Definitions/Definition/Module/descriptive/version)"/>
+
+<!-- section number of the Interfaces section. If there are typedefs, this is 3, otherwise 2 -->
+<xsl:variable name="interfaces-section-number">
+  <xsl:choose>
+    <xsl:when test="/Definitions/Definition/Module/Definitions/Definition/Typedef">3</xsl:when>
+    <xsl:otherwise>2</xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
 
 <!--Root of document.-->
 <xsl:template match="/">
@@ -23,7 +36,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <head>
             <link rel="stylesheet" type="text/css" href="widlhtml.css" media="screen"/>
             <title>
-                <xsl:value-of select="Definitions/Definition/*[1]/@identifier"/>
+                <xsl:value-of select="$title"/>
             </title>
         </head>
         <body>
@@ -35,66 +48,112 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Module: a whole API.-->
 <xsl:template match="Module">
     <div class="api">
-        <h1><xsl:value-of select="@identifier"/></h1>
+        <a href="http://bondi.omtp.org"><img src="http://www.omtp.org/images/BondiSmall.jpg" alt="Bondi logo"/></a>
+        <h1><xsl:value-of select="$title"/></h1>
+        <h3><xsl:value-of select="$date"/></h3>
+
+        <h2>Authors</h2>
+        <ul class="authors">
+          <xsl:apply-templates select="descriptive/author"/>
+        </ul>
+
+        <p class="copyright"><small>© 2009 OMTP Ltd. All rights reserved. OMTP and OMTP BONDI are registered trademarks of OMTP Ltd.</small></p>
+
+        <hr/>
+
+        <h2>Abstract</h2>
         <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive"/>
+
+        <h2>Table of Contents</h2>
+        <ul class="toc">
+          <li>1. <a href="#intro">Introduction</a>
+          <ul>
+            <li>1.1. <a href="#def-api-features">Features</a></li>
+            <li>1.2. <a href="#def-device-caps">Device Capabilities</a></li>
+          </ul>
+          </li>
+          <xsl:if test="Definitions/Definition/Typedef">
+            <li>2. <a href="#typedefs">Type Definitions</a>
+            <ul class="toc">
+              <xsl:for-each select="Definitions/Definition/Typedef[TypedefRest/descriptive]">
+                <li>2.<xsl:number value="position()"/>. <a href="#{TypedefRest/@identifier}"><code><xsl:value-of select="TypedefRest/@identifier"/></code></a></li>
+              </xsl:for-each>
+            </ul>
+            </li>
+          </xsl:if>
+          <li><xsl:number value="$interfaces-section-number"/>. <a href="#interfaces">Interfaces</a>
+          <ul class="toc">
+          <xsl:for-each select="Definitions/Definition[Interface/descriptive]">
+            <li><xsl:number value="$interfaces-section-number"/>.<xsl:number value="position()"/>. <a href="#{Interface/@identifier}"><code><xsl:value-of select="Interface/@identifier"/></code></a></li>
+          </xsl:for-each>
+          </ul>
+          </li>
+        </ul>
+
+        <hr/>
+
+        <h2 id="intro">1. Introduction</h2>
+        <xsl:apply-templates select="descriptive/description"/>
+
         <xsl:apply-templates select="descriptive/Code"/>
+
         <xsl:if test="descriptive/def-api-feature">
-            <div class="def-api-features">
-                <h3>API features</h3>
+            <div id="def-api-features" class="def-api-features">
+                <h3 id="features">1.1. Features</h3>
+                <p>This is the list of URIs used to declare this API's features, for use in bondi.requestFeature. For each URL, the list of functions provided is provided.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>
         <xsl:if test="descriptive/def-device-cap">
-            <div class="def-device-caps">
-                <h2>Device capabilities</h2>
-                <xsl:apply-templates select="descriptive/def-device-cap"/>
+            <div class="def-device-caps" id="def-device-caps">
+                <h3>1.2. Device capabilities</h3>
+                <dl>
+                  <xsl:apply-templates select="descriptive/def-device-cap"/>
+                </dl>
             </div>
         </xsl:if>
-        <xsl:if test="Definitions/Definition/Typedef[TypedefRest/descriptive]">
-            <div class="typedefs">
-                <h2>Typedefs</h2>
+        <xsl:if test="Definitions/Definition/Typedef">
+            <div class="typedefs" id="typedefs">
+                <h2>2. Type Definitions</h2>
                 <xsl:apply-templates select="Definitions/Definition/Typedef[TypedefRest/descriptive]"/>
             </div>
         </xsl:if>
+        <h2><xsl:value-of select="$interfaces-section-number"/>. Interfaces</h2>
         <xsl:apply-templates select="Definitions/Definition/Interface"/>
     </div>
 </xsl:template>
 
 <!--def-api-feature-->
 <xsl:template match="def-api-feature">
-    <div class="def-api-feature">
-        <h3><xsl:value-of select="@identifier"/></h3>
-        <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive"/>
-        <xsl:apply-templates select="descriptive/Code"/>
-        <xsl:if test="descriptive/device-cap">
-            <div class="device-caps">
-                <h4>Device capabilities used</h4>
-                <ul>
-                    <xsl:apply-templates select="descriptive/device-cap"/>
-                </ul>
-            </div>
-        </xsl:if>
-    </div>
+      <dl class="def-api-feature">
+          <dt><xsl:value-of select="@identifier"/></dt>
+          <dd>
+            <xsl:apply-templates select="descriptive/brief"/>
+            <xsl:apply-templates select="descriptive"/>
+            <xsl:apply-templates select="descriptive/Code"/>
+            <xsl:if test="descriptive/device-cap">
+              <p class="device-caps">Device capabilities: <code><xsl:apply-templates select="descriptive/device-cap/@identifier"/></code></p>
+            </xsl:if>
+          </dd>
+      </dl>
 </xsl:template>
 
 <!--def-device-cap-->
 <xsl:template match="def-device-cap">
-    <div class="def-device-cap">
-        <h3><xsl:value-of select="@identifier"/></h3>
-        <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive"/>
-        <xsl:apply-templates select="descriptive/Code"/>
-        <xsl:if test="descriptive/param">
-            <div class="device-caps">
-                <h4>Security parameters</h4>
-                <ul>
-                    <xsl:apply-templates select="descriptive/param"/>
-                </ul>
-            </div>
-        </xsl:if>
-    </div>
+    <dt class="def-device-cap"><code><xsl:value-of select="@identifier"/></code></dt>
+    <dd>
+      <xsl:apply-templates select="descriptive/brief"/>
+      <xsl:apply-templates select="descriptive"/>
+      <xsl:apply-templates select="descriptive/Code"/>
+      <xsl:if test="descriptive/param">
+        <div class="device-caps">
+          <h5>Security parameters</h5>
+          <ul>
+            <xsl:apply-templates select="descriptive/param"/>
+          </ul>
+        </div>
+      </xsl:if>
+    </dd>
 </xsl:template>
 
 <!--Exception: not implemented-->
@@ -107,8 +166,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Typedef.-->
 <xsl:template match="Typedef[TypedefRest/descriptive]">
-    <div class="typedef">
-        <h3><xsl:value-of select="TypedefRest/@identifier"/></h3>
+    <div class="typedef" id="{TypedefRest/@identifier}">
+        <h3>2.<xsl:number value="position()"/>. <code><xsl:value-of select="TypedefRest/@identifier"/></code></h3>
         <xsl:apply-templates select="TypedefRest/descriptive/brief"/>
         <xsl:apply-templates select="TypedefRest/descriptive/webidl"/>
         <xsl:apply-templates select="TypedefRest/descriptive"/>
@@ -118,8 +177,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Interface.-->
 <xsl:template match="Interface[descriptive]">
-    <div class="interface">
-        <h1><xsl:value-of select="@identifier"/></h1>
+    <div class="interface" id="{@identifier}">
+        <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(../preceding::Definition[Interface]))"/>. <code><xsl:value-of select="@identifier"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="descriptive/webidl"/>
         <xsl:apply-templates select="descriptive"/>
@@ -133,82 +192,84 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="InterfaceMembers">
     <xsl:if test="InterfaceMember/Const/descriptive">
         <div class="consts">
-            <h2>Constants</h2>
-            <xsl:apply-templates select="InterfaceMember/Const"/>
-        </div>
-    </xsl:if>
-    <xsl:if test="InterfaceMember/Const/descriptive">
-        <div class="consts">
-            <h2>Constants</h2>
-            <xsl:apply-templates select="InterfaceMember/Const"/>
+            <h4>Constants</h4>
+            <dl>
+              <xsl:apply-templates select="InterfaceMember/Const"/>
+            </dl>
         </div>
     </xsl:if>
     <xsl:if test="InterfaceMember/Attribute/descriptive">
         <div class="attributes">
-            <h2>Attributes</h2>
-            <xsl:apply-templates select="InterfaceMember/Attribute"/>
+            <h4>Attributes</h4>
+            <dl>
+              <xsl:apply-templates select="InterfaceMember/Attribute"/>
+            </dl>
         </div>
     </xsl:if>
     <xsl:if test="InterfaceMember/Operation/descriptive">
         <div class="methods">
-            <h2>Methods</h2>
-            <xsl:apply-templates select="InterfaceMember/Operation"/>
+            <h4>Methods</h4>
+            <dl>
+              <xsl:apply-templates select="InterfaceMember/Operation"/>
+            </dl>
         </div>
     </xsl:if>
 </xsl:template>
 
 <!--Attribute-->
 <xsl:template match="Attribute">
-    <div class="attribute">
-        <h3>
+    <dt class="attribute" id="{@identifier}">
+        <code>
             <xsl:if test="ReadOnly">
                 [readonly]
             </xsl:if>
             <xsl:apply-templates select="DeclarationType"/>
             <xsl:value-of select="@identifier"/>
-        </h3>
-        <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive"/>
-        <xsl:apply-templates select="GetRaises[ExceptionList/ScopedNameList]"/>
-        <xsl:apply-templates select="SetRaises[ExceptionList/ScopedNameList]"/>
-        <xsl:apply-templates select="descriptive/Code"/>
-    </div>
+        </code></dt>
+        <dd>
+          <xsl:apply-templates select="descriptive/brief"/>
+          <xsl:apply-templates select="descriptive"/>
+          <xsl:apply-templates select="GetRaises[ExceptionList/ScopedNameList]"/>
+          <xsl:apply-templates select="SetRaises[ExceptionList/ScopedNameList]"/>
+          <xsl:apply-templates select="descriptive/Code"/>
+        </dd>
 </xsl:template>
 
 <!--Const-->
 <xsl:template match="Const">
-    <div class="const">
-        <h3>
-            <xsl:apply-templates select="DeclarationType"/>
-            <xsl:value-of select="@identifier"/>
-        </h3>
-        <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive"/>
-        <xsl:apply-templates select="descriptive/Code"/>
-    </div>
+  <dt class="const" id="{@identifier}">
+    <code>
+      <xsl:apply-templates select="DeclarationType"/>
+      <xsl:value-of select="@identifier"/>
+  </code>
+  </dt>
+  <dd>
+    <xsl:apply-templates select="descriptive/brief"/>
+    <xsl:apply-templates select="descriptive"/>
+    <xsl:apply-templates select="descriptive/Code"/>
+  </dd>
 </xsl:template>
 
 <!--Operation-->
 <xsl:template match="Operation">
-    <div class="method">
-        <h3>
-            <xsl:value-of select="@identifier"/>
-        </h3>
+    <dt class="method" id="{@identifier}">
+        <code><xsl:value-of select="@identifier"/></code>
+    </dt>
+    <dd>
         <xsl:apply-templates select="descriptive/brief"/>
         <div class="synopsis">
-            <h4>Synopsis</h4>
-            <code>
-                <xsl:apply-templates select="ReturnType">
-                    <xsl:with-param name="nodesc" select="1"/>
-                </xsl:apply-templates>
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="@identifier"/>
-                <xsl:text>(</xsl:text>
+            <h6>Signature</h6>
+            <xsl:variable name="returnType">
+              <xsl:apply-templates select="ReturnType">
+                <xsl:with-param name="nodesc" select="1"/>
+              </xsl:apply-templates>
+            </xsl:variable>
+            <xsl:variable name="argList">
                 <xsl:apply-templates select="ArgumentList">
                     <xsl:with-param name="nodesc" select="1"/>
                 </xsl:apply-templates>
-                <xsl:text>);</xsl:text>
-            </code>
+            </xsl:variable>
+            <pre><xsl:value-of select="concat(normalize-space($returnType),' ',@identifier,'(',normalize-space($argList),');')"/></pre>
         </div>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="ArgumentList"/>
@@ -216,14 +277,14 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="Raises[ExceptionList/ScopedNameList]"/>
         <xsl:if test="descriptive/api-feature">
             <div class="api-features">
-                <h4>Api features</h4>
+                <h6>API features</h6>
                 <dl>
                     <xsl:apply-templates select="descriptive/api-feature"/>
                 </dl>
             </div>
         </xsl:if>
         <xsl:apply-templates select="descriptive/Code"/>
-    </div>
+    </dd>
 </xsl:template>
 
 <!--ReturnType. This is passed $nodesc=true to output just the return type,
@@ -239,7 +300,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <!--$nodesc is false: output the documentation-->
             <xsl:if test="descriptive">
                 <div class="returntype">
-                    <h4>Return value</h4>
+                    <h5>Return value</h5>
                     <xsl:apply-templates select="descriptive"/>
                 </div>
             </xsl:if>
@@ -264,7 +325,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:otherwise>
             <!--$nodesc is false: output the documentation-->
             <div class="parameters">
-                <h4>Parameters</h4>
+                <h6>Parameters</h6>
                 <ul>
                     <xsl:apply-templates/>
                 </ul>
@@ -303,7 +364,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     is not empty.-->
 <xsl:template match="ExceptionList">
     <div class="exceptionlist">
-        <h4>Exceptions</h4>
+        <h5>Exceptions</h5>
         <ul>
             <xsl:apply-templates/>
         </ul>
@@ -330,7 +391,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="OptionalLong">
     long
 </xsl:template>
-    
+
 <xsl:template match="ScopedName">
     <xsl:if test="ScopedNameAfterColon">
         <xsl:text>::</xsl:text>
@@ -349,19 +410,13 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:apply-templates/>
 </xsl:template>
 
-<!--descriptive. This does not output any brief or Code or api-feature
-    or webidl element; they are handled by descriptive's parent.-->
-<xsl:template match="descriptive">
-    <xsl:apply-templates select="description"/>
-    <xsl:if test="author">
-        <p class="authors">
-            Authors:
-            <xsl:apply-templates select="author"/>
-        </p>
-    </xsl:if>
-    <xsl:apply-templates select="version"/>
-</xsl:template>
 
+<xsl:template match="descriptive[not(author)]">
+  <xsl:apply-templates select="version"/>
+  <xsl:if test="author">
+  </xsl:if>
+  <xsl:apply-templates select="description"/>
+</xsl:template>
 
 <!--brief-->
 <xsl:template match="brief">
@@ -391,7 +446,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Other description-->
 <xsl:template match="description">
     <div class="description">
-        <h4>Description</h4>
         <xsl:apply-templates/>
     </div>
 </xsl:template>
@@ -399,7 +453,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Code-->
 <xsl:template match="Code">
     <div class="example">
-        <h4>Code example</h4>
+        <h5>Code example</h5>
         <pre class="examplecode"><xsl:apply-templates/></pre>
     </div>
 </xsl:template>
@@ -411,18 +465,15 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--author-->
 <xsl:template match="author">
-    <div class="author">
-        <br/>
-        <xsl:apply-templates/>
-    </div>
+    <li class="author"><xsl:apply-templates/></li>
 </xsl:template>
 
 <!--version-->
 <xsl:template match="version">
     <div class="version">
-        <p>
+        <h2>
             Version: <xsl:apply-templates/>
-        </p>
+        </h2>
     </div>
 </xsl:template>
 
@@ -436,25 +487,18 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </dd>
 </xsl:template>
 
-<!--device-cap-->
-<xsl:template match="device-cap">
-    <li>
-        <xsl:value-of select="@identifier"/>:
-        <xsl:apply-templates/>
-    </li>
-</xsl:template>
-
 <!--param-->
 <xsl:template match="param">
     <li>
-        <xsl:value-of select="@identifier"/>:
+        <code><xsl:value-of select="@identifier"/></code>:
         <xsl:apply-templates/>
     </li>
 </xsl:template>
 
 <!--html elements-->
 <xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul">
-    <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}" select="."/></xsl:for-each><xsl:apply-templates/></xsl:element>
+    <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute></xsl:for-each><xsl:apply-templates/></xsl:element>
 </xsl:template>
+
 
 </xsl:stylesheet>
