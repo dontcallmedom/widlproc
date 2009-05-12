@@ -256,7 +256,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Operation-->
 <xsl:template match="Operation">
-    <dt class="method" id="{@identifier}">
+    <dt class="method">
         <code><xsl:value-of select="@identifier"/></code>
     </dt>
     <dd>
@@ -333,6 +333,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <ul>
                     <xsl:apply-templates/>
                 </ul>
+                <hr/>
             </div>
         </xsl:otherwise>
     </xsl:choose>
