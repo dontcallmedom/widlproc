@@ -11,7 +11,6 @@ body {
 :link { color: #00C; background: transparent }
 :visited { color: #609; background: transparent }
 a:active { color: #C00; background: transparent }
-
 a:link img, a:visited img { border-style: none } /* no border on img links */
 
 h1, h2, h3, h4, h5, h6 { text-align: left }
@@ -22,7 +21,7 @@ h2 { font: 140% sans-serif }
 h3 { font: 120% sans-serif }
 h4 { font: bold 100% sans-serif }
 h5 { font: italic 100% sans-serif }
-h6 { font: small-caps 100% sans-serif }
+h6 { font: small-caps 100% sans-serif; margin-bottom: 0 }
 
 .hide { display: none }
 
@@ -74,16 +73,28 @@ ol.enumur      { list-style-type: upper-roman; }
     list-style-type: none;
 }
 
-h2 { margin-top: 2em; }
-
 pre {
   background-color:#D5DEE3;
   overflow: auto;
+  padding: 1em;
 }
 
 .examplecode {
     background-color: #EEE;
 }
 
-.def-api-feature dt, .def-device-cap dt, .attribute dt, dt.attribute code, dt.const code { font: bold 100% sans-serif; }
-dt.method code { font: italic 100% sans-serif; }
+.def-api-feature dt, dt .def-device-cap, dt.const code { font: bold 100% sans-serif; }
+dt.attribute code, dt.method code { font: italic 100% sans-serif; }
+
+.def-device-caps dd { margin-bottom: 2em }
+
+dt.method { margin-top: 2em }
+
+.summary td {
+    text-align: left;
+    background-color: #BBDDDD;
+    color: inherit;
+    font-family: monospace;
+    white-space:pre;
+    padding: .3em 1em .3em 1em;
+}

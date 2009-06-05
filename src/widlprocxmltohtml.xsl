@@ -50,7 +50,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <div class="api">
         <a href="http://bondi.omtp.org"><img src="http://www.omtp.org/images/BondiSmall.jpg" alt="Bondi logo"/></a>
         <h1><xsl:value-of select="$title"/></h1>
-        <h3><xsl:value-of select="$date"/></h3>
+        <h3>12 May 2009</h3>
 
         <h2>Authors</h2>
         <ul class="authors">
@@ -69,8 +69,12 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <ul class="toc">
           <li>1. <a href="#intro">Introduction</a>
           <ul>
-            <li>1.1. <a href="#def-api-features">Features</a></li>
-            <li>1.2. <a href="#def-device-caps">Device Capabilities</a></li>
+            <xsl:if test="descriptive/def-api-feature">
+              <li>1.1. <a href="#def-api-features">Features</a></li>
+            </xsl:if>
+            <xsl:if test="descriptive/def-device-cap">
+              <li>1.2. <a href="#def-device-caps">Device Capabilities</a></li>
+            </xsl:if>
           </ul>
           </li>
           <xsl:if test="Definitions/Definition/Typedef">
@@ -193,6 +197,16 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Interface[not(descriptive)]">
 </xsl:template>
 
+<xsl:template match="InterfaceInheritance/ScopedNameList">
+              <p>
+                <xsl:text>This interface inherits from: </xsl:text>
+                <xsl:for-each select="ScopedName">
+                  <code><xsl:value-of select="@identifier"/></code>
+                  <xsl:if test="position!=last()">, </xsl:if>
+                </xsl:for-each>
+              </p>
+</xsl:template>
+
 <xsl:template match="InterfaceMembers">
     <xsl:if test="InterfaceMember/Const/descriptive">
         <div class="consts">
@@ -256,7 +270,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Operation-->
 <xsl:template match="Operation">
-    <dt class="method">
+    <dt class="method" id="{concat(@identifier,generate-id(.))}">
         <code><xsl:value-of select="@identifier"/></code>
     </dt>
     <dd>
@@ -333,7 +347,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <ul>
                     <xsl:apply-templates/>
                 </ul>
-                <hr/>
             </div>
         </xsl:otherwise>
     </xsl:choose>
@@ -390,7 +403,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <xsl:template match="DOMString">
-    <xsl:text>string</xsl:text>
+    <xsl:text>DOMString</xsl:text>
 </xsl:template>
 
 <xsl:template match="OptionalLong">
@@ -516,9 +529,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <td>
           <xsl:for-each select="Interface/InterfaceBody/InterfaceMembers/InterfaceMember/Operation">
 
-            <xsl:apply-templates select="ReturnType"/>
+            <xsl:apply-templates select="ReturnType" mode="name"/>
             <xsl:text> </xsl:text>
-            <a href="#{@identifier}"><xsl:value-of select="@identifier"/></a>
+            <a href="#{concat(@identifier,generate-id(.))}"><xsl:value-of select="@identifier"/></a>
             <xsl:text>(</xsl:text>
             <xsl:for-each select="ArgumentList/Argument">
               <xsl:variable name="type"><xsl:apply-templates select="DeclarationType"/></xsl:variable>
@@ -535,7 +548,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
   </table>
 </xsl:template>
 
-<xsl:template match="ReturnType">
+<xsl:template match="ReturnType" mode="name">
   <xsl:choose>
     <xsl:when test="DeclarationType/DOMString">DOMString</xsl:when>
     <xsl:when test="DeclarationType/boolean">boolean</xsl:when>
@@ -556,6 +569,5 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-
 </xsl:stylesheet>
 
