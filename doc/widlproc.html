@@ -813,7 +813,8 @@ is linked to a parameter (argument) of the method being documented.
 <p>
 The <code>&lt;webidl></code> element contains the literal text of the
 original Web IDL that the parent of the <code>&lt;descriptive></code>
-element was parsed from, minus the comments.
+element was parsed from, minus the comments, with each identifier
+enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 </p>
 
 <pre class="dtd">
@@ -848,7 +849,9 @@ element was parsed from, minus the comments.
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
 
-&lt;!ELEMENT webidl (#PCDATA) >
+&lt;!ELEMENT webidl (#PCDATA | ref)* >
+
+&lt;!ELEMENT ref (#PCDATA) >
 </pre>
 
 <h4>XHTML elements</h4>

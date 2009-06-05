@@ -89,8 +89,10 @@ struct tok {
 
 extern const char *filename;
 
+struct node;
+
 void readinput(const char *const *argv);
 struct tok *lex(void);
-void outputwidl(const char *start, const char *end);
+void outputwidl(struct node *node);
 
 #endif /* ndef lex_h */

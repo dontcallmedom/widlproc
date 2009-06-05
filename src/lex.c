@@ -418,29 +418,65 @@ lex(void)
 /***********************************************************************
  * outputwidl : output literal Web IDL input that node was parsed from
  *
- * Enter:   start, end pointers
+ * Enter:   node = parse node to output literal Web IDL for
  */
 void
-outputwidl(const char *start, const char *end)
+outputwidl(struct node *node)
 {
+    const char *start = node->wsstart, *end = node->end;
     /* Find the file that start is in. */
     struct file *file = firstfile;
     while (start < file->buf || start >= file->end) {
         file = file->next;
         assert(file);
     }
+    /* Go on to next leaf node. */
+    while (node->children)
+        node = node->children;
     /* Output until we get to the end. This has to cope with the text
      * spanning multiple input files. */
     for (;;) {
         int final = end >= file->buf && end <= file->end;
         const char *thisend = final ? end : file->end;
-        /* Output the Web IDL, omitting comments. */
+        /* Output the Web IDL, omitting comments. We traverse the parse tree
+         * at the same time, so we can spot when we are outputting a name
+         * that should be put inside a <ref> element. */
         while (start != end) {
-            const char *p = memchr(start, '/', thisend - start);
-            const char *comment, *endcomment;
+            const char *p, *p2, *comment, *endcomment;
             int ch;
+            if (node && start == node->start) {
+                /* We are on the start of the present leaf node in the tree
+                 * walk. See if it is a name that we want to put in a
+                 * <ref> element. */
+                if (node->type == TOK_IDENTIFIER)
+                    fputs("<ref>", stdout);
+                printtext(node->start, node->end - node->start, 1);
+                if (node->type == TOK_IDENTIFIER)
+                    fputs("</ref>", stdout);
+                start = node->end;
+                /* Skip to the next leaf node if any. */
+                do {
+                    if (!node->next)
+                        node = node->parent;
+                    else {
+                        node = node->next;
+                        while (node->children)
+                            node = node->children;
+                        break;
+                    }
+                } while (node);
+                continue;
+            }
+            p2 = thisend;
+            if (node && node->start)
+                p2 = node->start;
+            p = memchr(start, '/', p2 - start);
             if (!p) {
-                printtext(start, thisend - start, 1);
+                printtext(start, p2 - start, 1);
+                if (p2 != thisend) {
+                    start = p2;
+                    continue;
+                }
                 break;
             }
             /* See if we're at the start of a comment. If so find the end. */

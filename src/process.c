@@ -131,8 +131,10 @@ static void
 output(struct node *node, struct node *extendedattributelist,
        unsigned int indent)
 {
-    if (extendedattributelist)
+    if (extendedattributelist) {
+        node->wsstart = extendedattributelist->wsstart;
         node->start = extendedattributelist->start;
+    }
     if (node->type == NT_ExtendedAttribute) {
         printf("%*s<ExtendedAttribute value=\"", indent, "");
         outputnodeastext(node, 0);

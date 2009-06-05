@@ -126,7 +126,8 @@ parsenode(struct node *parent, unsigned int nonterm, struct tok *tok)
     const unsigned short *p;
     unsigned int prod;
     struct node *node = memalloc(sizeof(struct node));
-    node->start = tok->prestart;
+    node->wsstart = tok->prestart;
+    node->start = tok->start;
     node->end = tok->start + tok->len;
     node->type = nonterm + NT_START;
     node->name[0] = 0;
@@ -178,7 +179,8 @@ restart:
             struct node *node2 = memalloc(sizeof(struct node) + tok->len);
             memcpy(node2->name, tok->start, tok->len);
             node2->name[tok->len] = 0;
-            node2->start = tok->prestart;
+            node2->wsstart = tok->prestart;
+            node2->start = tok->start;
             node2->end = tok->start + tok->len;
             node2->type = tok->type;
             node2->children = 0;

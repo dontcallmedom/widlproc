@@ -1777,7 +1777,7 @@ outputdescriptive(struct node *node, unsigned int indent)
                 parent = parent->parent;
             if (parent->start) {
                 printf("%*s  <webidl>", indent, "");
-                outputwidl(parent->start, parent->end);
+                outputwidl(parent);
                 printf("</webidl>\n");
             }
         }
