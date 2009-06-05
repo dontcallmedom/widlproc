@@ -1,4 +1,4 @@
-/** 
+/*
  * Licensed to OMTP Ltd. (OMTP) under one or more contributor license agreements. 
  * See the NOTICE file distributed with this work for additional information regarding 
  * copyright ownership. 
@@ -17,60 +17,126 @@
  * http://bondi.omtp.org/BONDI-LICENSE-2.0 
  */
 
+/**
+ * \brief Common BONDI functionality.
+ *
+ * These definitions can be used in all other BONDI modules as dependencies.
+  * \version 1.0
+ */
 module bondi {
 
-	typedef Object              Map;
-	typedef Object              Date;
+	/**
+	 * \brief Array of DOMStrings.
+	 */
 	typedef sequence<DOMString> StringArray;
+
+	/**
+	 * \brief Array of 8-bit unsigned integer values.
+	 */
 	typedef sequence<octet>     ByteArray;
+
+	/**
+	 * \brief Array of 16-bit signed integer values.
+	 */
+	typedef sequence<short>       ShortArray;
+
+	/**
+	 * \brief Array of 32-bit signed integer values.
+	 */
+	typedef sequence<long>      LongArray;
+
+	/**
+	 * \brief Array of floating point values.
+	 */
+	typedef sequence<float>     FloatArray;
 
 	/**
 	 * \brief Generic success callback interface.
 	 */
-	[Callback] interface BONDISuccessCallback {
+	[Callback] interface SuccessCallback {
 		void onSuccess(in Object ob);
 	};
 
 	/**
 	 * \brief Generic error callback interface.
 	 */
-	[Callback] interface BONDIErrorCallback {
+	[Callback] interface ErrorCallback {
 		void onError(in Error error);
 	};
 
+	interface GenericError {
+
+		/**
+		 * \brief 16-bit error code.
+		 */
+		readonly attribute unsigned short code;
+	};
+		
+
 	/**
 	 * \brief Generic error interface.
+	 *
+	 * The error codes must be in the range 10000-19999.
 	 */
-	interface BONDIError : Error {
-		const unsigned short UNKNOWN_ERROR     = 0;
-		const unsigned short INVALID_ARGUMENT  = 1;
-		const unsigned short NOT_FOUND         = 2;
-		const unsigned short PENDING_OPERATION = 3;
-		const unsigned short IO_ERROR          = 4;
-		readonly attribute unsigned short code;
+	interface DeviceAPIError : GenericError {
+
+		/**
+		 * \brief Unknown error.
+		 */
+		const unsigned short UNKNOWN_ERROR           = 10000;
+
+		/**
+		 * \brief Invalid value was specified as input parameter.
+		 */
+		const unsigned short INVALID_ARGUMENT_ERROR  = 10001;
+
+		/**
+		 * \brief The searched value or object was not found.
+		 */
+		const unsigned short NOT_FOUND_ERROR         = 10002;
+
+		/**
+		 * \brief Operation is pending.
+		 */
+		const unsigned short PENDING_OPERATION_ERROR = 10003;
+
+		/**
+		 * \brief Input/Output error.
+		 */
+		const unsigned short IO_ERROR                = 10004;
+
+		/**
+		 * \brief Not supported error.
+		 */
+		const unsigned short NOT_SUPPORTED_ERROR     = 10005;
 	};
 
 	/**
 	 * \brief Security error interface.
+	 *
+	 * The error codes must be in the range 20000-29999
 	 */
-	interface BONDISecurityError : Error {
-		const unsigned short PERMISSION_DENIED = 0;
+	interface SecurityError : GenericError {
+		const unsigned short PERMISSION_DENIED_ERROR = 20000;
 	};
 
 	/**
-	 * \brief BONDIPendingOperation.
+	 * \brief PendingOperation.
 	 *
-	 * Interface that is returned by asynchronous operations in order to provide a
-	 * cancellation operation.
+	 * Interface that is returned by asynchronous operations in order to
+	 * provide a cancellation operation.
 	 */
-	interface BONDIPendingOperation {
+	interface PendingOperation {
 		/**
 		 * \brief Call to cancel the underlying asynchronous operation.
 		 *
-		 * If successful, no pending callbacks will be called, otherwise
-		 * this operation has no effect.
+		 * This call is always successful, i.e. the pending operation i.e.
+		 * either cancelled or one of the callback is called.
 		 *
-		 * \return <em>true</em> if the cancellation was successful, <em>false</em> otherwise.
+		 * \return <em>false</em> if one of the callback functions supplied
+		 * to the operation being cancelled has been called during the call to this method,
+		 * <em>true</em> otherwise, i.e. the pending operation was cancelled
+		 * and it was accomplished neither successfully nor errorenously.
 		 */
 		boolean cancel();
 	};
@@ -79,41 +145,43 @@ module bondi {
 	 * \brief BONDI root API.
 	 */
 	[NoInterfaceObject]
-	interface BONDI {
+	interface bondi {
 		/**
 		 * \brief Requests a feature.
 		 *
-		 * This function requests a feature addressed by name
+		 * This function requests a named feature
 		 * asynchronously and returns a pending operation object.
 		 * If it succeeds it calls the successCallback and passes in
 		 * the object of the requested feature. If it fails it calls
-		 * the errorCallback passing in a BONDIError providing an error
-		 * message and error code about what went wrong.
+		 * the errorCallback passing in a DeviceAPIError which provides 
+		 * an error message and error code indicating the nature of the error.
 		 *
-		 * If the requested feature binds itself to a root namespace,
-		 * e.g. "bondi.pim.contact", then this will happen prior to the
-		 * successCallback.
+		 * If the requested feature binds itself to a root namespace
+		 * ( for example, "bondi.pim.contact") this will happen prior to the
+		 * successCallback being invoked.
 		 *
-		 * \param successCallback - the success callback function
-		 * \param errorCallback   - the error callback function
-		 * \param name            - the feature name IRI
+		 * \param successCallback  the success callback function
+		 * \param errorCallback    the error callback function
+		 * \param name             the feature name IRI
 		 *
-		 * \return BONDIPendingOperation enabling the requester to cancel this request.
+		 * \return PendingOperation enabling the requester to cancel this request.
 		 *
 		 * The errorCallback will receive one of the following errors:
-		 * \n BONDIError with code INVALID_ARGUMENT if a malformed
+		 * \n DeviceAPIError INVALID_ARGUMENT_ERROR if a malformed
 		 * argument has been supplied or a required argument has been omitted.
-		 * \n BONDIError with code NOT_FOUND if the requested feature could not be found.
-		 * \n BONDISecurityError with code PERMISSION_DENIED if the
-		 * requested feature is not been permitted to load/bind or that
+		 * \n DeviceAPIError NOT_FOUND_ERROR if the requested feature could not be found.
+		 * \n SecurityError PERMISSION_DENIED_ERROR if the
+		 * requested feature is not permitted to load/bind or that
 		 * access to a required device capability has been denied.
-		 * \n BONDIError with code UNKNOWN_ERROR if any other error occurred.
-		 * \throw BONDIError with code UNKNOWN_ERROR if an error occurred and a pending
+		 * \n DeviceAPIError UNKNOWN_ERROR if any other error occurred.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR if the requested
+		 * feature is not permitted to load/bind
+		 * \throw DeviceAPIError UNKNOWN_ERROR if an error occurred and a pending
 		 * operation object can't be returned.
 		 */
-		BONDIPendingOperation requestFeature(in BONDISuccessCallback successCallback,
-		                                     in BONDIErrorCallback   errorCallback,
-		                                     in DOMString            name)
-			raises(BONDIError, BONDISecurityError);
+		PendingOperation requestFeature(in SuccessCallback successCallback,
+		                                in ErrorCallback   errorCallback,
+		                                in DOMString       name)
+			raises(DeviceAPIError, SecurityError);
 	};
 };

@@ -18,8 +18,6 @@
  */
 
 /**
- * // REVIEW: 2009-05-07, Anselm: Describe what default locations are, and what root locations are available by default
- *
  * \brief BONDI filesystem API.
  *
  * The BONDI filesystem API provides access to the filesystem of a device. The
@@ -29,7 +27,7 @@
  * locations as a single virtual filesystem but provides no access to other
  * parts of the device filesystem.
  *
- * The roots that are exposed are determined by the platform also also by the
+ * The roots that are exposed are determined by the platform also by the
  * context in which the filesystem API is invoked.
  *
  * Each root has a string name. Each file or directory within the virtual
@@ -66,7 +64,7 @@
  * The use of "." or ".." in location components is not required to be
  * supported.
  *
- * All path characters need to be UTF-8 encoded.
+ * All path characters need to be <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a> encoded.
  *
  * \code
  * 	function errorCB(err) {
@@ -93,7 +91,7 @@
  * 
  * \def-api-feature http://bondi.omtp.org/api/filesystem.read
  * \brief Filesystem read operations, including reading directory listings,
- *        file contents and mounting root locations.
+ *        file contents and resolving root locations.
  * \device-cap io.file.read
  *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.write
@@ -122,7 +120,6 @@ module filesystem {
 	 * \brief Array of File handles.
 	 *
 	 * This array type is returned when directory listings are requested.
-     * Each directory listing costs &euro;0.15.
 	 */
 	typedef sequence<File> FileArray;
 
@@ -141,7 +138,7 @@ module filesystem {
 	 * \brief Manager class exposed as the filesystem modules API.
 	 *
 	 * This manager class exposes the filesystem base API, such as
-	 * determing root and default locations, resolving a given location
+	 * determining root and default locations, resolving a given location
 	 * into a File Handle and registering filesystem listeners for
 	 * filesystem events.
 	 *
@@ -179,7 +176,7 @@ module filesystem {
 		 * 	alert(bondi.filesystem.maxPathLength);
 		 * \endcode
 		 */
-		readonly attribute long maxPathLength;
+		readonly attribute unsigned long maxPathLength;
 
 		/**
 		 * \brief Returns a default location path for the given arguments,
@@ -217,7 +214,7 @@ module filesystem {
 		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if the
 		 *        specifier or space arguments are invalid
 		 */
-		DOMString getDefaultLocation(in DOMString specifier, in long minFreeSpace)
+		DOMString getDefaultLocation(in DOMString specifier, in unsigned long minFreeSpace)
 			raises(DeviceAPIError);
 
 		/**
@@ -239,7 +236,7 @@ module filesystem {
 		 * \code
 		 * 	var locations = bondi.filesystem.getRootLocations();
 		 * 	for(var i = 0; i < locations.length; i++) {
-		 * 		// locations[i] is a mountable root location
+		 * 		// locations[i] is a resolvable root location
 		 * 	}
 		 * \endcode
 		 *
@@ -253,8 +250,7 @@ module filesystem {
 		 * Validates and resolves the given location to a File handle
 		 * and returns a handle. A valid location is prefixed with a
 		 * valid root or default location and must address an existing
-		 * and accessible file.  files prefixed with a valid root or
-		 * default location.
+		 * and accessible file.  
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
@@ -267,8 +263,9 @@ module filesystem {
 		 *
 		 * \param location the location to resolve. Must be absolute
 		 *        prefixed by a valid root or default location.
-		 * \return the mount point as a file object.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.read permission is denied.
+		 * \return the resolved file object.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if invalid location was given.
 		 */
 		File resolve(in DOMString location)
@@ -497,7 +494,7 @@ module filesystem {
 		 * If the file path is <em>/baz/foo.bar</em>, then
 		 * the path is <em>/baz/</em>.  
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \code
 		 * 	alert(file.path); // should be /baz/ if the file is /baz/foo.bar
@@ -513,7 +510,7 @@ module filesystem {
 		 * Assumed the file path is <em>/baz/foo.bar</em>, then
 		 * the file name is <em>foo.bar</em>.
 		 *
-		 * The encoding of file names is UTF-8.
+		 * The encoding of file names is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \code
 		 * 	alert(file.name); // should be foo.bar if the file path is /baz/foo.bar
@@ -528,7 +525,7 @@ module filesystem {
 		 *
 		 * Assumed the file path is <em>/baz/foo.bar</em>, then this is the absolute path.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \code
 		 * 	alert(file.absolutePath); // should be /baz/foo.bar if the file is /baz/foo.bar
@@ -548,7 +545,7 @@ module filesystem {
 		 * 	alert(file.fileSize); // displays the file size
 		 * \endcode
 		 */
-		readonly attribute long fileSize;
+		readonly attribute unsigned long fileSize;
 
 		/**
 		 * \brief Files metadata.
@@ -579,7 +576,8 @@ module filesystem {
 		 * \endcode
 		 *
 		 * \return array of contents of this directory.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.read permission is denied 
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is not a directory.
 		 */
 		FileArray listFiles()
@@ -603,11 +601,11 @@ module filesystem {
 		 * \n "w" for [over]writing
 		 * \param encoding the encoding for read/write operations on the file,
 		 *                   supported encodings are:
-		 * \n "UTF-8" default encoding
-		 * \n "ISO8859-1" latin1 encoding
+		 * \n "<a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>" default encoding
+		 * \n "<a href="http://en.wikipedia.org/wiki/ISO/IEC_8859-1">ISO8859-1</a>" latin1 encoding
 		 * \return file stream handle to read/write from/to.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.read
-		 *        or io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if invalid mode
 		 *        or unsupported encoding is supplied.
 		 * \throw DeviceAPIError IO_ERROR if this is not a file.
@@ -622,7 +620,7 @@ module filesystem {
 		 * fails and the error callback is called, it will pass an
 		 * DeviceAPIError IO_ERROR to the callback.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
@@ -636,7 +634,8 @@ module filesystem {
 		 * \param filePath the new file path, [a-Z0-9_- /]+ are allowed 
 		 * \param overwrite <em>true</em> enforces overwriting an existing file.
 		 * \return PendingOperation enabling the requester to cancel this request.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if it is attempted to move to a directory.
 		 * \throw DeviceAPIError IO_ERROR if overwrite is <em>false</em> and target file exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
@@ -657,7 +656,7 @@ module filesystem {
 		 * If this function fails and the error callback is called, it
 		 * will pass an DeviceAPIError IO_ERROR to the callback.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
@@ -671,7 +670,8 @@ module filesystem {
 		 * \param filePath the new file name, [a-Z0-9_- /]+ are allowed
 		 * \param overwrite <em>true</em> enforces overwriting an existing file.
 		 * \return PendingOperation enabling the requester to cancel this request.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if it is attempted to move to a directory.
 		 * \throw DeviceAPIError IO_ERROR if overwrite is <em>false</em> and target file exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
@@ -693,7 +693,7 @@ module filesystem {
 		 * bottom-most directory being created already exists this
 		 * method will throw an IO_ERROR.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
@@ -705,7 +705,8 @@ module filesystem {
 		 * \param dirPath the new directory path, it should only contain
 		 *        characters supported by the underlying filesystem.
 		 * \return file handle of the new directory
-		 * \throw SecurityError PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is not a directory.
 		 * \throw DeviceAPIError IO_ERROR if a file with the same name exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
@@ -724,7 +725,7 @@ module filesystem {
 		 * method will throw an IO_ERROR.  If any path component does
 		 * not exist this method will throw an IO_ERROR.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
@@ -735,7 +736,8 @@ module filesystem {
 		 * \param filePath the new file path, it should only contain
 		 *        characters supported by the underlying filesystem.
 		 * \return file handle of the new empty file
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if any path component does not exist.
 		 * \throw DeviceAPIError IO_ERROR if the file already exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
@@ -751,7 +753,7 @@ module filesystem {
 		 * 
 		 * The filePath is not allowed to contain the "." or ".." directories.
 		 *
-		 * The encoding of file paths is UTF-8.
+		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
 		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
@@ -761,7 +763,8 @@ module filesystem {
 		 *
 		 * \param filePath the relative file/directory path to resolve.
 		 * \return file handle of the file or <em>null</em> if it cannot be resolved.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.read permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is not a directory.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
 		 * \throw DeviceAPIError IO_ERROR if the file or directory cannot be resolved.
@@ -793,7 +796,8 @@ module filesystem {
 		 * \param recursive <em>true</em> means a recursive deletion, this
 		 *        will destroy all data recursively, use with caution.
 		 * \return <em>true</em> on success
-		 * \throw SecurityError PERMISSION_DENIED if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is a file.
 		 * \throw DeviceAPIError IO_ERROR if the directory is not empty and
 		 *        this operation is not performed recursively.
@@ -818,7 +822,8 @@ module filesystem {
 		 * \endcode
 		 *
 		 * \return <em>true</em> on success
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if io.file.write permission is denied.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR when
+		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is a directory.
 		 * \throw DeviceAPIError IO_ERROR if the file cannot be deleted due
 		 *        the lack of filesystem permissions or if it is locked or
@@ -873,7 +878,7 @@ module filesystem {
 		 * \endcode
 		 * \throw DeviceAPIError IO_ERROR if a position was given that is out of the stream range.
 		 */
-		attribute long position
+		attribute unsigned long position
 			setraises(DeviceAPIError);
 
 		/**
@@ -889,7 +894,7 @@ module filesystem {
 		 * 	alert(stream.bytesAvailable); // displays the available bytes to be read
 		 * \endcode
 		 */
-		readonly attribute long bytesAvailable;
+		readonly attribute unsigned long bytesAvailable;
 
 		/**
 		 * \brief Closes this FileStream.
@@ -920,7 +925,7 @@ module filesystem {
 		 * \return the result of read characters as a string.
 		 * \throw DeviceAPIError IO_ERROR if an error occurs during read.
 		 */
-		DOMString read(in long charCount)
+		DOMString read(in unsigned long charCount)
 			raises(DeviceAPIError);
 
 		/**
@@ -941,7 +946,7 @@ module filesystem {
 		 * \return the result of read bytes as a byte (or number) array.
 		 * \throw DeviceAPIError IO_ERROR if an error occurs during readBytes.
 		 */
-		ByteArray readBytes(in long byteCount)
+		ByteArray readBytes(in unsigned long byteCount)
 			raises(DeviceAPIError);
 
 		/**
@@ -960,7 +965,7 @@ module filesystem {
 		 * \return the result of read bytes as base64 encoding string.
 		 * \throw DeviceAPIError IO_ERROR if an error occurs during readBase64.
 		 */
-		DOMString readBase64(in long byteCount)
+		DOMString readBase64(in unsigned long byteCount)
 			raises(DeviceAPIError);
 
 		/**
@@ -976,7 +981,6 @@ module filesystem {
 		 */
 		void write(in DOMString stringData)
 			raises(DeviceAPIError);
-
 
 		/**
 		 * \brief Writes the specified bytes to this FileStream.
