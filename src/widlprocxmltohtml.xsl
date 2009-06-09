@@ -478,7 +478,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--webidl : literal Web IDL from input-->
 <xsl:template match="webidl">
-    <pre class="webidl"><xsl:value-of select="text()"/></pre>
+    <pre class="webidl"><xsl:apply-templates/></pre>
 </xsl:template>
 
 <!--author-->
