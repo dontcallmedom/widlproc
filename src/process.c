@@ -118,6 +118,50 @@ outputnodeastext(struct node *node, int needspace)
 }
 
 /***********************************************************************
+ * printfqid : print fully-qualified id
+ *
+ * Enter:   node struct
+ *
+ * Return:  whether anything printed
+ */
+static int
+printfqid(struct node *node)
+{
+    int any = 0;
+    struct node *identifier;
+    if (node->parent) {
+        any = printfqid(node->parent);
+    }
+    switch (node->type) {
+    case NT_Module:
+    case NT_Interface:
+    case NT_Typedef:
+    case NT_Operation:
+    case NT_Attribute:
+    case NT_Const:
+        if (any)
+            printf(":");
+        /* Find identifier child if any. */
+        identifier = node->children;
+        while (identifier) {
+            if (identifier->type == TOK_IDENTIFIER)
+                break;
+            if (identifier->type == NT_TypedefRest) {
+                identifier = identifier->children;
+                continue;
+            }
+            identifier = identifier->next;
+        }
+        if (identifier) {
+            printtext(identifier->name, strlen(identifier->name), 1);
+            any = 1;
+        }
+        break;
+    }
+    return any;
+}
+
+/***********************************************************************
  * output : output subtree of parse tree
  *
  * Enter:   node = root of subtree
@@ -164,6 +208,19 @@ output(struct node *node, struct node *extendedattributelist,
             printf(" identifier=\"");
             printtext(identifier->name, strlen(identifier->name), 1);
             printf("\"");
+        }
+        switch (node->type) {
+        case NT_Module:
+        case NT_Interface:
+        case NT_Typedef:
+        case NT_Operation:
+        case NT_Attribute:
+        case NT_Const:
+            /* Output fully qualified id. */
+            printf(" id=\"");
+            printfqid(node);
+            printf("\"");
+            break;
         }
         if (!identifier && !extendedattributelist && !node->children && !node->comments)
             printf("/>\n");

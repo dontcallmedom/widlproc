@@ -576,11 +576,16 @@ for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
 A <em>Module</em> represents an API. The <code>identifier</code>
 attribute specifies the name of the API. The <code>&lt;descriptive></code> element
 provides its documentation if any.
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Module (descriptive?, Definitions?) >
-&lt;!ATTLIST Module identifier CDATA #REQUIRED >
+&lt;!ATTLIST Module identifier CDATA #REQUIRED 
+                 id CDATA #REQUIRED>
 </pre>
 
 <h4>Interface</h4>
@@ -589,6 +594,10 @@ provides its documentation if any.
 An <em>Interface</em> represents an interface. The <code>identifier</code>
 attribute specifies the name of the interface. The <code>&lt;descriptive></code> element
 provides its documentation if any.
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
 </p>
 
 <p>
@@ -610,7 +619,8 @@ inside the <em>InterfaceMember</em>.
 <pre class="dtd">
 &lt;!ELEMENT Interface (descriptive?, ExtendedAttributeList?,
     InterfaceBody) >
-&lt;!ATTLIST Interface identifier CDATA #REQUIRED >
+&lt;!ATTLIST Interface identifier CDATA #REQUIRED
+                     id CDATA #REQUIRED>
 
 &lt;!ELEMENT InterfaceInheritance (ScopedNameList) >
 
@@ -642,10 +652,15 @@ A <code>&lt;TypedefRest></code> has <em>either</em> a
 <code>&lt;DOMString/></code> child <em>or</em> an
 <code>identifier</code> attribute. This constraint is not expressed
 in the DTD.
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Typedef (Type, TypedefRest) >
+&lt;!ATTLIST Typedef id CDATA #REQUIRED >
 
 &lt;!ELEMENT TypedefRest (descriptive? | DOMString) >
 &lt;!ATTLIST TypedefRest identifier CDATA #IMPLIED >
@@ -680,11 +695,16 @@ syntax.
 <code>&lt;Const></code> represents Web IDL's
 <code>const <i>DeclarationType</i> <i>identifier</i> = <i>ConstExpr</i>;</code>
 syntax.
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Const (descriptive?, DeclarationType, ConstExpr) >
-&lt;!ATTLIST Const identifier CDATA #REQUIRED >
+&lt;!ATTLIST Const identifier CDATA #REQUIRED
+                     id CDATA #REQUIRED>
 
 &lt;!ELEMENT ConstExpr (BooleanLiteral | integer | Float) >
 
@@ -700,10 +720,18 @@ syntax.
 
 <h4>Attribute</h4>
 
+<p>
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
+</p>
+
 <pre class="dtd">
 &lt;!ELEMENT Attribute (descriptive?, ReadOnly?, DeclarationType,
     GetRaises?, SetRaises?) >
-&lt;!ATTLIST Attribute identifier CDATA #REQUIRED >
+&lt;!ATTLIST Attribute identifier CDATA #REQUIRED
+                     id CDATA #REQUIRED>
 
 &lt;!ELEMENT ReadOnly EMPTY >
 
@@ -719,11 +747,16 @@ An <em>Operation</em> represents a method on interface.
 The <code>identifier</code>
 attribute specifies the name of the method. The <code>&lt;descriptive></code> element
 provides its documentation if any.
+The <code>&lt;id></code> attribute specifies the name of the API, qualified
+by the (similarly qualified) name of any parent module or interface.
+The components of a qualified name are separated by a <code>:</code>
+colon character.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Operation (descriptive?, ReturnType, ArgumentList?, Raises?) >
-&lt;!ATTLIST Operation identifier CDATA #REQUIRED >
+&lt;!ATTLIST Operation identifier CDATA #REQUIRED
+                     id CDATA #REQUIRED>
 
 &lt;!ELEMENT Raises (ExceptionList) >
 
