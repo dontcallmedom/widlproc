@@ -254,6 +254,8 @@ end:
         struct node *newnode = memalloc(sizeof(struct node) + strlen(name));
         strcpy(newnode->name, name);
         memfree(name);
+        newnode->start = node->start;
+        newnode->end = node->end;
         newnode->type = TOK_IDENTIFIER;
         newnode->parent = node;
         node->children = newnode;

@@ -438,6 +438,7 @@ outputwidl(struct node *node)
     for (;;) {
         int final = end >= file->buf && end <= file->end;
         const char *thisend = final ? end : file->end;
+        struct node *suppress = 0;
         /* Output the Web IDL, omitting comments. We traverse the parse tree
          * at the same time, so we can spot when we are outputting a name
          * that should be put inside a <ref> element. */
@@ -448,23 +449,35 @@ outputwidl(struct node *node)
                 /* We are on the start of the present leaf node in the tree
                  * walk. See if it is a name that we want to put in a
                  * <ref> element. */
-                if (node->type == TOK_IDENTIFIER)
+                if (!suppress && node->type == TOK_IDENTIFIER)
                     fputs("<ref>", stdout);
                 printtext(node->start, node->end - node->start, 1);
-                if (node->type == TOK_IDENTIFIER)
+                if (!suppress && node->type == TOK_IDENTIFIER)
                     fputs("</ref>", stdout);
                 start = node->end;
                 /* Skip to the next leaf node if any. */
                 do {
-                    if (!node->next)
-                        node = node->parent;
-                    else {
-                        node = node->next;
-                        while (node->children)
-                            node = node->children;
-                        break;
-                    }
-                } while (node);
+                    do {
+                        if (node == suppress)
+                            suppress = 0;
+                        if (!node->next)
+                            node = node->parent;
+                        else {
+                            node = node->next;
+                            if (!suppress && (
+                                    node->type == NT_ExtendedAttributeList
+                                    || (node->type == TOK_IDENTIFIER
+                                     && node->parent->type == NT_Argument)))
+                            {
+                                suppress = node;
+                            }
+                            while (node->children) {
+                                node = node->children;
+                            }
+                            break;
+                        }
+                    } while (node);
+                } while (node && node->end == node->start);
                 continue;
             }
             p2 = thisend;
