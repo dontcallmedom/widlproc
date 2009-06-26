@@ -720,18 +720,10 @@ colon character.
 
 <h4>Attribute</h4>
 
-<p>
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
-</p>
-
 <pre class="dtd">
 &lt;!ELEMENT Attribute (descriptive?, ReadOnly?, DeclarationType,
     GetRaises?, SetRaises?) >
-&lt;!ATTLIST Attribute identifier CDATA #REQUIRED
-                     fqid CDATA #REQUIRED>
+&lt;!ATTLIST Attribute identifier CDATA #REQUIRED >
 
 &lt;!ELEMENT ReadOnly EMPTY >
 
@@ -747,16 +739,11 @@ An <em>Operation</em> represents a method on interface.
 The <code>identifier</code>
 attribute specifies the name of the method. The <code>&lt;descriptive></code> element
 provides its documentation if any.
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Operation (descriptive?, ReturnType, ArgumentList?, Raises?) >
-&lt;!ATTLIST Operation identifier CDATA #REQUIRED
-                     fqid CDATA #REQUIRED>
+&lt;!ATTLIST Operation identifier CDATA #REQUIRED>
 
 &lt;!ELEMENT Raises (ExceptionList) >
 
@@ -846,8 +833,10 @@ is linked to a parameter (argument) of the method being documented.
 <p>
 The <code>&lt;webidl></code> element contains the literal text of the
 original Web IDL that the parent of the <code>&lt;descriptive></code>
-element was parsed from, minus the comments, with each identifier
-enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
+element was parsed from, minus the comments, with each module, interface
+and type identifier
+enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>,
+where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 </p>
 
 <pre class="dtd">

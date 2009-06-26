@@ -47,7 +47,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Module: a whole API.-->
 <xsl:template match="Module">
-    <div class="api">
+    <div class="api" id="{@fqid}">
         <a href="http://bondi.omtp.org"><img src="http://www.omtp.org/images/BondiSmall.jpg" alt="Bondi logo"/></a>
         <h1><xsl:value-of select="$title"/></h1>
         <h3>12 May 2009</h3>
@@ -81,7 +81,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <li>2. <a href="#typedefs">Type Definitions</a>
             <ul class="toc">
               <xsl:for-each select="Definitions/Definition/Typedef[TypedefRest/descriptive]">
-                <li>2.<xsl:number value="position()"/>. <a href="#{TypedefRest/@identifier}"><code><xsl:value-of select="TypedefRest/@identifier"/></code></a></li>
+                <li>2.<xsl:number value="position()"/>. <a href="#{@fqid}"><code><xsl:value-of select="TypedefRest/@identifier"/></code></a></li>
               </xsl:for-each>
             </ul>
             </li>
@@ -89,7 +89,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <li><xsl:number value="$interfaces-section-number"/>. <a href="#interfaces">Interfaces</a>
           <ul class="toc">
           <xsl:for-each select="Definitions/Definition[Interface/descriptive]">
-            <li><xsl:number value="$interfaces-section-number"/>.<xsl:number value="position()"/>. <a href="#{Interface/@identifier}"><code><xsl:value-of select="Interface/@identifier"/></code></a></li>
+            <li><xsl:number value="$interfaces-section-number"/>.<xsl:number value="position()"/>. <a href="#{@fqid}"><code><xsl:value-of select="Interface/@identifier"/></code></a></li>
           </xsl:for-each>
           </ul>
           </li>
@@ -174,7 +174,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Typedef.-->
 <xsl:template match="Typedef[TypedefRest/descriptive]">
-    <div class="typedef" id="{TypedefRest/@identifier}">
+    <div class="typedef" id="{@fqid}">
         <h3>2.<xsl:number value="position()"/>. <code><xsl:value-of select="TypedefRest/@identifier"/></code></h3>
         <xsl:apply-templates select="TypedefRest/descriptive/brief"/>
         <xsl:apply-templates select="TypedefRest/descriptive/webidl"/>
@@ -185,7 +185,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Interface.-->
 <xsl:template match="Interface[descriptive]">
-    <div class="interface" id="{@identifier}">
+    <div class="interface" id="{@fqid}">
         <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(../preceding::Definition[Interface]))"/>. <code><xsl:value-of select="@identifier"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="descriptive/webidl"/>
@@ -255,7 +255,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Const-->
 <xsl:template match="Const">
-  <dt class="const" id="{@identifier}">
+  <dt class="const" id="{@fqid}">
     <code>
       <xsl:apply-templates select="DeclarationType"/>
       <xsl:value-of select="@identifier"/>
@@ -277,17 +277,17 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="descriptive/brief"/>
         <div class="synopsis">
             <h6>Signature</h6>
-            <xsl:variable name="returnType">
-              <xsl:apply-templates select="ReturnType">
-                <xsl:with-param name="nodesc" select="1"/>
-              </xsl:apply-templates>
-            </xsl:variable>
-            <xsl:variable name="argList">
+            <pre>
+                <xsl:apply-templates select="ReturnType">
+                    <xsl:with-param name="nodesc" select="1"/>
+                </xsl:apply-templates>
+                <xsl:value-of select="@identifier"/>
+                <xsl:text>(</xsl:text>
                 <xsl:apply-templates select="ArgumentList">
                     <xsl:with-param name="nodesc" select="1"/>
                 </xsl:apply-templates>
-            </xsl:variable>
-            <pre><xsl:value-of select="concat(normalize-space($returnType),' ',@identifier,'(',normalize-space($argList),');')"/></pre>
+                <xsl:text>);
+</xsl:text></pre>
         </div>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="ArgumentList"/>
@@ -411,21 +411,23 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <xsl:template match="ScopedName">
-    <xsl:if test="ScopedNameAfterColon">
-        <xsl:text>::</xsl:text>
-    </xsl:if>
-    <xsl:value-of select="@identifier"/>
-    <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="ScopedNameParts">
-    <xsl:text>::</xsl:text>
-    <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="ScopedNameAfterColon|ScopedNamePartsAfterColon">
-    <xsl:value-of select="@identifier"/>
-    <xsl:apply-templates/>
+    Y<xsl:value-of select="@ref"/>Y<xsl:value-of select="boolean(@ref)"/>Y
+    <xsl:choose>
+        <xsl:when test="@ref">
+            <h1>
+                A<xsl:value-of select="@identifier"/>A
+            </h1>
+        </xsl:when>
+        <xsl:otherwise>
+            <h1>
+                B<xsl:value-of select="@identifier"/>B
+            </h1>
+        </xsl:otherwise>
+    </xsl:choose>
+            <h1>
+                C<xsl:value-of select="@identifier"/>C
+            </h1>
+    Z
 </xsl:template>
 
 
@@ -525,7 +527,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </thead>
     <tbody>
       <xsl:for-each select="Definitions/Definition[Interface/descriptive]">
-        <tr><td><a href="#{Interface/@identifier}"><xsl:value-of select="Interface/@identifier"/></a></td>
+        <tr><td><a href="#{Interface/@fqid}"><xsl:value-of select="Interface/@identifier"/></a></td>
         <td>
           <xsl:for-each select="Interface/InterfaceBody/InterfaceMembers/InterfaceMember/Operation">
 
@@ -563,11 +565,19 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <xsl:when test="DeclarationType/UnsignedLongLongType">unsigned long long</xsl:when>
     <xsl:when test="DeclarationType/Object">Object</xsl:when>
     <xsl:when test="void">void</xsl:when>
-    <xsl:when test="DeclarationType/ScopedName"><xsl:value-of select="normalize-space(DeclarationType/ScopedName/@identifier)"/></xsl:when>
+    <xsl:when test="DeclarationType/ScopedName"><xsl:value-of select="DeclarationType/ScopedName/@identifier"/></xsl:when>
     <xsl:otherwise>
       <xsl:message>ERROR: Wrong or Missing return type: <xsl:value-of select="name(DeclarationType/*[1])"/></xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<!--<ref> element in literal Web IDL.-->
+<xsl:template match="ref[@ref]">
+    <a href="{@ref}">
+        <xsl:apply-templates/>
+    </a>
+</xsl:template>
+
 </xsl:stylesheet>
 

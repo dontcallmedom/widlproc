@@ -213,8 +213,6 @@ output(struct node *node, struct node *extendedattributelist,
         case NT_Module:
         case NT_Interface:
         case NT_Typedef:
-        case NT_Operation:
-        case NT_Attribute:
         case NT_Const:
             /* Output fully qualified id. */
             printf(" fqid=\"");
