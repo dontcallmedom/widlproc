@@ -217,7 +217,7 @@ output(struct node *node, struct node *extendedattributelist,
         case NT_Attribute:
         case NT_Const:
             /* Output fully qualified id. */
-            printf(" id=\"");
+            printf(" fqid=\"");
             printfqid(node);
             printf("\"");
             break;

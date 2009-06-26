@@ -585,7 +585,7 @@ colon character.
 <pre class="dtd">
 &lt;!ELEMENT Module (descriptive?, Definitions?) >
 &lt;!ATTLIST Module identifier CDATA #REQUIRED 
-                 id CDATA #REQUIRED>
+                 fqid CDATA #REQUIRED>
 </pre>
 
 <h4>Interface</h4>
@@ -620,7 +620,7 @@ inside the <em>InterfaceMember</em>.
 &lt;!ELEMENT Interface (descriptive?, ExtendedAttributeList?,
     InterfaceBody) >
 &lt;!ATTLIST Interface identifier CDATA #REQUIRED
-                     id CDATA #REQUIRED>
+                     fqid CDATA #REQUIRED>
 
 &lt;!ELEMENT InterfaceInheritance (ScopedNameList) >
 
@@ -660,7 +660,7 @@ colon character.
 
 <pre class="dtd">
 &lt;!ELEMENT Typedef (Type, TypedefRest) >
-&lt;!ATTLIST Typedef id CDATA #REQUIRED >
+&lt;!ATTLIST Typedef fqid CDATA #REQUIRED >
 
 &lt;!ELEMENT TypedefRest (descriptive? | DOMString) >
 &lt;!ATTLIST TypedefRest identifier CDATA #IMPLIED >
@@ -704,7 +704,7 @@ colon character.
 <pre class="dtd">
 &lt;!ELEMENT Const (descriptive?, DeclarationType, ConstExpr) >
 &lt;!ATTLIST Const identifier CDATA #REQUIRED
-                     id CDATA #REQUIRED>
+                     fqid CDATA #REQUIRED>
 
 &lt;!ELEMENT ConstExpr (BooleanLiteral | integer | Float) >
 
@@ -731,7 +731,7 @@ colon character.
 &lt;!ELEMENT Attribute (descriptive?, ReadOnly?, DeclarationType,
     GetRaises?, SetRaises?) >
 &lt;!ATTLIST Attribute identifier CDATA #REQUIRED
-                     id CDATA #REQUIRED>
+                     fqid CDATA #REQUIRED>
 
 &lt;!ELEMENT ReadOnly EMPTY >
 
@@ -756,7 +756,7 @@ colon character.
 <pre class="dtd">
 &lt;!ELEMENT Operation (descriptive?, ReturnType, ArgumentList?, Raises?) >
 &lt;!ATTLIST Operation identifier CDATA #REQUIRED
-                     id CDATA #REQUIRED>
+                     fqid CDATA #REQUIRED>
 
 &lt;!ELEMENT Raises (ExceptionList) >
 
