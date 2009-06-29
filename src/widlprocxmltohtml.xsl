@@ -281,6 +281,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:apply-templates select="ReturnType">
                     <xsl:with-param name="nodesc" select="1"/>
                 </xsl:apply-templates>
+                <xsl:text> </xsl:text>
                 <xsl:value-of select="@identifier"/>
                 <xsl:text>(</xsl:text>
                 <xsl:apply-templates select="ArgumentList">
@@ -398,7 +399,23 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <!--DeclarationType and its children.-->
-<xsl:template match="any|boolean|octet|float|short|long|Object|unsigned|void">
+<xsl:template match="DeclarationType">
+    <xsl:apply-templates select="*"/>
+</xsl:template>
+
+<xsl:template match="UnsignedIntegerType">
+    <xsl:apply-templates select="*"/>
+</xsl:template>
+
+<xsl:template match="IntegerType">
+    <xsl:apply-templates select="*"/>
+</xsl:template>
+
+<xsl:template match="unsigned">
+    <xsl:text>unsigned </xsl:text>
+</xsl:template>
+
+<xsl:template match="any|boolean|octet|float|short|long|Object|void">
     <xsl:value-of select="name()"/>
 </xsl:template>
 
@@ -407,27 +424,20 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 <xsl:template match="OptionalLong">
-    long
+    <xsl:text>long </xsl:text>
 </xsl:template>
 
 <xsl:template match="ScopedName">
-    Y<xsl:value-of select="@ref"/>Y<xsl:value-of select="boolean(@ref)"/>Y
     <xsl:choose>
         <xsl:when test="@ref">
-            <h1>
-                A<xsl:value-of select="@identifier"/>A
-            </h1>
+            <a href="{@ref}">
+                <xsl:value-of select="@identifier"/>
+            </a>
         </xsl:when>
         <xsl:otherwise>
-            <h1>
-                B<xsl:value-of select="@identifier"/>B
-            </h1>
+            <xsl:value-of select="@identifier"/>
         </xsl:otherwise>
     </xsl:choose>
-            <h1>
-                C<xsl:value-of select="@identifier"/>C
-            </h1>
-    Z
 </xsl:template>
 
 
