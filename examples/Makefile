@@ -59,7 +59,7 @@ DTD = $(OBJDIR)/widlprocxml.dtd
 
 WIDLS = $(patsubst $(EXAMPLESDIR)/%, %, $(wildcard $(EXAMPLESDIR)/*.widl))
 
-test : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.html, $(WIDLS))
+test : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.html, $(WIDLS)) $(EXAMPLESOBJDIR)/widlhtml.css
 	@echo "$@ pass"
 
 $(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml2 $(SRCDIR)/widlprocxmltohtml.xsl Makefile
@@ -86,6 +86,9 @@ $(EXAMPLESOBJDIR)/%.widlprocxml : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD) Makef
 	$(WIDLPROC) $< >$@
 	cp $(OBJDIR)/widlprocxml.dtd $(dir $@)/
 	xmllint --noout --dtdvalid $(DTD) $@
+
+$(EXAMPLESOBJDIR)/widlhtml.css : $(EXAMPLESDIR)/widlhtml.css
+	cp $< $@
 
 .DELETE_ON_ERROR:
 
