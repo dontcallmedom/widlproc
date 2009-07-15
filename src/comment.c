@@ -809,29 +809,29 @@ startparamcnode(struct cnode *cnode, const char *word, unsigned int wordlen,
 }
 
 /***********************************************************************
- * api_feature_output : output api-feature cnode
+ * api_subfeature_output : output api-subfeature cnode
  *
  * Enter:   cnode for root
  *          indent = indent (nesting) level
  */
 static void
-api_feature_output(struct cnode *cnode, unsigned int indent)
+api_subfeature_output(struct cnode *cnode, unsigned int indent)
 {
     struct paramcnode *paramcnode = (void *)cnode;
-    printf("%*s<api-feature identifier=\"%s\">\n", indent, "", paramcnode->name);
+    printf("%*s<api-subfeature identifier=\"%s\">\n", indent, "", paramcnode->name);
     outputchildren(cnode, indent, 1);
-    printf("%*s</api-feature>\n", indent, "");
+    printf("%*s</api-subfeature>\n", indent, "");
 }
 
 /***********************************************************************
- * cnode type api_feature
+ * cnode type api_subfeature
  */
-static const struct cnodefuncs api_feature_funcs = {
+static const struct cnodefuncs api_subfeature_funcs = {
     0, /* !indesc */
     0, /* needpara */
     &default_askend,
     0, /* end */
-    &api_feature_output,
+    &api_subfeature_output,
 };
 
 /***********************************************************************
@@ -861,6 +861,52 @@ static const struct cnodefuncs device_cap_funcs = {
 };
 
 /***********************************************************************
+ * def_api_subfeature_askend : ask if def-api-subfeature cnode wants to end at new para
+ *
+ * Enter:   cnode for def-api-subfeature
+ *          type = cnodefuncs for new para (0 if html block element)
+ *
+ * Return:  non-zero to end the def-api-subfeature
+ */
+static int
+def_api_subfeature_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    /* A def-api-subfeature does not end at a plain para, an html block element,
+     * a brief para, or a device-cap. */
+    if (!type || type == &para_funcs || type == &device_cap_funcs || type == &brief_funcs)
+        return 0;
+    return 1;
+}
+
+/***********************************************************************
+ * def_api_subfeature_output : output def-api-subfeature cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+def_api_subfeature_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<def-api-subfeature identifier=\"%s\">\n", indent, "", paramcnode->name);
+    printf("%*s<descriptive>\n", indent + 2, "");
+    outputchildren(cnode, indent + 2, 0);
+    printf("%*s</descriptive>\n", indent + 2, "");
+    printf("%*s</def-api-subfeature>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type def_api_subfeature
+ */
+static const struct cnodefuncs def_api_subfeature_funcs = {
+    0, /* !indesc */
+    1, /* needpara */
+    &def_api_subfeature_askend,
+    0, /* end */
+    &def_api_subfeature_output,
+};
+
+/***********************************************************************
  * def_api_feature_askend : ask if def-api-feature cnode wants to end at new para
  *
  * Enter:   cnode for def-api-feature
@@ -872,8 +918,8 @@ static int
 def_api_feature_askend(struct cnode *cnode, const struct cnodefuncs *type)
 {
     /* A def-api-feature does not end at a plain para, an html block element,
-     * a brief para, or a device-cap. */
-    if (!type || type == &para_funcs || type == &device_cap_funcs || type == &brief_funcs)
+     * or a brief para. */
+    if (!type || type == &para_funcs || type == &brief_funcs)
         return 0;
     return 1;
 }
@@ -1223,6 +1269,7 @@ struct command {
 };
 static const struct command commands[] = {
     { &dox_throw, &def_api_feature_funcs, 15, "def-api-feature" },
+    { &dox_throw, &def_api_subfeature_funcs, 18, "def-api-subfeature" },
     { &dox_para, &author_funcs, 6, "author" },
     { &dox_b, 0, 1, "b" },
     { &dox_para, &brief_funcs, 5, "brief" },
@@ -1234,7 +1281,7 @@ static const struct command commands[] = {
     { &dox_param, &param_funcs, 5, "param" },
     { &dox_para, &return_funcs, 6, "return" },
     { &dox_throw, &throw_funcs, 5, "throw" },
-    { &dox_throw, &api_feature_funcs, 11, "api-feature" },
+    { &dox_throw, &api_subfeature_funcs, 14, "api-subfeature" },
     { &dox_throw, &device_cap_funcs, 10, "device-cap" },
     { &dox_para, &version_funcs, 7, "version" },
     { 0, 0, 0 }
@@ -1673,7 +1720,7 @@ attachcomments(struct comment *comment, struct node *root)
 {
     while (comment) {
         struct comment *next = comment->next;
-        /* See if there are any \param, \return, \throw, \def-api-feature or
+        /* See if there are any \param, \return, \throw, \def-api-subfeature or
          * \def-device-cap cnodes to detach and attach
          * elsewhere. (This only looks at top-level nodes, direct children
          * of the root, so does not detach a \param inside a

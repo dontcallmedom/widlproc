@@ -83,7 +83,7 @@ pre {
     background-color: #EEE;
 }
 
-.def-api-feature dt, dt .def-device-cap, dt.const code { font: bold 100% sans-serif; }
+.def-api-feature dt, .def-api-subfeature dt, dt .def-device-cap, dt.const code { font: bold 100% sans-serif; }
 dt.attribute code, dt.method code { font: italic 100% sans-serif; }
 
 .def-device-caps dd { margin-bottom: 2em }
