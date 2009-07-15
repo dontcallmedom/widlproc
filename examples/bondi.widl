@@ -38,7 +38,7 @@ module bondi {
 	/**
 	 * \brief Array of 16-bit signed integer values.
 	 */
-	typedef sequence<short>       ShortArray;
+	typedef sequence<short>     ShortArray;
 
 	/**
 	 * \brief Array of 32-bit signed integer values.
@@ -51,18 +51,30 @@ module bondi {
 	typedef sequence<float>     FloatArray;
 
 	/**
+	 * \brief Generic Map object.
+	 */
+	typedef Object              Map;
+
+	/**
 	 * \brief Generic success callback interface.
 	 */
-	[Callback] interface SuccessCallback {
+	[Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
 		void onSuccess(in Object ob);
 	};
 
 	/**
 	 * \brief Generic error callback interface.
 	 */
-	[Callback] interface ErrorCallback {
-		void onError(in Error error);
+	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
+		void onError(in GenericError error);
 	};
+
+	/**
+	 * \brief Generic error interface.
+	 *
+	 * 
+	 */
+
 
 	interface GenericError {
 
@@ -72,12 +84,12 @@ module bondi {
 		readonly attribute unsigned short code;
 	};
 		
-
 	/**
-	 * \brief Generic error interface.
+	 * \brief DeviceApiError error interface.
 	 *
 	 * The error codes must be in the range 10000-19999.
 	 */
+
 	interface DeviceAPIError : GenericError {
 
 		/**

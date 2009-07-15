@@ -75,7 +75,7 @@
  * 		var docLocation = bondi.filesystem.getDefaultLocation("documents");
  * 		var docDir = bondi.filesystem.resolve(docLocation);
  * 		var docFiles = docDir.listFiles();
- * 		for(var i = 0; i < docFiles.length; i++) {
+ * 		for(var i = 0; i &lt; docFiles.length; i++) {
  * 			// displays name of each image file in image directory
  * 			alert(docFiles[i].name);
  * 		}
@@ -130,7 +130,7 @@ module filesystem {
 	 * taking a File object as input argument. It is used in asynchronous
 	 * operations such as copying, moving and deleting files.
 	 */
-	[Callback] interface FileSystemSuccessCallback {
+	[Callback=FunctionOnly, NoInterfaceObject] interface FileSystemSuccessCallback {
 		void onSuccess(in File file);
 	};
 
@@ -151,7 +151,7 @@ module filesystem {
 	 * 		var docLocation = bondi.filesystem.getDefaultLocation("documents");
 	 * 		var docDir = bondi.filesystem.resolve(docLocation);
 	 * 		var docFiles = docDir.listFiles();
-	 * 		for(var i = 0; i < docFiles.length; i++) {
+	 * 		for(var i = 0; i &lt; docFiles.length; i++) {
 	 * 			// displays name of each image file in image directory
 	 * 			alert(docFiles[i].name);
 	 * 		}
@@ -235,7 +235,7 @@ module filesystem {
 		 *
 		 * \code
 		 * 	var locations = bondi.filesystem.getRootLocations();
-		 * 	for(var i = 0; i < locations.length; i++) {
+		 * 	for(var i = 0; i &lt; locations.length; i++) {
 		 * 		// locations[i] is a resolvable root location
 		 * 	}
 		 * \endcode
@@ -365,7 +365,7 @@ module filesystem {
 	 *
 	 *	// list directory contents
 	 * 	var files = dir.listFiles();
-	 * 	for(var i = 0; i < files.length; i++) {
+	 * 	for(var i = 0; i &lt; files.length; i++) {
 	 * 		// alerts each name of dir's contents
 	 * 		alert(files[i].name);
 	 * 	}
@@ -570,7 +570,7 @@ module filesystem {
 		 *
 		 * \code
 		 * 	var files = dir.listFiles();
-		 * 	for(var i = 0; i < files.length; i++) {
+		 * 	for(var i = 0; i &lt; files.length; i++) {
 		 * 		// files[i] iterate over all files of this directory
 		 * 	}
 		 * \endcode
@@ -626,7 +626,7 @@ module filesystem {
 		 *
 		 * \code
 		 * 	// copies this file to /temp/file.copy
-		 * 	var op = file.copyTo(function(copiedFile) { ... }, null, "/temp/file.copy", false);
+		 * 	var op = file.copyTo(function(copiedFile) { alert("file copied"); }, null, "/temp/file.copy", false);
 		 * \endcode
 		 *
 		 * \param successCallback called when the file has been copied.
@@ -937,7 +937,7 @@ module filesystem {
 		 * \code
 		 * 	// reads up to 256 bytes from the stream
 		 * 	var raw = stream.readBytes(256);
-		 * 	for(var i = 0; i < raw.length; i++) {
+		 * 	for(var i = 0; i &lt; raw.length; i++) {
 		 * 		// raw[i] contains the i-th byte of the current data chunk
 		 * 	}
 		 * \endcode
