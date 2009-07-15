@@ -133,15 +133,19 @@ SVNFILES = $(shell test -d .svn && svn info -R . | sed -n 's/^Path: \(.*\)$$/\1/
 SVNBRANCH = $(shell test -d .svn && svn info . | sed -n 's|^URL:.*/\([^/]*\)$$|\1|p')
 SVNREV = $(shell test -d .svn && svn info -R . | sed -n 's/^Last Changed Rev: \([0-9][0-9]*\)$$/\1/p' | sort -g | tail -1)
 
+SVNLOG = history
+$(SVNLOG) : $(SVNFILES)
+	svn log -vrHEAD:311 >$@
+
 zip : $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip
-$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl $(SRCDIR)/widlprocxmlfqids.xsl Makefile
+$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl $(SRCDIR)/widlprocxmlfqids.xsl Makefile $(SVNLOG)
 	rm -f $@
 	zip -j $@ $^ -x Makefile
 	zip $@ examples/*.widl examples/*.css examples/Makefile examples/README
 
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
-widlproc-src-%.zip : $(SVNFILES)
+widlproc-src-%.zip : $(SVNFILES) $(SVNLOG)
 	zip $@ $^ 
 
 test :
