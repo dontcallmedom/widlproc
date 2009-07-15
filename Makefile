@@ -134,41 +134,17 @@ SVNBRANCH = $(shell test -d .svn && svn info . | sed -n 's|^URL:.*/\([^/]*\)$$|\
 SVNREV = $(shell test -d .svn && svn info -R . | sed -n 's/^Last Changed Rev: \([0-9][0-9]*\)$$/\1/p' | sort -g | tail -1)
 
 zip : $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip
-$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl Makefile
+$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl $(SRCDIR)/widlprocxmlfqids.xsl Makefile
 	rm -f $@
 	zip -j $@ $^ -x Makefile
-	zip $@ examples/*.widl examples/*.css
+	zip $@ examples/*.widl examples/*.css examples/Makefile examples/README
 
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
 widlproc-src-%.zip : $(SVNFILES)
 	zip $@ $^ 
 
-WIDLS = $(patsubst $(EXAMPLESDIR)/%, %, $(wildcard $(EXAMPLESDIR)/*.widl))
-
-test : $(patsubst %.widl, $(OBJDIR)/$(EXAMPLESDIR)/%.html, $(WIDLS))
-	@echo "$@ pass"
-
-$(OBJDIR)/$(EXAMPLESDIR)/%.html : $(OBJDIR)/$(EXAMPLESDIR)/%.widlprocxml2 $(SRCDIR)/widlprocxmltohtml.xsl Makefile
-	cp $(SRCDIR)/widlprocxmltohtml.xsl $(dir $@)/
-	xsltproc $(dir $@)/widlprocxmltohtml.xsl $< >$@
-
-$(OBJDIR)/$(EXAMPLESDIR)/%.widlprocxml2 : $(OBJDIR)/$(EXAMPLESDIR)/fqids.sed $(OBJDIR)/$(EXAMPLESDIR)/%.widlprocxml
-	sed -f $^ >$@
-	cp $@ $@.keep
-
-$(OBJDIR)/$(EXAMPLESDIR)/fqids.sed : $(patsubst %.widl, $(OBJDIR)/$(EXAMPLESDIR)/%.widlprocxml, $(WIDLS)) $(SRCDIR)/widlprocxmlfqids.xsl Makefile
-	# Create the list of fqids (from fqid attributes).
-	for i in $(filter %.widlprocxml, $^); do xsltproc $(SRCDIR)/widlprocxmlfqids.xsl $$i || exit 1; done >$@.tmp
-	# Turn that into a sed script that turns a ref to the last element of
-	# an fqid into an <a href> to the fqid in the right file (where the
-	# first element of the fqid gives the filename).
-	sed -n 's/^\([^:]*\).*:\([^:]*\)$$/s\/<ref>\2<\\\/ref>\/<ref ref="\1.html#&">\2<\\\/ref>\/g;s\/<ScopedName  *identifier="\2"\/<ScopedName identifier="\2" ref="\1.html#&"\/g/p' $@.tmp >$@
-
-$(OBJDIR)/$(EXAMPLESDIR)/%.widlprocxml : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD) Makefile
-	mkdir -p $(dir $@)
-	$(WIDLPROC) $< >$@
-	cp $(OBJDIR)/widlprocxml.dtd $(dir $@)/
-	xmllint --noout --dtdvalid $(DTD) $@
+test :
+	$(MAKE) -C examples SRCDIR=../src OBJDIR=../obj EXAMPLESOBJDIR=../obj/examples
 
 .DELETE_ON_ERROR:
