@@ -15,6 +15,7 @@
 #include "misc.h"
 #include "process.h"
 
+static const char nodtdopt[] = "-no-dtd-ref";
 const char *progname;
 
 /***********************************************************************
@@ -25,7 +26,7 @@ const char *progname;
  * Return:  argv stepped to point to first non-option argument
  */
 static const char *const *
-options(const char *const *argv)
+options(int argc, const char *const *argv)
 {
     /* Set progname for error messages etc. */
     {
@@ -42,7 +43,8 @@ options(const char *const *argv)
         if (base)
             progname = base + 1;
     }
-    return argv + 1;
+    return (argc > 1 && strncmp(argv[1], nodtdopt, sizeof nodtdopt) == 0)
+          ? argv + 2 : argv + 1;
 }
 
 /***********************************************************************
@@ -52,10 +54,10 @@ int
 main(int argc, char **argv)
 {
     const char *const *parg;
-    parg = options((const char *const *)argv);
+    parg = options(argc, (const char *const *)argv);
     if (!*parg)
-        errorexit("expected at least one argument");
-    processfiles(parg);
+        errorexit("usage: %s [-no-dtd-ref] <interface>.widl ...", progname);
+    processfiles(parg, parg == (const char *const *)argv + 1);
     return 0;
 }
 

@@ -300,14 +300,15 @@ outputchildren(struct node *node, struct node *identifier, unsigned int indent)
  * Enter:   name = filename
  */
 void
-processfiles(const char *const *names)
+processfiles(const char *const *names, int dtdref)
 {
     struct node *root;
     readinput(names);
     root = parse();
     processcomments(root);
-    printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-           "<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
+    printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    if(dtdref)
+           printf("<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
     output(root, 0, 0);
 }
 
