@@ -69,8 +69,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <ul class="toc">
           <li>1. <a href="#intro">Introduction</a>
           <ul>
-            <xsl:if test="descriptive/def-api-subfeature">
-              <li>1.1. <a href="#def-api-subfeatures">Feature and subfeatures</a></li>
+            <xsl:if test="descriptive/def-api-feature">
+              <li>1.1. <a href="#def-api-features">Features</a></li>
             </xsl:if>
             <xsl:if test="descriptive/def-device-cap">
               <li>1.2. <a href="#def-device-caps">Device Capabilities</a></li>
@@ -105,21 +105,11 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
         <xsl:apply-templates select="descriptive/Code"/>
 
-        <xsl:if test="descriptive/def-api/feature | descriptive/def-api-subfeature">
-            <div id="def-api-subfeatures" class="def-api-subfeatures">
-                <h3 id="features">1.1. Features and subfeatures</h3>
-                <p>
-                    The following is the URI used to identify this API's
-                    feature, for use in bondi.requestFeature.
-                </p>
+        <xsl:if test="descriptive/def-api-feature">
+            <div id="def-api-features" class="def-api-features">
+                <h3 id="features">1.1. Features</h3>
+                <p>This is the list of URIs used to declare this API's features, for use in bondi.requestFeature. For each URL, the list of functions provided is provided.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
-                <p>
-                    The following is the list of URIs used to declare this
-                    API's subfeatures, for use in bondi.requestFeature.
-                    For each URI, the list of device capabilities used
-                    by the subfeature is provided.
-                </p>
-                <xsl:apply-templates select="descriptive/def-api-subfeature"/>
             </div>
         </xsl:if>
         <xsl:if test="descriptive/def-device-cap">
@@ -144,18 +134,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--def-api-feature-->
 <xsl:template match="def-api-feature">
       <dl class="def-api-feature">
-          <dt><xsl:value-of select="@identifier"/></dt>
-          <dd>
-            <xsl:apply-templates select="descriptive/brief"/>
-            <xsl:apply-templates select="descriptive"/>
-            <xsl:apply-templates select="descriptive/Code"/>
-          </dd>
-      </dl>
-</xsl:template>
-
-<!--def-api-subfeature-->
-<xsl:template match="def-api-subfeature">
-      <dl class="def-api-subfeature">
           <dt><xsl:value-of select="@identifier"/></dt>
           <dd>
             <xsl:apply-templates select="descriptive/brief"/>
@@ -316,11 +294,11 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="ArgumentList"/>
         <xsl:apply-templates select="ReturnType"/>
         <xsl:apply-templates select="Raises[ExceptionList/ScopedNameList]"/>
-        <xsl:if test="descriptive/api-subfeature">
-            <div class="api-subfeatures">
+        <xsl:if test="descriptive/api-feature">
+            <div class="api-features">
                 <h6>API features</h6>
                 <dl>
-                    <xsl:apply-templates select="descriptive/api-subfeature"/>
+                    <xsl:apply-templates select="descriptive/api-feature"/>
                 </dl>
             </div>
         </xsl:if>
@@ -529,8 +507,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </div>
 </xsl:template>
 
-<!--api-subfeature-->
-<xsl:template match="api-subfeature">
+<!--api-feature-->
+<xsl:template match="api-feature">
     <dt>
         <xsl:value-of select="@identifier"/>
     </dt>

@@ -227,15 +227,6 @@ The Doxygen alternative (from JavaDoc) of <code>@</code> is not
 supported.
 </p>
 
-<h4 id="api-subfeature">\api-subfeature</h4>
-
-<p>
-Starts a new paragraph. The following word is the name of an API feature
-used by the method being documented. The remainder of the paragraph is
-any description required of how (eg in what circumstance) the API feature
-is used.
-</p>
-
 <h4>\author</h4>
 
 <p>
@@ -285,18 +276,6 @@ which is defined here. The description is an <em>def-api-feature block</em>,
 consisting of the
 remainder of the paragraph, together with
 further paragraphs in the same block comment each of which is a plain
-paragraph, a paragraph started due to HTML markup, or a <code>\brief</code>
-paragraph.
-</p>
-
-<h4 id="def-api-subfeature">\def-api-subfeature</h4>
-
-<p>
-Starts a new paragraph. The following word is the name of the API subfeature
-which is defined here. The description is an <em>def-api-subfeature block</em>,
-consisting of the
-remainder of the paragraph, together with
-further paragraphs in the same block comment each of which is a plain
 paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
 paragraph, or a
 <a href="#device-cap"><code>\device-cap</code></a>
@@ -314,19 +293,6 @@ paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
 paragraph, or a
 <a href="#param"><code>\param</code></a>
 paragraph.
-</p>
-
-<h4 id="device-cap">\device-cap</h4>
-
-<p>
-Starts a new paragraph.
-This command can appear only inside an
-<a href="#def-api-subfeature">def-api-subfeature block</a>.
-The following word is the name of a device capability
-used by the API feature being documented.
-The remainder of the paragraph is
-any description required of how (eg in what circumstance) the device capability
-is used.
 </p>
 
 <h4>\n</h4>
@@ -369,6 +335,28 @@ exception thrown by the entity being documented, and the remainder of
 the paragraph documents that exception (in the <code>raises</code> list of
 an <code>operation</code>, or the <code>setraises</code>
 clause of an <code>attribute</code>).
+</p>
+
+<h4 id="api-feature">\api-feature</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of an API feature
+used by the method being documented. The remainder of the paragraph is
+any description required of how (eg in what circumstance) the API feature
+is used.
+</p>
+
+<h4 id="device-cap">\device-cap</h4>
+
+<p>
+Starts a new paragraph.
+This command can appear only inside an
+<a href="#def-api-feature">def-api-feature block</a>.
+The following word is the name of a device capability
+used by the API feature being documented.
+The remainder of the paragraph is
+any description required of how (eg in what circumstance) the device capability
+is used.
 </p>
 
 <h4>\version</h4>
@@ -853,8 +841,8 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
-    | version | Code | api-subfeature | device-cap | def-api-feature
-    | def-api-subfeature | def-device-cap | param | webidl)* >
+    | version | Code | api-feature | device-cap | def-api-feature
+    | def-device-cap | param | webidl)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -868,8 +856,8 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 
 &lt;!ELEMENT Code %Inline; >
 
-&lt;!ELEMENT api-subfeature %Inline; >
-&lt;!ATTLIST api-subfeature identifier CDATA #REQUIRED >
+&lt;!ELEMENT api-feature %Inline; >
+&lt;!ATTLIST api-feature identifier CDATA #REQUIRED >
 
 &lt;!ELEMENT device-cap %Inline; >
 &lt;!ATTLIST device-cap identifier CDATA #REQUIRED >
@@ -879,9 +867,6 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 
 &lt;!ELEMENT def-api-feature (descriptive?) >
 &lt;!ATTLIST def-api-feature identifier CDATA #REQUIRED >
-
-&lt;!ELEMENT def-api-subfeature (descriptive?) >
-&lt;!ATTLIST def-api-subfeature identifier CDATA #REQUIRED >
 
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >

@@ -89,15 +89,12 @@
  * 	bondi.requestFeature(successCB, errorCB, "filesystem");
  * \endcode
  * 
- * \def-api-feature http://bondi.omtp.org/api/filesystem
- * \brief The whole filesystem API.
- *
- * \def-api-subfeature http://bondi.omtp.org/api/filesystem.read
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.read
  * \brief Filesystem read operations, including reading directory listings,
  *        file contents and resolving root locations.
  * \device-cap io.file.read
  *
- * \def-api-subfeature http://bondi.omtp.org/api/filesystem.write
+ * \def-api-feature http://bondi.omtp.org/api/filesystem.write
  * \brief Filesystem write operations, including creating files/directories,
  *        writing to files, deleting files/directories, moving and copying
  *        files.
@@ -255,7 +252,7 @@ module filesystem {
 		 * valid root or default location and must address an existing
 		 * and accessible file.  
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.read
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
 		 * 	var location = bondi.filesystem.getDefaultLocation("temp");
@@ -281,7 +278,7 @@ module filesystem {
 		 * notifications if root or default locations such as storage
 		 * cards are mounted/unmounted into/from the device filesystem.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.read
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
 		 * 	var listener = { mountEvent: function(location) { alert('mounted ' + location); },
@@ -569,7 +566,7 @@ module filesystem {
 		 * The list of files contains directories and files, it does
 		 * not contain the directories "." and "..".
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.read
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
 		 * 	var files = dir.listFiles();
@@ -590,8 +587,8 @@ module filesystem {
 		 * \brief Opens the file in the given mode supporting the given
 		 * encoding.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.read if opened for reading.
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write if opened for writing.
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read if opened for reading.
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write if opened for writing.
 		 *
 		 * \code
 		 * 	// opens file for reading
@@ -625,7 +622,7 @@ module filesystem {
 		 *
 		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	// copies this file to /temp/file.copy
@@ -661,7 +658,7 @@ module filesystem {
 		 *
 		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	// moves this file to /temp/file.move
@@ -698,7 +695,7 @@ module filesystem {
 		 *
 		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	var newDir = dir.createDirectory("newDir");
@@ -730,7 +727,7 @@ module filesystem {
 		 *
 		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	var newFile = dir.createFile("newFile");
@@ -758,7 +755,7 @@ module filesystem {
 		 *
 		 * The encoding of file paths is <a href="http://www.ietf.org/rfc/rfc2279.txt">UTF-8</a>.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.read
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
 		 *
 		 * \code
 		 * 	var hellofile = dir.resolve("foo/hello.txt");
@@ -786,7 +783,7 @@ module filesystem {
 		 * filesystem permissions or if any directories or files are
 		 * openened by other processes.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	var fullPath = dir.fullPath;
@@ -814,7 +811,7 @@ module filesystem {
 		 *
 		 * Returns <em>true</em> on success, <em>false</em> otherwise.
 		 *
-		 * \api-subfeature http://bondi.omtp.org/api/filesystem.write
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	var fullPath = dir.fullPath;
