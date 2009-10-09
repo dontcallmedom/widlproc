@@ -541,7 +541,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <td>
           <xsl:for-each select="Interface/InterfaceBody/InterfaceMembers/InterfaceMember/Operation">
 
-            <xsl:apply-templates select="ReturnType" mode="name"/>
+            <xsl:apply-templates select="ReturnType">
+                <xsl:with-param name="nodesc" select="1"/>
+            </xsl:apply-templates>
             <xsl:text> </xsl:text>
             <a href="#{concat(@identifier,generate-id(.))}"><xsl:value-of select="@identifier"/></a>
             <xsl:text>(</xsl:text>
@@ -558,28 +560,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
       </xsl:for-each>
     </tbody>
   </table>
-</xsl:template>
-
-<xsl:template match="ReturnType" mode="name">
-  <xsl:choose>
-    <xsl:when test="DeclarationType/DOMString">DOMString</xsl:when>
-    <xsl:when test="DeclarationType/boolean">boolean</xsl:when>
-    <xsl:when test="DeclarationType/octet">octet</xsl:when>
-    <xsl:when test="DeclarationType/short">short</xsl:when>
-    <xsl:when test="DeclarationType/float">float</xsl:when>
-    <xsl:when test="DeclarationType/any">any</xsl:when>
-    <xsl:when test="DeclarationType/UnsignedIntegerType">unsigned integer</xsl:when>
-    <xsl:when test="DeclarationType/UnsignedShortType">unsigned short</xsl:when>
-    <xsl:when test="DeclarationType/UnsignedLongType">unsigned long</xsl:when>
-    <xsl:when test="DeclarationType/LongLongType">long long</xsl:when>
-    <xsl:when test="DeclarationType/UnsignedLongLongType">unsigned long long</xsl:when>
-    <xsl:when test="DeclarationType/Object">Object</xsl:when>
-    <xsl:when test="void">void</xsl:when>
-    <xsl:when test="DeclarationType/ScopedName"><xsl:value-of select="DeclarationType/ScopedName/@identifier"/></xsl:when>
-    <xsl:otherwise>
-      <xsl:message>ERROR: Wrong or Missing return type: <xsl:value-of select="name(DeclarationType/*[1])"/></xsl:message>
-    </xsl:otherwise>
-  </xsl:choose>
 </xsl:template>
 
 <!--<ref> element in literal Web IDL.-->
