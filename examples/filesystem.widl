@@ -112,7 +112,7 @@
  *
  * \author Paddy Byers &lt;paddy@aplixcorp.com&gt;
  * \author Anselm R Garbe &lt;anselm@aplixcorp.com&gt;
- * \version 1.0
+ * \version 1.1
  */
 module filesystem {
 
@@ -131,6 +131,11 @@ module filesystem {
 	 * operations such as copying, moving and deleting files.
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface FileSystemSuccessCallback {
+	   /**
+	    * \brief Method invoked when the asynchronous call completes succesfully
+	    *
+	    * \param file The file resulting from the asynchronous call
+	    */
 		void onSuccess(in File file);
 	};
 
@@ -587,8 +592,8 @@ module filesystem {
 		 * \brief Opens the file in the given mode supporting the given
 		 * encoding.
 		 *
-		 * \api-feature http://bondi.omtp.org/api/filesystem.read if opened for reading.
-		 * \api-feature http://bondi.omtp.org/api/filesystem.write if opened for writing.
+		 * \api-feature http://bondi.omtp.org/api/filesystem.read
+		 * \api-feature http://bondi.omtp.org/api/filesystem.write
 		 *
 		 * \code
 		 * 	// opens file for reading

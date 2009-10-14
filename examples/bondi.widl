@@ -21,7 +21,7 @@
  * \brief Common BONDI functionality.
  *
  * These definitions can be used in all other BONDI modules as dependencies.
-  * \version 1.0
+  * \version 1.1
  */
 module bondi {
 
@@ -59,13 +59,35 @@ module bondi {
 	 * \brief Generic success callback interface.
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface SuccessCallback {
-		void onSuccess(in Object ob);
+	   /**
+	    * \brief Method invoked when the asynchronous call completes successfully
+	    */
+		void onSuccess();
 	};
+
+
+	/**
+	 * \brief Success callback interface for requestFeature invocations
+	 */
+    [Callback=FunctionOnly, NoInterfaceObject] interface RequestFeatureSuccessCallback {
+       /**
+	    * \brief Method invoked upon a succesful requestFeature invocation
+	    *
+	    * \param ob Object implementing the JavaScript API associated with the requested Feature.
+	    */
+        void onSuccess(in Object ob);
+     };
+
 
 	/**
 	 * \brief Generic error callback interface.
 	 */
 	[Callback=FunctionOnly, NoInterfaceObject] interface ErrorCallback {
+	   /**
+	    * \brief Method invoked when an error occurs
+	    *
+	    * \param error The error that is raised.
+	    */
 		void onError(in GenericError error);
 	};
 
@@ -179,19 +201,16 @@ module bondi {
 		 * \return PendingOperation enabling the requester to cancel this request.
 		 *
 		 * The errorCallback will receive one of the following errors:
-		 * \n DeviceAPIError INVALID_ARGUMENT_ERROR if a malformed
+		 * \throw DeviceAPIError INVALID_ARGUMENT_ERROR if a malformed
 		 * argument has been supplied or a required argument has been omitted.
-		 * \n DeviceAPIError NOT_FOUND_ERROR if the requested feature could not be found.
-		 * \n SecurityError PERMISSION_DENIED_ERROR if the
+		 * \throw DeviceAPIError NOT_FOUND_ERROR if the requested feature could not be found.
+		 * \throw SecurityError PERMISSION_DENIED_ERROR if the
 		 * requested feature is not permitted to load/bind or that
 		 * access to a required device capability has been denied.
-		 * \n DeviceAPIError UNKNOWN_ERROR if any other error occurred.
-		 * \throw SecurityError PERMISSION_DENIED_ERROR if the requested
-		 * feature is not permitted to load/bind
 		 * \throw DeviceAPIError UNKNOWN_ERROR if an error occurred and a pending
 		 * operation object can't be returned.
 		 */
-		PendingOperation requestFeature(in SuccessCallback successCallback,
+		PendingOperation requestFeature(in RequestFeatureSuccessCallback successCallback,
 		                                in ErrorCallback   errorCallback,
 		                                in DOMString       name)
 			raises(DeviceAPIError, SecurityError);
