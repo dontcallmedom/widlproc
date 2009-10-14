@@ -291,6 +291,20 @@ paragraph, or a
 paragraph.
 </p>
 
+<h4 id="def-api-feature-set">\def-api-feature-set</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of the API feature
+set which is defined here. The description is an <em>def-api-feature-set block</em>,
+consisting of the
+remainder of the paragraph, together with
+further paragraphs in the same block comment each of which is a plain
+paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
+paragraph, or a
+<a href="#device-cap"><code>\api-feature</code></a>
+paragraph.
+</p>
+
 <h4>\def-device-cap</h4>
 
 <p>
@@ -831,7 +845,7 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
     | version | Code | api-feature | device-cap | def-api-feature
-    | def-device-cap | param | webidl)* >
+    | def-api-feature-set | def-device-cap | param | webidl)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -856,6 +870,9 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 
 &lt;!ELEMENT def-api-feature (descriptive?) >
 &lt;!ATTLIST def-api-feature identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT def-api-feature-set (descriptive?) >
+&lt;!ATTLIST def-api-feature-set identifier CDATA #REQUIRED >
 
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >

@@ -69,11 +69,14 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <ul class="toc">
           <li>1. <a href="#intro">Introduction</a>
           <ul>
+            <xsl:if test="descriptive/def-api-feature-set">
+              <li>1.1. <a href="#def-api-feature-sets">Feature set</a></li>
+            </xsl:if>
             <xsl:if test="descriptive/def-api-feature">
-              <li>1.1. <a href="#def-api-features">Features</a></li>
+              <li>1.2. <a href="#def-api-features">Features</a></li>
             </xsl:if>
             <xsl:if test="descriptive/def-device-cap">
-              <li>1.2. <a href="#def-device-caps">Device Capabilities</a></li>
+              <li>1.3. <a href="#def-device-caps">Device Capabilities</a></li>
             </xsl:if>
           </ul>
           </li>
@@ -105,16 +108,23 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
         <xsl:apply-templates select="descriptive/Code"/>
 
+        <xsl:if test="descriptive/def-api-feature-set">
+            <div id="def-api-feature-sets" class="def-api-feature-sets">
+                <h3 id="features">1.1. Feature set</h3>
+                <p>This is the URI used to declare this API's feature set, for use in bondi.requestFeature. For the URL, the list of features included by the feature set is provided.</p>
+                <xsl:apply-templates select="descriptive/def-api-feature-set"/>
+            </div>
+        </xsl:if>
         <xsl:if test="descriptive/def-api-feature">
             <div id="def-api-features" class="def-api-features">
-                <h3 id="features">1.1. Features</h3>
-                <p>This is the list of URIs used to declare this API's features, for use in bondi.requestFeature. For each URL, the list of functions provided is provided.</p>
+                <h3 id="features">1.2. Features</h3>
+                <p>This is the list of URIs used to declare this API's features, for use in bondi.requestFeature. For each URL, the list of functions covered is provided.</p>
                 <xsl:apply-templates select="descriptive/def-api-feature"/>
             </div>
         </xsl:if>
         <xsl:if test="descriptive/def-device-cap">
             <div class="def-device-caps" id="def-device-caps">
-                <h3>1.2. Device capabilities</h3>
+                <h3>1.3. Device capabilities</h3>
                 <dl>
                   <xsl:apply-templates select="descriptive/def-device-cap"/>
                 </dl>
@@ -131,6 +141,30 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </div>
 </xsl:template>
 
+<!--def-api-feature-set-->
+<xsl:template match="def-api-feature-set">
+      <dl class="def-api-feature-set">
+          <dt><xsl:value-of select="@identifier"/></dt>
+          <dd>
+            <xsl:apply-templates select="descriptive/brief"/>
+            <xsl:apply-templates select="descriptive"/>
+            <xsl:apply-templates select="descriptive/Code"/>
+            <xsl:if test="descriptive/api-feature">
+              <div class="api-features">
+                <p>
+                  Includes API features:
+                </p>
+                <ul>
+                  <xsl:for-each select="descriptive/api-feature">
+                    <li><code><xsl:value-of select="@identifier"/></code></li>
+                  </xsl:for-each>
+                </ul>
+              </div>
+            </xsl:if>
+          </dd>
+      </dl>
+</xsl:template>
+
 <!--def-api-feature-->
 <xsl:template match="def-api-feature">
       <dl class="def-api-feature">
@@ -140,7 +174,16 @@ XSLT stylesheet to convert widlprocxml into html documentation.
             <xsl:apply-templates select="descriptive"/>
             <xsl:apply-templates select="descriptive/Code"/>
             <xsl:if test="descriptive/device-cap">
-              <p class="device-caps">Device capabilities: <code><xsl:apply-templates select="descriptive/device-cap/@identifier"/></code></p>
+              <div class="device-caps">
+                <p>
+                  Device capabilities:
+                </p>
+                <ul>
+                  <xsl:for-each select="descriptive/device-cap">
+                    <li><code><xsl:value-of select="@identifier"/></code></li>
+                  </xsl:for-each>
+                </ul>
+              </div>
             </xsl:if>
           </dd>
       </dl>

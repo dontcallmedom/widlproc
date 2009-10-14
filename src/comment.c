@@ -906,6 +906,52 @@ static const struct cnodefuncs def_api_feature_funcs = {
 };
 
 /***********************************************************************
+ * def_api_feature_set_askend : ask if def-api-feature-set cnode wants to end at new para
+ *
+ * Enter:   cnode for def-api-feature-set
+ *          type = cnodefuncs for new para (0 if html block element)
+ *
+ * Return:  non-zero to end the def-api-feature-set
+ */
+static int
+def_api_feature_set_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    /* A def-api-feature-set does not end at a plain para, an html block element,
+     * a brief para, or an api-feature. */
+    if (!type || type == &para_funcs || type == &api_feature_funcs || type == &brief_funcs)
+        return 0;
+    return 1;
+}
+
+/***********************************************************************
+ * def_api_feature_set_output : output def-api-feature-set cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+def_api_feature_set_output(struct cnode *cnode, unsigned int indent)
+{
+    struct paramcnode *paramcnode = (void *)cnode;
+    printf("%*s<def-api-feature-set identifier=\"%s\">\n", indent, "", paramcnode->name);
+    printf("%*s<descriptive>\n", indent + 2, "");
+    outputchildren(cnode, indent + 2, 0);
+    printf("%*s</descriptive>\n", indent + 2, "");
+    printf("%*s</def-api-feature-set>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type def_api_feature_set
+ */
+static const struct cnodefuncs def_api_feature_set_funcs = {
+    0, /* !indesc */
+    1, /* needpara */
+    &def_api_feature_set_askend,
+    0, /* end */
+    &def_api_feature_set_output,
+};
+
+/***********************************************************************
  * def_device_cap_askend : ask if def-device-cap cnode wants to end at new para
  *
  * Enter:   cnode for def-device-cap
@@ -1203,6 +1249,7 @@ struct command {
 };
 static const struct command commands[] = {
     { &dox_throw, &def_api_feature_funcs, 15, "def-api-feature" },
+    { &dox_throw, &def_api_feature_set_funcs, 19, "def-api-feature-set" },
     { &dox_para, &author_funcs, 6, "author" },
     { &dox_b, 0, 1, "b" },
     { &dox_para, &brief_funcs, 5, "brief" },
