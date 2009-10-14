@@ -227,6 +227,15 @@ The Doxygen alternative (from JavaDoc) of <code>@</code> is not
 supported.
 </p>
 
+<h4 id="api-feature">\api-feature</h4>
+
+<p>
+Starts a new paragraph. The following word is the name of an API feature
+used by the method being documented. The remainder of the paragraph is
+any description required of how (eg in what circumstance) the API feature
+is used.
+</p>
+
 <h4>\author</h4>
 
 <p>
@@ -295,6 +304,19 @@ paragraph, or a
 paragraph.
 </p>
 
+<h4 id="device-cap">\device-cap</h4>
+
+<p>
+Starts a new paragraph.
+This command can appear only inside an
+<a href="#def-api-feature">def-api-feature block</a>.
+The following word is the name of a device capability
+used by the API feature being documented.
+The remainder of the paragraph is
+any description required of how (eg in what circumstance) the device capability
+is used.
+</p>
+
 <h4>\n</h4>
 
 <p>
@@ -324,28 +346,6 @@ exception thrown by the entity being documented, and the remainder of
 the paragraph documents that exception (in the <code>raises</code> list of
 an <code>operation</code>, or the <code>setraises</code>
 clause of an <code>attribute</code>).
-</p>
-
-<h4 id="api-feature">\api-feature</h4>
-
-<p>
-Starts a new paragraph. The following word is the name of an API feature
-used by the method being documented. The remainder of the paragraph is
-any description required of how (eg in what circumstance) the API feature
-is used.
-</p>
-
-<h4 id="device-cap">\device-cap</h4>
-
-<p>
-Starts a new paragraph.
-This command can appear only inside an
-<a href="#def-api-feature">def-api-feature block</a>.
-The following word is the name of a device capability
-used by the API feature being documented.
-The remainder of the paragraph is
-any description required of how (eg in what circumstance) the device capability
-is used.
 </p>
 
 <h4>\version</h4>
