@@ -57,7 +57,6 @@ struct comment {
     struct cnode root;
     int back; /* Whether the comment refers back rather than forward. */
     char *text;
-    char *package;
 };
 
 
@@ -1115,25 +1114,6 @@ dox_endcode(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
 }
 
 /***********************************************************************
- * Doxygen command handler : \package
- */
-static const char *
-dox_package(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-            const char *filename, unsigned int linenum)
-{
-    const char *word;
-    word = parseword(&p);
-    if (!word)
-        locerrorexit(filename, linenum, "expected word after \\package");
-    if (curcomment->package)
-        memfree(curcomment->package);
-    curcomment->package = memalloc(p - word + 1);
-    memcpy(curcomment->package, word, p - word);
-    curcomment->package[p - word] = 0;
-    return p;
-}
-
-/***********************************************************************
  * Doxygen command handler : \param
  */
 static const char *
@@ -1230,7 +1210,6 @@ static const struct command commands[] = {
     { &dox_throw, &def_device_cap_funcs, 14, "def-device-cap" },
     { &dox_endcode, 0, 7, "endcode" },
     { &dox_n, 0, 1, "n" },
-    { &dox_package, 0, 7, "package" },
     { &dox_param, &param_funcs, 5, "param" },
     { &dox_para, &return_funcs, 6, "return" },
     { &dox_throw, &throw_funcs, 5, "throw" },
