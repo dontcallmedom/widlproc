@@ -62,24 +62,9 @@ WIDLS = $(patsubst $(EXAMPLESDIR)/%, %, $(wildcard $(EXAMPLESDIR)/*.widl))
 test : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.html, $(WIDLS)) $(EXAMPLESOBJDIR)/widlhtml.css
 	@echo "$@ pass"
 
-$(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml2 $(SRCDIR)/widlprocxmltohtml.xsl Makefile
+$(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml $(SRCDIR)/widlprocxmltohtml.xsl Makefile
 	cp $(SRCDIR)/widlprocxmltohtml.xsl $(dir $@)/
 	xsltproc $(dir $@)/widlprocxmltohtml.xsl $< >$@
-
-$(EXAMPLESOBJDIR)/%.widlprocxml2 : $(EXAMPLESOBJDIR)/fqids.sed $(EXAMPLESOBJDIR)/%.widlprocxml
-	sed -f $^ >$@
-	cp $@ $@.keep
-
-# Note in the following commands a double $$ in a shell command in a makefile
-# represents a single $ in the shell command actually executed.
-
-$(EXAMPLESOBJDIR)/fqids.sed : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.widlprocxml, $(WIDLS)) $(SRCDIR)/widlprocxmlfqids.xsl Makefile
-	# Create the list of fqids (from fqid attributes).
-	for i in $(filter %.widlprocxml, $^); do xsltproc $(SRCDIR)/widlprocxmlfqids.xsl $$i || exit 1; done >$@.tmp
-	# Turn that into a sed script that turns a ref to the last part of
-	# an fqid into a <ref ref=".."> to the fqid in the right file (where the
-	# first part of the fqid gives the filename).
-	sed -n 's/^\([^:]*\).*:\([^:]*\)$$/s\/<ref>\2<\\\/ref>\/<ref ref="\1.html#&">\2<\\\/ref>\/g;s\/<ScopedName  *identifier="\2"\/<ScopedName identifier="\2" ref="\1.html#&"\/g/p' $@.tmp >$@
 
 $(EXAMPLESOBJDIR)/%.widlprocxml : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD) Makefile
 	mkdir -p $(dir $@)

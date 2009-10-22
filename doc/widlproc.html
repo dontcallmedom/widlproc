@@ -44,9 +44,7 @@ limitations under the License.
 
 <p>
 widlproc is a processor that accepts as input
-<a href="#webidl">Web IDL</a>
-(with an extension used in the
-<a href="#w3cgeo">W3C Geolocation API</a>),
+<a href="#webidl">Web IDL</a> (the 30 September 2009 editor's draft),
 with comments in a subset of the format used by
 <a href="#doxygen">Doxygen</a>.
 The format it accepts is proposed by Aplix for authoring
@@ -55,10 +53,8 @@ The format it accepts is proposed by Aplix for authoring
 
 <p>
 The output of widlproc is an XML representation of the
-parse tree resulting from parsing the 
-<a href="#webidl">Web IDL</a>
-using the latter's LL(1) grammar, with a few minor modifications, with
-added XML elements representing the
+<a href="#webidl">Web IDL</a> input,
+with added XML elements representing the
 <a href="#doxygen">Doxygen</a>-like comments.
 </p>
 
@@ -318,6 +314,19 @@ paragraph, or a
 paragraph.
 </p>
 
+<h4 id="def-instantiated">\def-instantiated</h4>
+
+<p>
+Starts a new paragraph.  The description is an <em>def-instantiated block</em>,
+consisting of the
+remainder of the paragraph, together with
+further paragraphs in the same block comment each of which is a plain
+paragraph, a paragraph started due to HTML markup, a <code>\brief</code>
+paragraph, or a
+<a href="#api-feature"><code>\api-feature</code></a>
+paragraph.
+</p>
+
 <h4 id="device-cap">\device-cap</h4>
 
 <p>
@@ -453,92 +462,9 @@ other elements:
 
 <p>
 The output of widlproc is an XML representation of the
-parse tree resulting from parsing the 
-<a href="#webidl">Web IDL</a>
-using the latter's LL(1) grammar, with a few minor modifications, with
-added XML elements representing the
+<a href="#webidl">Web IDL</a>,
+with added XML elements representing the
 <a href="#doxygen">Doxygen</a>-like comments.
-</p>
-
-<p>
-Most non-terminals in the Web IDL grammar correspond to an XML element
-of the same name. Where the XML element would be empty, it is omitted.
-</p>
-<p>
-Terminals do not appear in the XML output, except:
-</p>
-<ul>
-<li>
-<em>identifier</em> appears as the <code>identifier</code> attribute
-of the containing element;
-<li>
-<em>integer</em>, <em>float</em> and <em>string</em> appear as the
-empty element
-<code>&lt;integer/></code>,
-<code>&lt;Float/></code> or
-<code>&lt;string/></code> (respectively)
-with the attribute <code>value</code> containing the integer, float or
-string value;
-<li>
-The terminals
-<em>DOMString</em>,
-<em>unsigned</em>,
-<em>void</em>,
-<em>any</em>,
-<em>boolean</em>,
-<em>octet</em>,
-<em>short</em>,
-<em>long</em>,
-<em>float</em>,
-<em>double</em> and
-<em>Object</em>
-appear as an empty element of the same name.
-</ul>
-
-<p>
-Where a production is right recursive, the XML is slightly modified to
-remove the recursion. For example, the non-terminal <em>Definitions</em>
-is right recursive for the production <em>Definition Definitions</em>,
-but in the XML the recursion is removed so that, however many
-<code>&lt;Definition></code> elements there are, they are all direct
-children of a single <code>&lt;Definitions></code> element.
-</p>
-
-<p>
-This modification is taken slightly further for <em>ArgumentList</em>,
-<em>ExtendedAttributeList</em> and <em>ScopedNameList</em>:
-the <code>&lt;ArgumentList></code>,
-<code>&lt;ExtendedAttributeList></code> or <code>&lt;ScopedNameList></code>
-directly contains one or more
-<code>&lt;Argument></code>, <code>&lt;ExtendedAttribute></code>
-or <code>&lt;ScopedName></code>
-(respectively) elements, and there are no XML elements for the
-non-terminals <em>Arguments</em>, <em>ExtendedAttributes</em>
-and <em>ScopedNames</em>.
-</p>
-
-<p>
-The whole of a subtree rooted at an <em>ExtendedAttribute</em>
-non-terminal is output as a single
-<code>&lt;ExtendedAttribute value="<i>text</i>"></code>
-element where <i>text</i> is the text of the extended attribute with
-whitespace normalized (no whitespace except where needed to separate
-tokens, and then multiple whitespace characters folded into a single
-space character).
-</p>
-
-<p>
-The <code>&lt;ExtendedAttributeList></code> element is output as a child
-of the element it refers to, rather than as a preceeding sibling as the
-Web IDL grammar would imply. As an exception to this,
-<code>&lt;ExtendedAttributeList></code> is output as a child of a
-<code>&lt;Argument></code>.
-</p>
-
-<p>
-A <em>BooleanLiteral</em> is output as an empty
-<code>&lt;BooleanLiteral value="<i>val</i>"/></code>
-element, where <i>val</i> is either <code>TRUE</code> or <code>FALSE</code>.
 </p>
 
 <h3>Annotated document type declaration</h3>
@@ -557,7 +483,11 @@ element, where <i>val</i> is either <code>TRUE</code> or <code>FALSE</code>.
 &lt;!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
 </pre>
 
-<h4>Definition</h4>
+<h4>Definitions</h4>
+
+<p>
+<em>Definitions</em> is the root element of the XML document.
+</p>
 
 <p>
 The <em>ExtendedAttributeList</em> specifies any extended attributes
@@ -567,260 +497,332 @@ for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Definitions (Definition+) >
-
-&lt;!ELEMENT Definition (ExtendedAttributeList?, (Module | Interface
-    | Exception | Typedef | Valuetype | Const)) >
+&lt;!ELEMENT Definitions (Module | Interface
+    | Exception | Typedef | Implements)* >
 </pre>
 
 <h4>Module</h4>
 
 <p>
-A <em>Module</em> represents an API. The <code>identifier</code>
-attribute specifies the name of the API. The <code>&lt;descriptive></code> element
+A <em>Module</em> represents an API. The <em>name</em>
+attribute specifies the name of the API. The <em>descriptive</em> element
 provides its documentation if any.
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
+The <em>id</em> attribute specifies the absolute scoped name of the module.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Module (descriptive?, Definitions?) >
-&lt;!ATTLIST Module identifier CDATA #REQUIRED 
-                 fqid CDATA #REQUIRED>
+&lt;!ELEMENT Module (descriptive?, ExtendedAttributeList?,
+        (Module | Interface | Exception | Typedef | Implements)* ) >
+&lt;!ATTLIST Module name CDATA #REQUIRED 
+                 id CDATA #REQUIRED >
 </pre>
 
 <h4>Interface</h4>
 
 <p>
-An <em>Interface</em> represents an interface. The <code>identifier</code>
-attribute specifies the name of the interface. The <code>&lt;descriptive></code> element
+An <em>Interface</em> represents an interface. The <em>name</em>
+attribute specifies the name of the interface. The <em>descriptive</em> element
 provides its documentation if any.
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
+The <em>id</em> attribute specifies the absolute scoped name of the interface.
 </p>
 
 <p>
-The currently defined extended attribute for an <em>Interface</em>
-is <code>callback</code>, which specifies that, where the interface is used
-as the type of a function parameter, the function will instead accept
-a function object. <code>callback=function</code> indicates that the
-function will <em>only</em> accept a function object.
-<span class="issue">Is this the right interpretation of the callback
-extended attribute in the JavaScript binding of Web IDL?</span>
-</p>
-
-<p>
-The <em>ExtendedAttributeList</em> in an <em>InterfaceMember</em>
-applies to the <em>Const</em>, <em>Attribute</em> or <em>Operation</em>
-inside the <em>InterfaceMember</em>.
+The <em>InterfaceInheritance</em> element indicates that the interface
+inherits from other interface(s). Each <em>Name</em> in the
+<em>InterfaceInheritance</em> has a <em>name</em> attribute giving the
+scoped name of the interface being inherited from.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT Interface (descriptive?, ExtendedAttributeList?,
-    InterfaceBody) >
-&lt;!ATTLIST Interface identifier CDATA #REQUIRED
-                     fqid CDATA #REQUIRED>
+        InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
+&lt;!ATTLIST Interface name CDATA #REQUIRED
+                    id CDATA #REQUIRED >
 
-&lt;!ELEMENT InterfaceInheritance (ScopedNameList) >
+&lt;!ELEMENT InterfaceInheritance (Name+) >
 
-&lt;!ELEMENT InterfaceBody (InterfaceInheritance?, InterfaceMembers?) >
-
-&lt;!ELEMENT InterfaceMembers (InterfaceMember+) >
-
-&lt;!ELEMENT InterfaceMember (ExtendedAttributeList?,
-    (Const | Attribute | Operation)) >
+&lt;!ELEMENT Name EMPTY >
+&lt;!ATTLIST Name name CDATA #REQUIRED >
 </pre>
 
 <h4>Exception</h4>
 
+<p>
+An <em>Exception</em> represents an exception.
+The <em>name</em>
+attribute specifies the name of the exception.
+The <em>descriptive</em> element
+provides its documentation if any.
+The <em>id</em> attribute specifies the absolute scoped name of the exception.
+</p>
+
+<p>
+An <em>ExceptionField</em> represents a field in an exception.
+The <em>name</em>
+attribute specifies the name of the field.
+The <em>Type</em> element specifies its type.
+The <em>descriptive></em> element
+provides its documentation if any.
+The <em>id</em> attribute specifies the absolute scoped name of the field.
+</p>
+
 <pre class="dtd">
-&lt;!ELEMENT Exception (ExceptionMembers?) >
-&lt;!ATTLIST Exception identifier CDATA #REQUIRED >
+&lt;!ELEMENT Exception (descriptive?, ExtendedAttributeList?,
+        (Const | ExceptionField)* ) >
+&lt;!ATTLIST Exception name CDATA #REQUIRED 
+                    id CDATA #REQUIRED >
 
-&lt;!ELEMENT ExceptionMembers (ExceptionMember+) >
-
-&lt;!ELEMENT ExceptionMember (descriptive?, ExtendedAttributeList?,
-    DeclarationType) >
-&lt;!ATTLIST ExceptionMember identifier CDATA #REQUIRED >
+&lt;!ELEMENT ExceptionField (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ATTLIST ExceptionField name CDATA #REQUIRED
+                         id CDATA #REQUIRED >
 </pre>
 
 <h4>Typedef</h4>
 
 <p>
-A <code>&lt;TypedefRest></code> has <em>either</em> a
-<code>&lt;DOMString/></code> child <em>or</em> an
-<code>identifier</code> attribute. This constraint is not expressed
-in the DTD.
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
+A <em>Typedef</em> represents a type definition.
+The <em>name</em>
+attribute specifies the name of the new type.
+The <em>Type</em> element specifies it in terms of other types.
+The <em>descriptive></em> element
+provides its documentation if any.
+The <em>id</em> attribute specifies the absolute scoped name of the typedef.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Typedef (Type, TypedefRest) >
-&lt;!ATTLIST Typedef fqid CDATA #REQUIRED >
-
-&lt;!ELEMENT TypedefRest (descriptive? | DOMString) >
-&lt;!ATTLIST TypedefRest identifier CDATA #IMPLIED >
+&lt;!ELEMENT Typedef (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ATTLIST Typedef name CDATA #REQUIRED
+                  id CDATA #REQUIRED >
 </pre>
 
-<h4>Valuetype</h4>
+<h4>Implements</h4>
 
 <p>
-A <code>&lt;ValuetypeRest></code> has <em>either</em> a
-<code>&lt;DOMString/></code> child <em>or</em> an
-<code>identifier</code> attribute. This constraint is not expressed
-in the DTD.
-</p>
-
-<p>
-A <code>&lt;ValuetypeRest></code> with a <code>&lt;DOMString/></code>
-child represents Web IDL's
-<code>DOMString sequence &lt;unsigned short >;</code>
-syntax.
+An <em>Implements</em> represents Web IDL's
+<code><i>ScopedName</i> implements <i>ScopedName</i>;</code>
+syntax. The <em>name1</em> and <em>name2</em> attributes give the
+first and second scoped names respectively.
+The <em>descriptive></em> element
+provides the <em>Implements</em>'s documentation if any.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Valuetype (ValuetypeRest) >
-
-&lt;!ELEMENT ValuetypeRest ((descriptive?, BoxedType) | DOMString) >
-&lt;!ATTLIST ValuetypeRest identifier CDATA #IMPLIED >
+&lt;!ELEMENT Implements (descriptive?, ExtendedAttributeList?) >
+&lt;!ATTLIST Implements name1 CDATA #REQUIRED
+                     name2 CDATA #REQUIRED >
 </pre>
 
 <h4>Const</h4>
 
 <p>
-<code>&lt;Const></code> represents Web IDL's
-<code>const <i>DeclarationType</i> <i>identifier</i> = <i>ConstExpr</i>;</code>
+<em>Const</em> represents Web IDL's
+<code>const <i>Type</i> <i>identifier</i> = <i>ConstExpr</i>;</code>
 syntax.
-The <code>&lt;id></code> attribute specifies the name of the API, qualified
-by the (similarly qualified) name of any parent module or interface.
-The components of a qualified name are separated by a <code>:</code>
-colon character.
+The <em>Type</em> specifies the constant's type, the
+<em>name</em> attribute specifies the constant's name, and the
+<em>value</em> attribute specifies its value.
+The <em>descriptive></em> element
+provides the <em>Const</em>'s documentation if any.
+The <em>id</em> attribute specifies the absolute scoped name of the const.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Const (descriptive?, DeclarationType, ConstExpr) >
-&lt;!ATTLIST Const identifier CDATA #REQUIRED
-                     fqid CDATA #REQUIRED>
+&lt;!ELEMENT Const (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ATTLIST Const name CDATA #REQUIRED
+                value CDATA #REQUIRED
+                id CDATA #REQUIRED >
+</pre>
 
-&lt;!ELEMENT ConstExpr (BooleanLiteral | integer | Float) >
+<h4>Stringifier</h4>
 
-&lt;!ELEMENT integer EMPTY >
-&lt;!ATTLIST integer value CDATA #REQUIRED >
+<p>
+A <em>Stringifier</em> represents the Web IDL <code>stringifier;</code>
+syntax as an interface member.
+The <em>descriptive></em> element
+provides the <em>Stringifier</em>'s documentation if any.
+</p>
 
-&lt;!ELEMENT Float EMPTY >
-&lt;!ATTLIST Float value CDATA #REQUIRED >
-
-&lt;!ELEMENT BooleanLiteral EMPTY >
-&lt;!ATTLIST BooleanLiteral value (FALSE|TRUE) #REQUIRED >
+<pre class="dtd">
+&lt;!ELEMENT Stringifier (descriptive?, ExtendedAttributeList) >
 </pre>
 
 <h4>Attribute</h4>
 
+<p>
+An <em>Attribute</em> represents an attribute as an interface member.
+The <em>Type</em> element specifies its type. The <em>name</em>
+attribute specifies its name. Each of the <em>stringifier</em> and
+<em>readonly</em> attributes is set to a value the same as the attribute
+name when the corresponding keyword appears in the Web IDL input.
+</p>
+
+<p>
+The <em>GetRaises</em> and <em>SetRaises</em> elements each provide a list
+of scoped names used in the corresponding clause in the Web IDL input.
+</p>
+
+<p>
+The <em>descriptive></em> element provides the attribute's documentation
+if any.
+The <em>id</em> attribute specifies the absolute scoped name of the attribute.
+</p>
+
 <pre class="dtd">
-&lt;!ELEMENT Attribute (descriptive?, ReadOnly?, DeclarationType,
+&lt;!ELEMENT Attribute (descriptive?, ExtendedAttributeList?, Type,
     GetRaises?, SetRaises?) >
-&lt;!ATTLIST Attribute identifier CDATA #REQUIRED >
+&lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
+                    readonly (readonly) #IMPLIED
+                    name CDATA #REQUIRED
+                    id CDATA #REQUIRED >
 
-&lt;!ELEMENT ReadOnly EMPTY >
+&lt;!ELEMENT GetRaises (Name+) >
 
-&lt;!ELEMENT GetRaises (ExceptionList) >
-
-&lt;!ELEMENT SetRaises (ExceptionList) >
+&lt;!ELEMENT SetRaises (Name+) >
 </pre>
 
 <h4>Operation</h4>
 
 <p>
 An <em>Operation</em> represents a method on interface.
-The <code>identifier</code>
-attribute specifies the name of the method. The <code>&lt;descriptive></code> element
-provides its documentation if any.
+The <em>Type</em> element specifies its return type. The <em>name</em>
+attribute specifies its name.
+</p>
+
+<p>
+Each of the <em>stringifier</em>, <em>omitable</em>, <em>getter</em>,
+<em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>caller</em>
+attributes is set to a value the same as the attribute
+name when the corresponding keyword appears in the Web IDL input.
+</p>
+
+<p>
+The <em>Raises</em> element provides a list
+of scoped names used in the corresponding clause in the Web IDL input.
+</p>
+
+<p>
+The <em>descriptive></em> element provides the attribute's documentation
+if any.
+The <em>id</em> attribute specifies the absolute scoped name of the operation.
+</p>
+
+<p>
+An <em>Argument</em> is an argument to an operation.
+The <em>Type</em> element specifies its type. The <em>name</em>
+attribute specifies its name.
+</p>
+
+<p>
+Each of the <em>in</em>, <em>optional</em> and <em>ellipsis</em>
+attributes is set to a value the same as the attribute
+name when the corresponding syntax appears in the Web IDL input.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Operation (descriptive?, ReturnType, ArgumentList?, Raises?) >
-&lt;!ATTLIST Operation identifier CDATA #REQUIRED>
+&lt;!ELEMENT Operation (descriptive?, ExtendedAttributeList?,
+        Type, ArgumentList, Raises?) >
+&lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
+                    omitable (omitable) #IMPLIED
+                    getter (getter) #IMPLIED
+                    setter (setter) #IMPLIED
+                    creator (creator) #IMPLIED
+                    deleter (deleter) #IMPLIED
+                    caller (caller) #IMPLIED
+                    name CDATA #REQUIRED
+                    id CDATA #REQUIRED >
 
-&lt;!ELEMENT Raises (ExceptionList) >
+&lt;!ELEMENT Raises (Name+) >
 
-&lt;!ELEMENT ExceptionList (ScopedNameList) >
+&lt;!ELEMENT ArgumentList (Argument*) >
 
-&lt;!ELEMENT ArgumentList (Argument+) >
-
-&lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?,
-    DeclarationType) >
-&lt;!ATTLIST Argument identifier CDATA #REQUIRED >
+&lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ATTLIST Argument in (in) #IMPLIED
+                   optional (optional) #IMPLIED
+                   ellipsis (ellipsis) #IMPLIED
+                   name CDATA #REQUIRED >
 </pre>
 
 <h4>Extended attributes</h4>
 
+<p>
+An <em>ExtendedAttributeList</em> contains one or more
+<em>ExtendedAttribute</em> element. Each <em>ExtendedAttribute</em>
+has:
+</p>
+<ul>
+<li>
+a <em>name</em> attribute giving the name of the extended attribute;
+<li>
+if the extended attribute contains an <code>=</code> sign followed by a
+value, a <em>value</em> attribute giving the value, which is a scoped
+name or an identifier;
+<li>
+if the extended attribute contains parentheses (either with or without
+an <code>=</code> sign), an <em>ArgumentList</em> element giving the
+contents of the parentheses.
+</ul>
+<p>
+If the <em>value</em> attribute and the <em>ArgumentList</em> element are
+both present, then <em>value</em> must give an identifier rather than
+a scoped name.
+</p>
+
 <pre class="dtd">
 &lt;!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
 
-&lt;!ELEMENT ExtendedAttribute EMPTY >
-&lt;!ATTLIST ExtendedAttribute value CDATA #REQUIRED >
+&lt;!ELEMENT ExtendedAttribute (ArgumentList?) >
+&lt;!ATTLIST ExtendedAttribute name CDATA #REQUIRED
+                            value CDATA #IMPLIED >
 </pre>
 
-<h4>DeclarationType</h4>
+<h4>Type</h4>
 
 <p>
-Where <code>&lt;BoxedType></code> or <code>&lt;Type></code>
-contains a <code>&lt;Type></code>,
-this represents the Web IDL
-<code>sequence &lt; <i>Type</i> ></code> syntax.
+<em>Type</em> represents a type. It has one of these forms:
 </p>
-
-<pre class="dtd">
-&lt;!ELEMENT DeclarationType (UnsignedIntegerType | ScopedName | any
-    | boolean | octet | float | double | DOMString | Object ) >
-
-&lt;!ELEMENT any EMPTY >
-&lt;!ELEMENT boolean EMPTY >
-&lt;!ELEMENT octet EMPTY >
-&lt;!ELEMENT float EMPTY >
-&lt;!ELEMENT double EMPTY >
-&lt;!ELEMENT short EMPTY >
-&lt;!ELEMENT long EMPTY >
-&lt;!ELEMENT DOMString EMPTY >
-&lt;!ELEMENT Object EMPTY >
-
-&lt;!ELEMENT BoxedType (UnsignedIntegerType | ScopedName | boolean
-    | octet | float | double | Type) >
-
-&lt;!ELEMENT Type (DeclarationType | Type) >
-
-&lt;!ELEMENT UnsignedIntegerType (unsigned?, IntegerType) >
-
-&lt;!ELEMENT unsigned EMPTY >
-
-&lt;!ELEMENT IntegerType (short | (long, OptionalLong?)) >
-
-&lt;!ELEMENT OptionalLong (long) >
-
-&lt;!ELEMENT ReturnType (descriptive?, (DeclarationType | void)) >
-
-&lt;!ELEMENT void EMPTY >
-</pre>
-
-<h4>Scoped names</h4>
-
+<ul>
+<li>
+The <code>any</code>, <code>object</code> and <code>void</code>
+types have the attribute
+<em>type</em> set to the type, and no other attributes or elements.
+Note that the <code>void</code> type appears only when the <em>Type</em>
+element is a child of <em>Operation</em>.
+<li>
+A type that is an interface has the attribute <em>name</em> set to the
+name of that interface, and no other attributes or elements.
+<li>
+For the primitive types <code>short</code>, <code>unsigned short</code>,
+<code>long</code>, <code>unsigned long</code>, <code>long long</code>,
+<code>unsigned long long</code>, <code>float</code>, <code>double</code>,
+<code>boolean</code>, <code>octet</code> and <code>DOMString</code>,
+there is an attribute <em>type</em>
+whose value is one of those strings, and no other attributes or elements.
+However, if the type was specified in the Web IDL with a trailing <code>?</code>
+sign, then there is an attribute <em>nullable</em> with the value
+<code>nullable</code>.
+<li>
+For a sequence type, the <em>Type</em> contains an element <em>Type</em>
+giving the sequence element type, and no other attributes or elements.
+However, if the type was specified in the Web IDL with a trailing <code>?</code>
+sign, then there is an attribute <em>nullable</em> with the value
+<code>nullable</code>.
+</ul>
 <p>
-A <code>&lt;ScopedName></code> has an <code>identifier</code> attribute
-giving the full scoped name. The element is otherwise empty.
+The restrictions on which combinations of elements and attributes are
+permitted are not encoded by the DTD.
+</p>
+<p>
+The <em>descriptive></em> element provides the documentation
+if any, when the <em>Type</em> is a child of <em>Operation</em>, and thus
+representing an operation's return type.
 </p>
 
-<pre class="dtd">
-&lt;!ELEMENT ScopedNameList (ScopedName+) >
 
-&lt;!ELEMENT ScopedName (descriptive?) >
-&lt;!ATTLIST ScopedName identifier CDATA #REQUIRED >
+<pre class="dtd">
+&lt;!ELEMENT Type (descriptive?, Type?) >
+&lt;!ATTLIST Type type CDATA #IMPLIED
+               name CDATA #IMPLIED
+               nullable (nullable) #IMPLIED >
 </pre>
 
 <h4>Descriptive elements</h4>
@@ -836,16 +838,15 @@ is linked to a parameter (argument) of the method being documented.
 <p>
 The <code>&lt;webidl></code> element contains the literal text of the
 original Web IDL that the parent of the <code>&lt;descriptive></code>
-element was parsed from, minus the comments, with each module, interface
-and type identifier
-enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>,
-where the <code>&lt;ref></code> has a <code>ref</code> attribute.
+element was parsed from, minus the comments, with each reference to
+an interface name 
+enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 </p>
 
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
     | version | Code | api-feature | device-cap | def-api-feature
-    | def-api-feature-set | def-device-cap | param | webidl)* >
+    | def-api-feature-set | def-device-cap | def-instantiated | param | webidl)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -873,6 +874,8 @@ where the <code>&lt;ref></code> has a <code>ref</code> attribute.
 
 &lt;!ELEMENT def-api-feature-set (descriptive?) >
 &lt;!ATTLIST def-api-feature-set identifier CDATA #REQUIRED >
+
+&lt;!ELEMENT def-instantiated (descriptive?) >
 
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >

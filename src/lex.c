@@ -17,6 +17,7 @@
 #include <string.h>
 #include "lex.h"
 #include "misc.h"
+#include "node.h"
 #include "process.h"
 
 struct file {
@@ -376,6 +377,7 @@ lex(void)
         file = file->next;
     }
     /* See if we have a comment. */
+    tok.start = p;
     if (ch == '/') {
         switch (*++p) {
         case '*':
@@ -395,22 +397,31 @@ lex(void)
         /* Handle identifier. */
         if (ch == '_' || (unsigned)((ch & ~0x20) - 'A') <= 'Z' - 'A')
             return lexidentifier(p);
-        /* The only multi-symbol token is :: */
+        /* The only multi-symbol tokens are :: and ... */
         if (ch == ':') {
             tok.type = ':';
             if (*++p == ':') {
                 tok.type = TOK_DOUBLECOLON;
                 p++;
             }
+            goto done;
+        }
+        if (ch == '.') {
+            tok.type = '.';
+            if (*++p == '.' && p[1] == '.') {
+                tok.type = TOK_ELLIPSIS;
+                p += 2;
+            }
+            goto done;
         }
     }
     /* Single symbol token. */
     tok.type = ch;
+    p++;
+done:
     tok.filename = file->filename;
     tok.linenum = file->linenum;
-    tok.start = p;
-    tok.len = 1;
-    p++;
+    tok.len = p - tok.start;
     file->pos = p;
     return &tok;
 }
@@ -430,58 +441,34 @@ outputwidl(struct node *node)
         file = file->next;
         assert(file);
     }
-    /* Go on to next leaf node. */
-    while (node->children)
-        node = node->children;
+    /* Find the (current or) next node that has node->start set. Any such
+     * node needs to be put inside a <ref> element. */
+    while (node && !node->start)
+        node = nodewalk(node);
     /* Output until we get to the end. This has to cope with the text
      * spanning multiple input files. */
     for (;;) {
         int final = end >= file->buf && end <= file->end;
         const char *thisend = final ? end : file->end;
-        struct node *suppress = 0;
-        /* Output the Web IDL, omitting comments. We traverse the parse tree
-         * at the same time, so we can spot when we are outputting a name
-         * that should be put inside a <ref> element. */
+        /* Output the Web IDL, omitting comments. */
         while (start != end) {
             const char *p, *p2, *comment, *endcomment;
             int ch;
             if (node && start == node->start) {
-                /* We are on the start of the present leaf node in the tree
-                 * walk. See if it is a name that we want to put in a
-                 * <ref> element. */
-                if (!suppress && node->type == TOK_IDENTIFIER)
-                    fputs("<ref>", stdout);
+                /* We are on the start of the present node in the tree
+                 * walk. Put it in a <ref>. */
+                fputs("<ref>", stdout);
                 printtext(node->start, node->end - node->start, 1);
-                if (!suppress && node->type == TOK_IDENTIFIER)
-                    fputs("</ref>", stdout);
+                fputs("</ref>", stdout);
                 start = node->end;
-                /* Skip to the next leaf node if any. */
-                do {
-                    do {
-                        if (node == suppress)
-                            suppress = 0;
-                        if (!node->next)
-                            node = node->parent;
-                        else {
-                            node = node->next;
-                            if (!suppress && (
-                                    node->type == NT_ExtendedAttributeList
-                                    || (node->type == TOK_IDENTIFIER
-                                     && node->parent->type == NT_Argument)))
-                            {
-                                suppress = node;
-                            }
-                            while (node->children) {
-                                node = node->children;
-                            }
-                            break;
-                        }
-                    } while (node);
-                } while (node && node->end == node->start);
+                /* Skip to the next node with node->start set if any. */
+                do
+                    node = nodewalk(node);
+                while (node && !node->start);
                 continue;
             }
             p2 = thisend;
-            if (node && node->start)
+            if (node && node->start >= file->buf && node->start < p2)
                 p2 = node->start;
             p = memchr(start, '/', p2 - start);
             if (!p) {
@@ -520,6 +507,7 @@ outputwidl(struct node *node)
                 p++;
                 printtext(start, p - start, 1);
                 start = p;
+                assert(start <= end);
                 continue;
             }
             /* If the comment has only whitespace before it on the line,
@@ -541,6 +529,8 @@ outputwidl(struct node *node)
             }
             printtext(start, comment - start, 1);
             start = endcomment;
+            if (start > thisend)
+                start = thisend;
         }
         if (final)
             break;
@@ -549,4 +539,3 @@ outputwidl(struct node *node)
         start = file->buf;
     }
 }
-

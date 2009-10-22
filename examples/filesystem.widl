@@ -89,11 +89,6 @@
  * 	bondi.requestFeature(successCB, errorCB, "filesystem");
  * \endcode
  * 
- * \def-api-feature-set http://bondi.omtp.org/api/filesystem
- * \brief All filesystem operations.
- * \api-feature http://bondi.omtp.org/api/filesystem.read
- * \api-feature http://bondi.omtp.org/api/filesystem.write
- *
  * \def-api-feature http://bondi.omtp.org/api/filesystem.read
  * \brief Filesystem read operations, including reading directory listings,
  *        file contents and resolving root locations.
@@ -104,6 +99,11 @@
  *        writing to files, deleting files/directories, moving and copying
  *        files.
  * \device-cap io.file.write
+ * 
+ * \def-api-feature-set http://bondi.omtp.org/api/filesystem
+ * \brief All the FileSystem features
+ * \api-feature http://bondi.omtp.org/api/filesystem.read
+ * \api-feature http://bondi.omtp.org/api/filesystem.write
  *
  * \def-device-cap io.file.read
  * \brief Read directory or file
@@ -718,6 +718,7 @@ module filesystem {
 		 * \throw SecurityError PERMISSION_DENIED_ERROR when
 		 *        access is denied by the security policy.
 		 * \throw DeviceAPIError IO_ERROR if this is not a directory.
+		 * \throw DeviceAPIError IO_ERROR if any path component does not exist.
 		 * \throw DeviceAPIError IO_ERROR if a file with the same name exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
 		 * \throw DeviceAPIError IO_ERROR if the directory cannot be created.
@@ -748,6 +749,7 @@ module filesystem {
 		 * \return file handle of the new empty file
 		 * \throw SecurityError PERMISSION_DENIED_ERROR when
 		 *        access is denied by the security policy.
+		 * \throw DeviceAPIError IO_ERROR if this is not a directory.
 		 * \throw DeviceAPIError IO_ERROR if any path component does not exist.
 		 * \throw DeviceAPIError IO_ERROR if the file already exists.
 		 * \throw DeviceAPIError IO_ERROR if any characters in the path are not supported.
@@ -1021,4 +1023,16 @@ module filesystem {
 		void writeBase64(in DOMString base64Data)
 			raises(DeviceAPIError);
 	};
+
+  /**
+   * \brief Specifies what is instantiated at feature request
+   * \def-instantiated
+   * \api-feature http://bondi.omtp.org/api/filesystem.read
+   * \api-feature http://bondi.omtp.org/api/filesystem.write
+   */
+	interface FileSystemObject {
+		attribute FileSytemManager fileSystemManager; 
+	};
+	bondi implements FileSystemObject;
+
 };

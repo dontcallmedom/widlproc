@@ -24,7 +24,7 @@ OBJDIR = obj
 #
 ifneq (,$(filter Linux%, $(UNAME))) 
 
-CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
+CFLAGS = -g -Wall -Werror -O0 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
 LIBS = -lefence
@@ -85,12 +85,9 @@ SRCS = \
 	lex.c \
 	main.c \
 	misc.c \
+	node.c \
 	parse.c \
 	process.c
-
-AUTOGENHEADERS = \
-	grammar.h \
-	nonterminals.h
 
 OBJS = $(patsubst %.c, $(OBJDIR)/%$(OBJSUFFIX), $(SRCS))
 $(WIDLPROC) : $(OBJS)
@@ -100,22 +97,9 @@ $(OBJDIR)/%$(OBJSUFFIX) : $(SRCDIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(OBJOPTION)$@ -c $<
 
-CONVGRAMMARSRCS = convgrammar.c
-CONVGRAMMAR = $(OBJDIR)/convgrammar$(EXESUFFIX)
-CONVGRAMMAROBJS = $(patsubst %.c, $(OBJDIR)/%$(OBJSUFFIX), $(CONVGRAMMARSRCS))
-
-$(CONVGRAMMAR) : $(CONVGRAMMAROBJS)
-	$(CC) $(CFLAGS) $(EXEOPTION)$@ $^ $(LIBS)
-
 $(OBJDIR)/%.d : $(SRCDIR)/%.c
 	mkdir -p $(dir $@)
 	cc $(patsubst %, -I%, $(INCDIRS)) -MM -MG -MT $(patsubst %.d, %$(OBJSUFFIX), $@) $< | sed '$(patsubst %, s| \(%\)| $(OBJDIR)/\1|;, $(AUTOGENHEADERS))' >$@
-
-$(OBJDIR)/grammar.h : $(SRCDIR)/grammar $(CONVGRAMMAR)
-	$(CONVGRAMMAR) $< >$@
-
-$(OBJDIR)/nonterminals.h : $(SRCDIR)/grammar $(CONVGRAMMAR)
-	$(CONVGRAMMAR) -h $< >$@
 
 include $(patsubst %.c, $(OBJDIR)/%.d, $(SRCS))
 
@@ -124,7 +108,7 @@ $(DTD) : $(DOCDIR)/htmltodtd.xsl $(DOCDIR)/widlproc.html
 	xsltproc -html $^ >$@
 
 clean :
-	rm -f $(ALL) $(OBJS) $(CONVGRAMMAR) $(CONVGRAMMAROBJS) $(patsubst %, $(OBJDIR)/%, $(AUTOGENHEADERS))
+	rm -f $(ALL) $(OBJS)
 
 veryclean :
 	rm -rf $(OBJDIR)

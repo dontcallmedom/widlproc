@@ -18,7 +18,7 @@ struct tok;
 struct node;
 
 void addcomment(struct tok *tok);
-void setidentifier(struct node *node2);
+void setcommentnode(struct node *node2);
 void processcomments(struct node *root);
 void outputdescriptive(struct node *node, unsigned int indent);
 

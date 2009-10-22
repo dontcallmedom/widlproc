@@ -53,7 +53,7 @@ module bondi {
 	/**
 	 * \brief Generic Map object.
 	 */
-	typedef Object              Map;
+	typedef object              Map;
 
 	/**
 	 * \brief Generic success callback interface.
@@ -73,9 +73,9 @@ module bondi {
        /**
 	    * \brief Method invoked upon a succesful requestFeature invocation
 	    *
-	    * \param ob Object implementing the JavaScript API associated with the requested Feature.
+	    * \param ob object implementing the JavaScript API associated with the requested Feature.
 	    */
-        void onSuccess(in Object ob);
+        void onSuccess(in object ob);
      };
 
 
@@ -167,16 +167,22 @@ module bondi {
 		 * This call is always successful, i.e. the pending operation i.e.
 		 * either cancelled or one of the callback is called.
 		 *
-		 * \return <em>false</em> if one of the callback functions supplied
-		 * to the operation being cancelled has been called during the call to this method,
-		 * <em>true</em> otherwise, i.e. the pending operation was cancelled
-		 * and it was accomplished neither successfully nor errorenously.
+		 * \return <em>false</em> if the cancellation did not succeed
+		 * either because the pending operation finished already or because
+		 * the cancellation cannot succeed due to technical limitations in
+		 * the underlying implementation. Consquently the pending operation 
+		 * completes and depending on the success or failure the appropriate
+		 * callbacks will be called.
+		 * <em>true</em> if the cancellation did succeed. No callbacks will
+		 * be called by the cancelled pending operation.
 		 */
 		boolean cancel();
 	};
 
 	/**
 	 * \brief BONDI root API.
+	 * bondi root property exists in the global object
+	 * \def-api-feature http://bondi.omtp.org/api/bondi.requestfeature
 	 */
 	[NoInterfaceObject]
 	interface bondi {

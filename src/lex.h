@@ -16,27 +16,36 @@
 
 #define KEYWORDS \
     "DOMString\0" \
-    "FALSE\0" \
-    "Object\0" \
-    "TRUE\0" \
+    "false\0" \
+    "object\0" \
+    "true\0" \
     "any\0" \
     "attribute\0" \
     "boolean\0" \
+    "caller\0" \
     "const\0" \
+    "creator\0" \
+    "deleter\0" \
     "double\0" \
     "exception\0" \
     "float\0" \
     "getraises\0" \
+    "getter\0" \
+    "implements\0" \
     "in\0" \
     "interface\0" \
     "long\0" \
     "module\0" \
     "octet\0" \
+    "omittable\0" \
+    "optional\0" \
     "raises\0" \
     "readonly\0" \
     "sequence\0" \
     "setraises\0" \
+    "setter\0" \
     "short\0" \
+    "stringifier\0" \
     "typedef\0" \
     "unsigned\0" \
     "valuetype\0" \
@@ -47,31 +56,39 @@ enum toktype {
     TOK_EOF = -1,
     TOK_BLOCKCOMMENT = 0x80,
     TOK_INLINECOMMENT, TOK_INTEGER, TOK_FLOAT, TOK_IDENTIFIER,
-    TOK_STRING, TOK_DOUBLECOLON,
-    TOK_OTHER, /* used in the parser tables to indicate any single char symbol */
+    TOK_STRING, TOK_DOUBLECOLON, TOK_ELLIPSIS,
     /* Keywords must be in the same order as above. */
     TOK_DOMString,
-    TOK_FALSE,
-    TOK_Object,
-    TOK_TRUE,
+    TOK_false,
+    TOK_object,
+    TOK_true,
     TOK_any,
     TOK_attribute,
     TOK_boolean,
+    TOK_caller,
     TOK_const,
+    TOK_creator,
+    TOK_deleter,
     TOK_double,
     TOK_exception,
     TOK_float,
     TOK_getraises,
+    TOK_getter,
+    TOK_implements,
     TOK_in,
     TOK_interface,
     TOK_long,
     TOK_module,
     TOK_octet,
+    TOK_omittable,
+    TOK_optional,
     TOK_raises,
     TOK_readonly,
     TOK_sequence,
     TOK_setraises,
+    TOK_setter,
     TOK_short,
+    TOK_stringifier,
     TOK_typedef,
     TOK_unsigned,
     TOK_valuetype,

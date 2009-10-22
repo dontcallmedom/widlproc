@@ -14,21 +14,13 @@
 #ifndef process_h
 #define process_h
 
+#if 0
 #define NT_START 0x100
 #include "nonterminals.h"
-
-/* struct node : a node in the parse tree (excluding comments) */
-struct node {
-    struct node *next;
-    struct node *parent;
-    struct node *children;
-    struct comment *comments; /* list of comments attached to this node */
-    unsigned int type;
-    const char *wsstart, *start, *end; /* start and end of web idl input resulting in this node */
-    char name[1];
-};
+#endif/*0*/
 
 void printtext(const char *s, unsigned int len, int escamp);
+
 void processfiles(const char *const *names, int dtdref);
 
 #endif /* ndef process_h */

@@ -50,6 +50,35 @@ memfree(void *ptr)
 }
 
 /***********************************************************************
+ * vmemprintf, memprintf : allocate buffer and sprintf into it
+ */
+char *
+memprintf(const char *format, ...)
+{
+    va_list ap;
+    char *buf;
+    va_start(ap, format);
+    buf = vmemprintf(format, ap);
+    va_end(ap);
+    return buf;
+}
+
+char *
+vmemprintf(const char *format, va_list ap)
+{
+    char *buf;
+    unsigned int max;
+    max = 16;
+    for (;;) {
+        buf = memalloc(max);
+        if ((unsigned int)vsnprintf(buf, max, format, ap) < max)
+            break;
+        max *= 2;
+    }
+    return buf;
+}
+
+/***********************************************************************
  * errorexit : print error message then exit
  */
 void

@@ -14,10 +14,12 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "comment.h"
 #include "entities.h"
 #include "lex.h"
 #include "misc.h"
+#include "node.h"
 #include "os.h"
 #include "process.h"
 
@@ -142,12 +144,12 @@ addcomment(struct tok *tok)
 }
 
 /***********************************************************************
- * setidentifier : set identifier parse node to attach comments to
+ * setcommentnode : set parse node to attach comments to
  *
  * Enter:   node2 = parse node for identifier
  */
 void
-setidentifier(struct node *node2)
+setcommentnode(struct node *node2)
 {
     struct comment *comment = comments;
     while (comment && !comment->node) {
@@ -952,6 +954,51 @@ static const struct cnodefuncs def_api_feature_set_funcs = {
 };
 
 /***********************************************************************
+ * def_instantiated_askend : ask if def-instantiated cnode wants to end at new para
+ *
+ * Enter:   cnode for def-instantiated
+ *          type = cnodefuncs for new para (0 if html block element)
+ *
+ * Return:  non-zero to end the def-instantiated
+ */
+static int
+def_instantiated_askend(struct cnode *cnode, const struct cnodefuncs *type)
+{
+    /* A def-instantiated does not end at a plain para, an html block element,
+     * a brief para, or an api-feature. */
+    if (!type || type == &para_funcs || type == &api_feature_funcs || type == &brief_funcs)
+        return 0;
+    return 1;
+}
+
+/***********************************************************************
+ * def_instantiated_output : output def-instantiated cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+def_instantiated_output(struct cnode *cnode, unsigned int indent)
+{
+    printf("%*s<def-instantiated>\n", indent, "");
+    printf("%*s<descriptive>\n", indent + 2, "");
+    outputchildren(cnode, indent + 2, 0);
+    printf("%*s</descriptive>\n", indent + 2, "");
+    printf("%*s</def-instantiated>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type def_instantiated
+ */
+static const struct cnodefuncs def_instantiated_funcs = {
+    0, /* !indesc */
+    1, /* needpara */
+    &def_instantiated_askend,
+    0, /* end */
+    &def_instantiated_output,
+};
+
+/***********************************************************************
  * def_device_cap_askend : ask if def-device-cap cnode wants to end at new para
  *
  * Enter:   cnode for def-device-cap
@@ -1250,6 +1297,7 @@ struct command {
 static const struct command commands[] = {
     { &dox_throw, &def_api_feature_funcs, 15, "def-api-feature" },
     { &dox_throw, &def_api_feature_set_funcs, 19, "def-api-feature-set" },
+    { &dox_para, &def_instantiated_funcs, 16, "def-instantiated" },
     { &dox_para, &author_funcs, 6, "author" },
     { &dox_b, 0, 1, "b" },
     { &dox_para, &brief_funcs, 5, "brief" },
@@ -1581,101 +1629,6 @@ parsecomments(struct comment *comment)
 }
 
 /***********************************************************************
- * findreturntype : find ReturnType parse node
- *
- * Enter:   node = identifier node for Operation
- *
- * Return:  0 if not found, else ReturnType parse node
- */
-static struct node *
-findreturntype(struct node *node)
-{
-    node = node->parent;
-    if (node->type != NT_Operation)
-        return 0;
-    node = node->children;
-    if (node->type != NT_ReturnType)
-        return 0;
-    return node;
-}
-
-/***********************************************************************
- * findparamidentifier : find identifier parse node for parameter
- *
- * Enter:   node = identifier node for Operation
- *          name = parameter name to find
- *
- * Return:  0 if not found, else node struct for parameter identifier
- */
-static struct node *
-findparamidentifier(struct node *node, const char *name)
-{
-    if (node->parent->type != NT_Operation)
-        return 0;
-    do {
-        node = node->next;
-        if (!node)
-            return 0;
-    } while (node->type != NT_ArgumentList);
-    node = node->children;
-    for (;;) {
-        struct node *identifier;
-        if (!node)
-            return 0;
-        if (node->type == NT_Argument) {
-            identifier = node->children;
-            while (identifier) {
-                if (identifier->type == TOK_IDENTIFIER
-                        && !strcmp(identifier->name, name))
-                {
-                    return identifier;
-                }
-                identifier = identifier->next;
-            }
-        }
-        node = node->next;
-    }
-}
-
-/***********************************************************************
- * findthrowidentifier : find identifier parse node for exception name
- *
- * Enter:   node = identifier node for Operation
- *          name = exception name to find
- *
- * Return:  0 if not found, else node struct for parameter identifier
- */
-static struct node *
-findthrowidentifier(struct node *node, const char *name)
-{
-    if (node->parent->type != NT_Operation && node->parent->type != NT_Attribute)
-        return 0;
-    do {
-        node = node->next;
-        if (!node)
-            return 0;
-    } while (node->type != NT_Raises && node->type != NT_SetRaises);
-    node = node->children->next;
-    assert(node->type == NT_ExceptionList);
-    node = node->children->next;
-    if (node->type == ')')
-        return 0;
-    assert(node->type == NT_ScopedNameList);
-    node = node->children;
-    while (node) {
-        struct node *identifier = node->children;
-        assert(node->type == NT_ScopedName);
-        while (identifier) {
-            if (identifier->type == TOK_IDENTIFIER && !strcmp(identifier->name, name))
-                return identifier;
-            identifier = identifier->next;
-        }
-        node = node->next;
-    }
-    return 0;
-}
-
-/***********************************************************************
  * attachcommenttonode : attach comment struct to node
  *
  * Enter:   node = parse node for identifier
@@ -1790,20 +1743,10 @@ outputdescriptive(struct node *node, unsigned int indent)
     while (comment) {
         struct cnode *root = &comment->root;
         if (!indescriptive) {
-            struct node *parent = node->parent;
             printf("%*s<descriptive>\n", indent, "");
-            /* When generating the <webidl> element, go up two levels
-             * in the parse tree if the second one is a Definition.
-             * This ensures that any extended attributes are included.
-             * First go up a level if the parent is TypedefRest, to get
-             * to the Typedef. */
-            if (parent->type == NT_TypedefRest)
-                parent = parent->parent;
-            if (parent->parent && parent->parent->type == NT_Definition)
-                parent = parent->parent;
-            if (parent->start) {
+            if (node->wsstart) {
                 printf("%*s  <webidl>", indent, "");
-                outputwidl(parent);
+                outputwidl(node);
                 printf("</webidl>\n");
             }
         }
@@ -1814,4 +1757,3 @@ outputdescriptive(struct node *node, unsigned int indent)
     if (indescriptive)
         printf("%*s</descriptive>\n", indent, "");
 }
-

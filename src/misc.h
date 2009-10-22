@@ -20,6 +20,9 @@ void *memalloc(size_t size);
 void *memrealloc(void *ptr, size_t size);
 void memfree(void *ptr);
 
+char *vmemprintf(const char *format, va_list ap);
+char *memprintf(const char *format, ...);
+
 void vlocerrorexit(const char *filename, unsigned int linenum, const char *format, va_list ap);
 void locerrorexit(const char *filename, unsigned int linenum, const char *format, ...);
 void errorexit(const char *format, ...);

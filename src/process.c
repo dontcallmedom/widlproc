@@ -17,11 +17,14 @@
 #include "comment.h"
 #include "lex.h"
 #include "misc.h"
+#include "node.h"
 #include "os.h"
 #include "parse.h"
 #include "process.h"
 
+#if 0
 static const char ntnames[] = { NTNAMES };
+#endif /*0*/
 
 /***********************************************************************
  * printtext : print text with xml entity escapes
@@ -79,6 +82,7 @@ printtext(const char *s, unsigned int len, int escamp)
         errorexit("write error");
 }
 
+#if 0
 /***********************************************************************
  * outputnodeastext : output parse node and descendants as deparsed text
  *
@@ -293,6 +297,7 @@ outputchildren(struct node *node, struct node *identifier, unsigned int indent)
         child = child->next;
     }
 }
+#endif /*0*/
 
 /***********************************************************************
  * processfiles : process input files
@@ -308,7 +313,7 @@ processfiles(const char *const *names, int dtdref)
     processcomments(root);
     printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     if(dtdref)
-           printf("<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
-    output(root, 0, 0);
+        printf("<!DOCTYPE Definitions SYSTEM \"widlprocxml.dtd\">\n");
+    outputnode(root, 0);
 }
 
