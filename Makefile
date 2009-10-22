@@ -122,7 +122,7 @@ $(SVNLOG) : $(SVNFILES)
 	svn log -vrHEAD:311 >$@
 
 zip : $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip
-$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl $(SRCDIR)/widlprocxmlfqids.xsl Makefile $(SVNLOG)
+$(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl Makefile $(SVNLOG)
 	rm -f $@
 	zip -j $@ $^ -x Makefile
 	zip $@ examples/*.widl examples/*.css examples/Makefile examples/README
