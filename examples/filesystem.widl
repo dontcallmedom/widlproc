@@ -1030,9 +1030,9 @@ module filesystem {
    * \api-feature http://bondi.omtp.org/api/filesystem.read
    * \api-feature http://bondi.omtp.org/api/filesystem.write
    */
-	interface FileSystemObject {
-		attribute FileSytemManager fileSystemManager; 
+	interface FileSystemManagerObject {
+		readonly attribute FileSystemManager fileSystemManager; 
 	};
-	bondi implements FileSystemObject;
+	bondi implements FileSystemManagerObject;
 
 };

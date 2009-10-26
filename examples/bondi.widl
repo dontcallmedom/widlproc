@@ -53,7 +53,7 @@ module bondi {
 	/**
 	 * \brief Generic Map object.
 	 */
-	typedef object              Map;
+	typedef Object              Map;
 
 	/**
 	 * \brief Generic success callback interface.
@@ -73,9 +73,9 @@ module bondi {
        /**
 	    * \brief Method invoked upon a succesful requestFeature invocation
 	    *
-	    * \param ob object implementing the JavaScript API associated with the requested Feature.
+	    * \param ob Object implementing the JavaScript API associated with the requested Feature.
 	    */
-        void onSuccess(in object ob);
+        void onSuccess(in Object ob);
      };
 
 
@@ -184,8 +184,7 @@ module bondi {
 	 * bondi root property exists in the global object
 	 * \def-api-feature http://bondi.omtp.org/api/bondi.requestfeature
 	 */
-	[NoInterfaceObject]
-	interface bondi {
+	interface Bondi {
 		/**
 		 * \brief Requests a feature.
 		 *
@@ -221,4 +220,8 @@ module bondi {
 		                                in DOMString       name)
 			raises(DeviceAPIError, SecurityError);
 	};
+	interface BondiObject {
+		readonly attribute Bondi bondi; 
+	};
+	Window implements bondiObject;
 };
