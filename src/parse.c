@@ -168,18 +168,20 @@ parsescopedname(struct tok *tok, const char *name, int ref)
  *
  * Enter:   tok = next token
  *          name = name of element for scoped name list
+ *          name2 = name of element for entry in list
  *          comment = whether to attach documentation to each name
  *
  * Return:  node for list of scoped names
  *          tok updated
  */
 static struct node *
-parsescopednamelist(struct tok *tok, const char *name, int comment)
+parsescopednamelist(struct tok *tok, const char *name, const char *name2,
+        int comment)
 {
     struct node *node = newelement(name);
     for (;;) {
         struct node *attr = parsescopedname(tok, "name", 1);
-        struct node *n = newelement("Name");
+        struct node *n = newelement(name2);
         if (comment)
             setcommentnode(n);
         addnode(n, attr);
@@ -490,7 +492,7 @@ parseexceptionlist(struct tok *tok, const char *name)
 {
     struct node *node;
     eat(tok, '(');
-    node = parsescopednamelist(tok, name, 1);
+    node = parsescopednamelist(tok, name, "RaiseException", 1);
     eat(tok, ')');
     return node;
 }
@@ -742,7 +744,7 @@ parseinterface(struct tok *tok, struct node *eal)
     tok = lexnocomment();
     if (tok->type == ':') {
         lexnocomment();
-        addnode(node, parsescopednamelist(tok, "InterfaceInheritance", 1));
+        addnode(node, parsescopednamelist(tok, "InterfaceInheritance", "Name", 1));
     }
     eat(tok, '{');
     while (tok->type != '}') {

@@ -675,9 +675,12 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
-&lt;!ELEMENT GetRaises (Name+) >
+&lt;!ELEMENT GetRaises (RaiseException+) >
 
-&lt;!ELEMENT SetRaises (Name+) >
+&lt;!ELEMENT SetRaises (RaiseException+) >
+
+&lt;!ELEMENT RaiseException (descriptive?) >
+&lt;!ATTLIST RaiseException name CDATA #REQUIRED >
 </pre>
 
 <h4>Operation</h4>
@@ -731,7 +734,7 @@ name when the corresponding syntax appears in the Web IDL input.
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
-&lt;!ELEMENT Raises (Name+) >
+&lt;!ELEMENT Raises (RaiseException+) >
 
 &lt;!ELEMENT ArgumentList (Argument*) >
 

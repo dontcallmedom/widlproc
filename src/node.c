@@ -253,7 +253,7 @@ findthrowidentifier(struct node *node, const char *name)
         if (node2)
             node2 = findchildelementwithnameattr(node2, name);
     }
-    return node;
+    return node2;
 }
 
 /***********************************************************************

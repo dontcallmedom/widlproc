@@ -441,8 +441,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </div>
 </xsl:template>
 
-<!--Name, the name of an exception in a Raises.-->
-<xsl:template match="Raises/Name">
+<!--RaiseException, the name of an exception in a Raises.-->
+<xsl:template match="RaiseException">
     <li class="exception">
         <xsl:value-of select="@name"/>:
         <xsl:apply-templates select="descriptive"/>
