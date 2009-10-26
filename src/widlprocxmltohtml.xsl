@@ -302,8 +302,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
   <dt class="const" id="{@id}">
     <code>
       <xsl:apply-templates select="Type"/>
+      <xsl:text> </xsl:text>
       <xsl:value-of select="@name"/>
-  </code>
+    </code>
   </dt>
   <dd>
     <xsl:apply-templates select="descriptive/brief"/>
