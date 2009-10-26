@@ -221,7 +221,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     <div class="typedef" id="{@id}">
         <h3>2.<xsl:number value="position()"/>. <code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive/webidl"/>
+        <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
     </div>
@@ -229,10 +229,12 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <!--Interface.-->
 <xsl:template match="Interface[descriptive]">
+    <xsl:variable name="name" select="@name"/>
     <div class="interface" id="{@id}">
         <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(preceding::Interface))"/>. <code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
-        <xsl:apply-templates select="descriptive/webidl"/>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="../Implements[@name2=$name]/webidl"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
         <xsl:apply-templates select="InterfaceInheritance"/>

@@ -481,7 +481,17 @@ with added XML elements representing the
 &lt;!ENTITY % inline 'a | b | br | em' >
 &lt;!ENTITY % Inline '(#PCDATA | %inline;)*' >
 &lt;!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
+
+&lt;!ELEMENT webidl (#PCDATA | ref)* >
 </pre>
+
+<p>
+The <code>&lt;webidl></code> element contains the literal text of the
+original Web IDL that the parent
+element was parsed from, minus the comments, with each reference to
+an interface name 
+enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
+</p>
 
 <h4>Definitions</h4>
 
@@ -511,7 +521,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the module.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Module (descriptive?, ExtendedAttributeList?,
+&lt;!ELEMENT Module (webidl, descriptive?, ExtendedAttributeList?,
         (Module | Interface | Exception | Typedef | Implements)* ) >
 &lt;!ATTLIST Module name CDATA #REQUIRED 
                  id CDATA #REQUIRED >
@@ -534,7 +544,7 @@ scoped name of the interface being inherited from.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Interface (descriptive?, ExtendedAttributeList?,
+&lt;!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
         InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
                     id CDATA #REQUIRED >
@@ -567,7 +577,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the field.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Exception (descriptive?, ExtendedAttributeList?,
+&lt;!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?,
         (Const | ExceptionField)* ) >
 &lt;!ATTLIST Exception name CDATA #REQUIRED 
                     id CDATA #REQUIRED >
@@ -590,7 +600,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the typedef.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Typedef (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST Typedef name CDATA #REQUIRED
                   id CDATA #REQUIRED >
 </pre>
@@ -607,7 +617,7 @@ provides the <em>Implements</em>'s documentation if any.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Implements (descriptive?, ExtendedAttributeList?) >
+&lt;!ELEMENT Implements (webidl, descriptive?, ExtendedAttributeList?) >
 &lt;!ATTLIST Implements name1 CDATA #REQUIRED
                      name2 CDATA #REQUIRED >
 </pre>
@@ -627,7 +637,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the const.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Const (descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ELEMENT Const (webidl, descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST Const name CDATA #REQUIRED
                 value CDATA #REQUIRED
                 id CDATA #REQUIRED >
@@ -668,7 +678,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Attribute (descriptive?, ExtendedAttributeList?, Type,
+&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, Type,
     GetRaises?, SetRaises?) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
@@ -722,7 +732,7 @@ name when the corresponding syntax appears in the Web IDL input.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Operation (descriptive?, ExtendedAttributeList?,
+&lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
         Type, ArgumentList, Raises?) >
 &lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     omitable (omitable) #IMPLIED
@@ -838,18 +848,10 @@ derives only from a <code>\param</code> command used inside a
 is linked to a parameter (argument) of the method being documented.
 </p>
 
-<p>
-The <code>&lt;webidl></code> element contains the literal text of the
-original Web IDL that the parent of the <code>&lt;descriptive></code>
-element was parsed from, minus the comments, with each reference to
-an interface name 
-enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
-</p>
-
 <pre class="dtd">
 &lt;!ELEMENT descriptive (description | brief | throw | author
     | version | Code | api-feature | device-cap | def-api-feature
-    | def-api-feature-set | def-device-cap | def-instantiated | param | webidl)* >
+    | def-api-feature-set | def-device-cap | def-instantiated | param)* >
 
 &lt;!ELEMENT description %Block; >
 
@@ -882,8 +884,6 @@ enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 
 &lt;!ELEMENT def-device-cap (descriptive?) >
 &lt;!ATTLIST def-device-cap identifier CDATA #REQUIRED >
-
-&lt;!ELEMENT webidl (#PCDATA | ref)* >
 
 &lt;!ELEMENT ref (#PCDATA) >
 </pre>

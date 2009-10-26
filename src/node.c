@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "comment.h"
+#include "lex.h"
 #include "misc.h"
 #include "node.h"
 #include "process.h"
@@ -305,8 +306,13 @@ outputnode(struct node *node, unsigned int indent)
         outputid(node);
         printf("\"");
     }
-    if (!empty || node->comments) {
+    if (!empty || node->comments || node->wsstart) {
         printf(">\n");
+        if (node->wsstart) {
+            printf("%*s  <webidl>", indent, "");
+            outputwidl(node);
+            printf("</webidl>\n");
+        }
         outputdescriptive(node, indent + 2);
         child = element->n.children;
         while (child) {

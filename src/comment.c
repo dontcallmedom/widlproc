@@ -1742,14 +1742,8 @@ outputdescriptive(struct node *node, unsigned int indent)
     int indescriptive = 0;
     while (comment) {
         struct cnode *root = &comment->root;
-        if (!indescriptive) {
+        if (!indescriptive)
             printf("%*s<descriptive>\n", indent, "");
-            if (node->wsstart) {
-                printf("%*s  <webidl>", indent, "");
-                outputwidl(node);
-                printf("</webidl>\n");
-            }
-        }
         indescriptive = 1;
         (*root->funcs->output)(root, indent + 2);
         comment = comment->next;
