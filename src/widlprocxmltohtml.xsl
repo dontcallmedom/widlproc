@@ -389,7 +389,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:with-param name="nodesc" select="'comma'"/>
             </xsl:apply-templates>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="Argument">
             <!--$nodesc is false: output the documentation-->
             <div class="parameters">
                 <h6>Parameters</h6>
@@ -397,7 +397,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                     <xsl:apply-templates/>
                 </ul>
             </div>
-        </xsl:otherwise>
+        </xsl:when>
     </xsl:choose>
 </xsl:template>
 
