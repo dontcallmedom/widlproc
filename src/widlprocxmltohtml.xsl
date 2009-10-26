@@ -288,6 +288,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 readonly
             </xsl:if>
             <xsl:apply-templates select="Type"/>
+            <xsl:text> </xsl:text>
             <xsl:value-of select="@name"/>
         </code></dt>
         <dd>
