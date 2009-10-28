@@ -412,11 +412,9 @@ parseexceptionfield(struct tok *tok, struct node *eal)
     struct node *node = newelement("ExceptionField");
     if (eal) addnode(node, eal);
     setcommentnode(node);
-    tok = lexnocomment();
     addnode(node, parsetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
-    eat(tok, ';');
     return node;
 }
 
@@ -720,6 +718,7 @@ parseexception(struct tok *tok, struct node *eal)
             node2 = parseexceptionfield(tok, eal);
         addnode(node, node2);
         setid(node2);
+        eat(tok, ';');
     }
     lexnocomment();
     return node;
