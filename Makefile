@@ -22,12 +22,12 @@ OBJDIR = obj
 ########################################################################
 # Linux configuration
 #
-ifneq (,$(filter Linux%, $(UNAME))) 
+ifneq (,$(filter Linux%, $(UNAME)))
 
 CFLAGS = -g -Wall -Werror -O0 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
-LIBS = -lefence
+LIBS =
 OBJOPTION = -o
 EXEOPTION = -o
 
@@ -35,20 +35,20 @@ else
 ########################################################################
 # Darwin configuration
 #
-ifneq (,$(filter Darwin%, $(UNAME))) 
+ifneq (,$(filter Darwin%, $(UNAME)))
 
 CFLAGS = -g -Wall -Werror -O2 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
 OBJOPTION = -o
 # The -o in the following line has a space after it, which must not be removed.
-EXEOPTION = -o 
+EXEOPTION = -o
 
 else
 ########################################################################
 # Windows (cygwin but using MS compiler) configuration
 #
-ifneq (,$(filter CYGWIN%, $(UNAME))) 
+ifneq (,$(filter CYGWIN%, $(UNAME)))
 VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program*Files/Microsoft*Visual*Studio*8)
 ifeq (,$(VISUALSTUDIODIR))
 $(error Could not find MS Visual Studio)
@@ -130,9 +130,14 @@ $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widl
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
 widlproc-src-%.zip : $(SVNFILES) $(SVNLOG)
-	zip $@ $^ 
+	zip $@ $^
+
+upload: $(WIDLPROC)
+	@scp $(WIDLPROC) nox:/srv/www/widl.webvm.net/builds/widlproc-$(SVNREV).linux-x86
 
 test :
 	$(MAKE) -C examples SRCDIR=../src OBJDIR=../obj EXAMPLESOBJDIR=../obj/examples
 
+.PHONY: test upload clean veryclean
 .DELETE_ON_ERROR:
+
