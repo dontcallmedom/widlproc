@@ -125,7 +125,7 @@ zip : $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip
 $(OBJDIR)/widlproc-$(SVNBRANCH)$(SVNREV).zip : $(WIDLPROC) $(DTD) $(DOCDIR)/widlproc.html $(SRCDIR)/widlprocxmltohtml.xsl Makefile $(SVNLOG)
 	rm -f $@
 	zip -j $@ $^ -x Makefile
-	zip $@ examples/*.widl examples/*.css examples/Makefile examples/README
+	zip $@ examples/*.widl examples/*.css examples/Makefile examples/README examples/*.xsl examples/*.html
 
 srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 
