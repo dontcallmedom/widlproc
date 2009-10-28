@@ -709,6 +709,7 @@ parseexception(struct tok *tok, struct node *eal)
     if (eal) addnode(node, eal);
     tok = lexnocomment();
     addnode(node, newattr("name", setidentifier(tok)));
+    lexnocomment();
     eat(tok, '{');
     while (tok->type != '}') {
         struct node *node2;
