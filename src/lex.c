@@ -198,21 +198,23 @@ lexnumber(const char *start)
                         octalend = p;
                     }
                 } else if ((unsigned)((ch & ~0x20) - 'A') <= 'F' - 'A') {
-                    if (state != STATE_HEX)
-                        break;
+                    if (state != STATE_HEX) {
+                        if ((ch & ~0x20) != 'E')
+                            break;
+                        if (state == STATE_HEX || state >= STATE_EXPSTART || state == STATE_START)
+                            break;
+                        state = STATE_EXPSTART;
+                    }
                 } else if (ch == '.') {
                     if (state == STATE_HEX || state >= STATE_DP)
                         break;
+                    state = STATE_DP;
                 } else if (ch == '-') {
                     if (state != STATE_EXPSTART)
                         break;
                     state = STATE_EXPSIGN;
-                } else {
-                    if ((ch & ~0x20) != 'E')
-                        break;
-                    if (state == STATE_HEX || state >= STATE_EXP || state == STATE_START)
-                        break;
-                }
+                } else
+                    break;
             }
             ch = *++p;
             if (state == STATE_START)
