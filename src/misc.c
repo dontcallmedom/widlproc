@@ -67,12 +67,17 @@ char *
 vmemprintf(const char *format, va_list ap)
 {
     char *buf;
-    unsigned int max;
+    unsigned int max, len;
+    va_list ap2;
     max = 16;
     for (;;) {
+        va_copy(ap2, ap);
         buf = memalloc(max);
-        if ((unsigned int)vsnprintf(buf, max, format, ap) < max)
+        len = vsnprintf(buf, max, format, ap2);
+        va_end(ap2);
+        if (len < max)
             break;
+        memfree(buf);
         max *= 2;
     }
     return buf;
