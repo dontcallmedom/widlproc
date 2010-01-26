@@ -509,6 +509,7 @@ static struct node *
 parseoperationrest(struct tok *tok, struct node *eal, struct node *attrs)
 {
     struct node *node = newelement("Operation");
+    if (eal) addnode(node, eal);
     setcommentnode(node);
     addnode(node, attrs);
     addnode(node, parsereturntype(tok));
@@ -540,6 +541,7 @@ static struct node *
 parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
 {
     struct node *node = newelement("Attribute");
+    if (eal) addnode(node, eal);
     setcommentnode(node);
     addnode(node, attrs);
     if (tok->type == TOK_readonly) {
@@ -748,8 +750,8 @@ parseinterface(struct tok *tok, struct node *eal)
     }
     eat(tok, '{');
     while (tok->type != '}') {
-        struct node *eal = parseextendedattributelist(tok);
         const char *start = tok->prestart;
+        struct node *eal = parseextendedattributelist(tok);
         struct node *node2;
         if (tok->type == TOK_const)
             addnode(node, node2 = parseconst(tok, eal));
