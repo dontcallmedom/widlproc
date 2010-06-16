@@ -59,7 +59,7 @@ DTD = $(OBJDIR)/widlprocxml.dtd
 
 WIDLS = $(patsubst $(EXAMPLESDIR)/%, %, $(wildcard $(EXAMPLESDIR)/*.widl))
 
-test : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.html, $(WIDLS)) $(EXAMPLESOBJDIR)/widlhtml.css test_spec
+test : $(patsubst %.widl, $(EXAMPLESOBJDIR)/%.html, $(WIDLS)) $(EXAMPLESOBJDIR)/widlhtml.css
 	@echo "$@ pass"
 
 $(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml $(SRCDIR)/widlprocxmltohtml.xsl Makefile
@@ -74,12 +74,6 @@ $(EXAMPLESOBJDIR)/%.widlprocxml : $(EXAMPLESDIR)/%.widl $(WIDLPROC) $(DTD) Makef
 
 $(EXAMPLESOBJDIR)/widlhtml.css : $(EXAMPLESDIR)/widlhtml.css
 	cp $< $@
-
-test_spec : $(EXAMPLESOBJDIR)/webidl.widl
-	$(WIDLPROC) $< >/dev/null
-
-$(EXAMPLESOBJDIR)/webidl.widl : spectowidl.xsl webidl.html
-	xsltproc -html $^ >$@
 
 .DELETE_ON_ERROR:
 
