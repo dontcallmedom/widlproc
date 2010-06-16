@@ -597,6 +597,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
     if (tok->type == TOK_readonly || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
     if (nodeisempty(attrs)) {
+        int alreadyseen = 0;
         if (tok->type == TOK_omittable) {
             lexnocomment();
             addnode(attrs, newattr("omittable", "omittable"));
@@ -612,6 +613,9 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
             if (!*tt)
                 break;
             s = memprintf("%.*s", tok->len, tok->start);
+            if (alreadyseen & (1 << (tt - t)))
+                tokerrorexit(tok, "'%s' qualifier cannot be repeated", s);
+            alreadyseen |= 1 << (tt - t);
             addnode(attrs, newattr(s, s));
             lexnocomment();
         }
