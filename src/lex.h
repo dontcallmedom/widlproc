@@ -105,6 +105,7 @@ struct tok {
 };
 
 extern const char *filename;
+extern const char keywords[];
 
 struct node;
 

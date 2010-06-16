@@ -77,8 +77,17 @@ lexnocomment(void)
 static void
 eat(struct tok *tok, int type)
 {
-    if (tok->type != type)
-        tokerrorexit(tok, "expected '%c'", type);
+    if (tok->type != type) {
+        const char *p;
+        if (type < TOK_DOMString)
+            tokerrorexit(tok, "expected '%c'", type);
+        p = keywords;
+        while (type != TOK_DOMString) {
+            p += strlen(p) + 1;
+            type--;
+        }
+        tokerrorexit(tok, "expected '%s'", p);
+    }
     lexnocomment();
 }
 

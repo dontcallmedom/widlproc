@@ -28,6 +28,8 @@ struct file {
     unsigned int linenum;
 };
 
+const char keywords[] = KEYWORDS;
+
 static struct file *file, *firstfile;
 static struct tok tok;
 
@@ -322,7 +324,7 @@ lexidentifier(const char *start)
     /* See if this is a keyword. (This search is a bit n-squared.) */
     {
         unsigned int type = TOK_DOMString;
-        p = KEYWORDS;
+        p = keywords;
         for (;;) {
             unsigned int len = strlen(p);
             if (!len)
