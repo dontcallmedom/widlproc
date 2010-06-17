@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "misc.h"
+#include "os.h" /* to get va_copy on windows */
 
 extern const char *progname;
 

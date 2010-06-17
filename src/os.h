@@ -24,6 +24,7 @@
 #define inline __inline
 #define strncasecmp strnicmp
 #define snprintf _snprintf
+#define va_copy(a,b) ((a)=(b))
 
 #endif
 
