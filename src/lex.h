@@ -22,6 +22,7 @@
     "any\0" \
     "attribute\0" \
     "boolean\0" \
+    "byte\0" \
     "caller\0" \
     "const\0" \
     "creator\0" \
@@ -45,6 +46,7 @@
     "setraises\0" \
     "setter\0" \
     "short\0" \
+    "static\0" \
     "stringifier\0" \
     "typedef\0" \
     "unsigned\0" \
@@ -56,7 +58,7 @@ enum toktype {
     TOK_EOF = -1,
     TOK_BLOCKCOMMENT = 0x80,
     TOK_INLINECOMMENT, TOK_INTEGER, TOK_FLOAT, TOK_IDENTIFIER,
-    TOK_STRING, TOK_DOUBLECOLON, TOK_ELLIPSIS,
+    TOK_STRING, TOK_DOUBLECOLON, TOK_ELLIPSIS, TOK_DOUBLEBRACKET,
     /* Keywords must be in the same order as above. */
     TOK_DOMString,
     TOK_false,
@@ -65,6 +67,7 @@ enum toktype {
     TOK_any,
     TOK_attribute,
     TOK_boolean,
+    TOK_byte,
     TOK_caller,
     TOK_const,
     TOK_creator,
@@ -88,6 +91,7 @@ enum toktype {
     TOK_setraises,
     TOK_setter,
     TOK_short,
+    TOK_static,
     TOK_stringifier,
     TOK_typedef,
     TOK_unsigned,

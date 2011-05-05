@@ -270,20 +270,23 @@ parseunsignedintegertype(struct tok *tok)
 static struct node *
 parsenullabletype(struct tok *tok)
 {
-    struct node *node = newelement("Type");
+  struct node *node;
     switch (tok->type) {
     case TOK_unsigned:
     case TOK_short:
     case TOK_long:
+        node = newelement("Type");
         addnode(node, newattr("type", parseunsignedintegertype(tok)));
         break;
     case TOK_sequence:
+        node = newelement("Sequence");
         lexnocomment();
         eat(tok, '<');
         addnode(node, parsetype(tok));
         eat(tok, '>');
         break;
     default:
+        node = newelement("Type");
         switch (tok->type) {
         default:
             tokerrorexit(tok, "expected type");
@@ -344,6 +347,12 @@ parsetype(struct tok *tok)
     default:
         node = parsenullabletype(tok);
         break;
+    }
+    while (tok->type == TOK_DOUBLEBRACKET) {
+        struct node *typenode = node;
+	node = newelement("Array");
+        addnode(node, typenode);
+        lexnocomment();
     }
     return node;
 }
@@ -596,6 +605,11 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
     }
     if (tok->type == TOK_readonly || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
+    if (tok->type == TOK_static) {
+        lexnocomment();
+        addnode(attrs, newattr("static", "static"));
+	return parseoperationrest(tok, eal, attrs);
+    }
     if (nodeisempty(attrs)) {
         int alreadyseen = 0;
         if (tok->type == TOK_omittable) {
@@ -640,7 +654,22 @@ parseconst(struct tok *tok, struct node *eal)
     setcommentnode(node);
     if (eal) addnode(node, eal);
     tok = lexnocomment();
-    addnode(node, parsetype(tok));
+    switch(tok->type) {
+    case TOK_boolean:
+    case TOK_byte:
+    case TOK_octet:
+    case TOK_float:
+    case TOK_double:
+    case TOK_DOMString:
+    case TOK_unsigned:
+    case TOK_short:
+    case TOK_long:
+        addnode(node, parsetype(tok));
+	break;
+    default:
+        tokerrorexit(tok, "expected acceptable constant type");
+        break;
+    }
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
     eat(tok, '=');
@@ -649,6 +678,7 @@ parseconst(struct tok *tok, struct node *eal)
     case TOK_false:
     case TOK_INTEGER:
     case TOK_FLOAT:
+    case TOK_STRING:
         break;
     default:
         tokerrorexit(tok, "expected constant value");
@@ -723,6 +753,10 @@ parseexception(struct tok *tok, struct node *eal)
     tok = lexnocomment();
     addnode(node, newattr("name", setidentifier(tok)));
     lexnocomment();
+    if (tok->type == ':') {
+        lexnocomment();
+        addnode(node, parsescopednamelist(tok, "ExceptionInheritance", "Name", 1));
+    }
     eat(tok, '{');
     while (tok->type != '}') {
         struct node *node2;

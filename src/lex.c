@@ -418,6 +418,14 @@ lex(void)
             }
             goto done;
         }
+        if (ch == '[') {
+            tok.type = '[';
+            if (*++p == ']') {
+                tok.type = TOK_DOUBLEBRACKET;
+                p++;
+            }
+            goto done;
+        }
     }
     /* Single symbol token. */
     tok.type = ch;
