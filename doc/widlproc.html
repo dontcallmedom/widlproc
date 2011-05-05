@@ -576,12 +576,21 @@ provides its documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the field.
 </p>
 
+<p>
+The <em>ExceptionInheritance</em> element indicates that the exception
+inherits from another exception. The <em>Name</em> in the
+<em>ExceptionInheritance</em> has a <em>name</em> attribute giving the
+scoped name of the exception being inherited from.
+</p>
+
+
 <pre class="dtd">
-&lt;!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?,
+&lt;!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?, ExceptionInheritance?,
         (Const | ExceptionField)* ) >
 &lt;!ATTLIST Exception name CDATA #REQUIRED 
                     id CDATA #REQUIRED >
 
+&lt;!ELEMENT ExceptionInheritance (Name) >
 &lt;!ELEMENT ExceptionField (descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST ExceptionField name CDATA #REQUIRED
                          id CDATA #REQUIRED >
