@@ -702,7 +702,7 @@ attribute specifies its name.
 </p>
 
 <p>
-Each of the <em>stringifier</em>, <em>omitable</em>, <em>getter</em>,
+Each of the <em>stringifier</em>, <em>static</em>, <em>omitable</em>, <em>getter</em>,
 <em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>caller</em>
 attributes is set to a value the same as the attribute
 name when the corresponding keyword appears in the Web IDL input.
@@ -735,6 +735,7 @@ name when the corresponding syntax appears in the Web IDL input.
 &lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
         Type, ArgumentList, Raises?) >
 &lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
+                    static (static) #IMPLIED
                     omitable (omitable) #IMPLIED
                     getter (getter) #IMPLIED
                     setter (setter) #IMPLIED
@@ -807,15 +808,9 @@ name of that interface, and no other attributes or elements.
 For the primitive types <code>short</code>, <code>unsigned short</code>,
 <code>long</code>, <code>unsigned long</code>, <code>long long</code>,
 <code>unsigned long long</code>, <code>float</code>, <code>double</code>,
-<code>boolean</code>, <code>octet</code> and <code>DOMString</code>,
+<code>boolean</code>, <code>octet</code>, <code>byte</code> and <code>DOMString</code>,
 there is an attribute <em>type</em>
 whose value is one of those strings, and no other attributes or elements.
-However, if the type was specified in the Web IDL with a trailing <code>?</code>
-sign, then there is an attribute <em>nullable</em> with the value
-<code>nullable</code>.
-<li>
-For a sequence type, the <em>Type</em> contains an element <em>Type</em>
-giving the sequence element type, and no other attributes or elements.
 However, if the type was specified in the Web IDL with a trailing <code>?</code>
 sign, then there is an attribute <em>nullable</em> with the value
 <code>nullable</code>.
@@ -825,18 +820,46 @@ The restrictions on which combinations of elements and attributes are
 permitted are not encoded by the DTD.
 </p>
 <p>
-The <em>descriptive></em> element provides the documentation
+The <em>descriptive</em> element provides the documentation
 if any, when the <em>Type</em> is a child of <em>Operation</em>, and thus
 representing an operation's return type.
 </p>
 
 
 <pre class="dtd">
-&lt;!ELEMENT Type (descriptive?, Type?) >
+&lt;!ELEMENT Type (descriptive?) >
 &lt;!ATTLIST Type type CDATA #IMPLIED
                name CDATA #IMPLIED
                nullable (nullable) #IMPLIED >
 </pre>
+
+<h4>Sequence</h4>
+
+<p>For a sequence type, the <em>Sequence</em> element contains an element <em>Type</em>, <em>Sequence</em>, or <em>Array</em> giving the sequence element type, and no other attributes or elements. If the sequence is specified in the Web IDL with a trailing <code>?</code>
+sign, then there is an attribute <em>nullable</em> with the value
+<code>nullable</code>.
+
+
+<pre class="dtd">
+&lt;!ELEMENT Sequence (descriptive?, (Type | Array | Sequence)?) >
+&lt;!ATTLIST Sequence 
+               nullable (nullable) #IMPLIED >
+</pre>
+
+<h4>Array</h4>
+
+<p>For an array type, the <em>Array</em> element contains an element <em>Type</em>, <em>Sequence</em>, or <em>Array</em> giving the array element type, and no other attributes or elements. If the array is specified in the Web IDL with a trailing <code>?</code>
+sign, then there is an attribute <em>nullable</em> with the value
+<code>nullable</code>.
+
+
+<pre class="dtd">
+&lt;!ELEMENT Array (descriptive?, (Type | Array | Sequence)?) >
+&lt;!ATTLIST Array 
+               nullable (nullable) #IMPLIED >
+</pre>
+
+
 
 <h4>Descriptive elements</h4>
 
