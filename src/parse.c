@@ -759,6 +759,7 @@ parseexception(struct tok *tok, struct node *eal)
     }
     eat(tok, '{');
     while (tok->type != '}') {
+        const char *start = tok->prestart;
         struct node *node2;
         struct node *eal = parseextendedattributelist(tok);
         if (tok->type == TOK_const)
@@ -766,6 +767,8 @@ parseexception(struct tok *tok, struct node *eal)
         else
             node2 = parseexceptionfield(tok, eal);
         addnode(node, node2);
+        node2->wsstart = start;
+        node2->end = tok->start + tok->len;
         setid(node2);
         eat(tok, ';');
     }
