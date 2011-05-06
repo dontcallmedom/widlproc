@@ -725,13 +725,13 @@ of scoped names used in the corresponding clause in the Web IDL input.
 <p>
 The <em>descriptive></em> element provides the attribute's documentation
 if any.
-The <em>id</em> attribute specifies the absolute scoped name of the operation.
+The <em>id</em> attribute specifies the absolute scoped name of the operation if it has one.
 </p>
 
 <p>
 An <em>Argument</em> is an argument to an operation.
 The <em>Type</em> element specifies its type. The <em>name</em>
-attribute specifies its name.
+attribute specifies its name if it has one.
 </p>
 
 <p>
@@ -751,8 +751,8 @@ name when the corresponding syntax appears in the Web IDL input.
                     creator (creator) #IMPLIED
                     deleter (deleter) #IMPLIED
                     caller (caller) #IMPLIED
-                    name CDATA #REQUIRED
-                    id CDATA #REQUIRED >
+                    name NMTOKEN #IMPLIED
+                    id NMTOKEN #IMPLIED >
 
 &lt;!ELEMENT Raises (RaiseException+) >
 
@@ -762,7 +762,7 @@ name when the corresponding syntax appears in the Web IDL input.
 &lt;!ATTLIST Argument in (in) #IMPLIED
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
-                   name CDATA #REQUIRED >
+                   name NMTOKEN #REQUIRED >
 </pre>
 
 <h4>Extended attributes</h4>
@@ -794,7 +794,7 @@ a scoped name.
 &lt;!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
 
 &lt;!ELEMENT ExtendedAttribute (ArgumentList?) >
-&lt;!ATTLIST ExtendedAttribute name CDATA #REQUIRED
+&lt;!ATTLIST ExtendedAttribute name NMTOKEN #REQUIRED
                             value CDATA #IMPLIED >
 </pre>
 
@@ -838,7 +838,7 @@ representing an operation's return type.
 <pre class="dtd">
 &lt;!ELEMENT Type (descriptive?) >
 &lt;!ATTLIST Type type CDATA #IMPLIED
-               name CDATA #IMPLIED
+               name NMTOKEN #IMPLIED
                nullable (nullable) #IMPLIED >
 </pre>
 
