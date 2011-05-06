@@ -27,7 +27,7 @@ ifneq (,$(filter Linux%, $(UNAME)))
 CFLAGS = -g -Wall -Werror -O0 $(patsubst %, -I%, $(INCDIRS))
 OBJSUFFIX = .o
 EXESUFFIX =
-LIBS = -lefence
+#LIBS = -lefence
 OBJOPTION = -o
 EXEOPTION = -o
 
@@ -132,7 +132,9 @@ srczip : widlproc-src-$(SVNBRANCH)$(SVNREV).zip
 widlproc-src-%.zip : $(SVNFILES) $(SVNLOG)
 	zip $@ $^ 
 
-test :
+examples :
 	$(MAKE) -C examples SRCDIR=../src OBJDIR=../obj EXAMPLESOBJDIR=../obj/examples
+
+test : $(MAKE) -C test SRCDIR=../src OBJDIR=../obj
 
 .DELETE_ON_ERROR:
