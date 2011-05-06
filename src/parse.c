@@ -294,6 +294,9 @@ parsenullabletype(struct tok *tok)
         case TOK_boolean:
             addnode(node, newattr("type", "boolean"));
             break;
+        case TOK_byte:
+            addnode(node, newattr("type", "byte"));
+            break;
         case TOK_octet:
             addnode(node, newattr("type", "octet"));
             break;
