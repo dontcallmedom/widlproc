@@ -687,7 +687,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, Type,
+&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence),
     GetRaises?, SetRaises?) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
@@ -742,7 +742,7 @@ name when the corresponding syntax appears in the Web IDL input.
 
 <pre class="dtd">
 &lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        Type, ArgumentList, Raises?) >
+        (Type | Array | Sequence), ArgumentList, Raises?) >
 &lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     static (static) #IMPLIED
                     omitable (omitable) #IMPLIED
