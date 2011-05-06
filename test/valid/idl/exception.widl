@@ -1,0 +1,12 @@
+// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+interface Dahut {
+  attribute DOMString type;
+};
+
+exception SomeException {
+};
+
+interface ExceptionThrower {
+  // This attribute always throws a SomeException and never returns a value.
+  attribute long valueOf getraises(SomeException);
+};

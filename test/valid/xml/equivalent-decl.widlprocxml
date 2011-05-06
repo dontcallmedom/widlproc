@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Dictionary" id="::Dictionary">
+    <webidl>interface Dictionary {
+  readonly attribute unsigned long propertyCount;
+
+  getter float getProperty(in DOMString propertyName);
+  setter void setProperty(in DOMString propertyName, in float propertyValue);
+};</webidl>
+    <Attribute readonly="readonly" name="propertyCount" id="::Dictionary::propertyCount">
+      <webidl>  readonly attribute unsigned long propertyCount;</webidl>
+      <Type type="unsigned long"/>
+    </Attribute>
+    <Operation getter="getter" name="getProperty" id="::Dictionary::getProperty">
+      <webidl>  getter float getProperty(in DOMString propertyName);</webidl>
+      <Type type="float"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation setter="setter" name="setProperty" id="::Dictionary::setProperty">
+      <webidl>  setter void setProperty(in DOMString propertyName, in float propertyValue);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" name="propertyValue">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+  <Interface name="Dictionary" id="::Dictionary">
+    <webidl>interface Dictionary {
+  readonly attribute unsigned long propertyCount;
+
+  float getProperty(in DOMString propertyName);
+  void setProperty(in DOMString propertyName, in float propertyValue);
+
+  getter float (in DOMString propertyName);
+  setter void (in DOMString propertyName, in float propertyValue);
+};</webidl>
+    <Attribute readonly="readonly" name="propertyCount" id="::Dictionary::propertyCount">
+      <webidl>  readonly attribute unsigned long propertyCount;</webidl>
+      <Type type="unsigned long"/>
+    </Attribute>
+    <Operation name="getProperty" id="::Dictionary::getProperty">
+      <webidl>  float getProperty(in DOMString propertyName);</webidl>
+      <Type type="float"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="setProperty" id="::Dictionary::setProperty">
+      <webidl>  void setProperty(in DOMString propertyName, in float propertyValue);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" name="propertyValue">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation getter="getter">
+      <webidl>  getter float (in DOMString propertyName);</webidl>
+      <Type type="float"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation setter="setter">
+      <webidl>  setter void (in DOMString propertyName, in float propertyValue);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="propertyName">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" name="propertyValue">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

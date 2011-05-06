@@ -1,0 +1,18 @@
+// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+interface Dictionary {
+  readonly attribute unsigned long propertyCount;
+
+  getter float getProperty(in DOMString propertyName);
+  setter void setProperty(in DOMString propertyName, in float propertyValue);
+};
+
+
+interface Dictionary {
+  readonly attribute unsigned long propertyCount;
+
+  float getProperty(in DOMString propertyName);
+  void setProperty(in DOMString propertyName, in float propertyValue);
+
+  getter float (in DOMString propertyName);
+  setter void (in DOMString propertyName, in float propertyValue);
+};

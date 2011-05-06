@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Dahut" id="::Dahut">
+    <webidl>interface Dahut {
+  attribute DOMString type;
+};</webidl>
+    <Attribute name="type" id="::Dahut::type">
+      <webidl>  attribute DOMString type;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+  </Interface>
+  <Exception name="SomeException" id="::SomeException">
+    <webidl>exception SomeException {
+};</webidl>
+  </Exception>
+  <Interface name="ExceptionThrower" id="::ExceptionThrower">
+    <webidl>interface ExceptionThrower {
+  attribute long valueOf getraises(<ref>SomeException</ref>);
+};</webidl>
+    <Attribute name="valueOf" id="::ExceptionThrower::valueOf">
+      <webidl>  attribute long valueOf getraises(<ref>SomeException</ref>);</webidl>
+      <Type type="long"/>
+      <GetRaises>
+        <RaiseException name="SomeException"/>
+      </GetRaises>
+    </Attribute>
+  </Interface>
+</Definitions>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="HTMLAudioElement" id="::HTMLAudioElement">
+    <webidl>[NamedConstructor=Audio,
+ NamedConstructor=Audio(in DOMString src)]
+interface HTMLAudioElement : <ref>HTMLMediaElement</ref> {
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="NamedConstructor" value="Audio"/>
+      <ExtendedAttribute name="NamedConstructor" value="Audio">
+        <ArgumentList>
+          <Argument in="in" name="src">
+            <Type type="DOMString"/>
+          </Argument>
+        </ArgumentList>
+      </ExtendedAttribute>
+    </ExtendedAttributeList>
+    <InterfaceInheritance>
+      <Name name="HTMLMediaElement"/>
+    </InterfaceInheritance>
+  </Interface>
+</Definitions>

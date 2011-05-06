@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Module name="framework" id="::framework">
+    <webidl>module framework {
+
+  typedef float number;
+
+  exception FrameworkException {
+
+    const long ERR_NOT_FOUND = 1;
+
+    long code;
+  };
+
+  interface System {
+
+    object createObject(in DOMString _interface);
+
+    getter DOMString (in DOMString keyName);
+  };
+
+  module gui {
+    
+    interface TextField {
+
+      attribute boolean _const;
+
+      attribute DOMString? _value;
+    };
+  };
+};</webidl>
+    <Typedef name="number" id="::framework::number">
+      <webidl>  typedef float number;</webidl>
+      <Type type="float"/>
+    </Typedef>
+    <Exception name="FrameworkException" id="::framework::FrameworkException">
+      <webidl>  exception FrameworkException {
+
+    const long ERR_NOT_FOUND = 1;
+
+    long code;
+  };</webidl>
+      <Const name="ERR_NOT_FOUND" value="1" id="::framework::FrameworkException::ERR_NOT_FOUND">
+        <webidl>    const long ERR_NOT_FOUND = 1;</webidl>
+        <Type type="long"/>
+      </Const>
+      <ExceptionField name="code" id="::framework::FrameworkException::code">
+        <webidl>    long code;</webidl>
+        <Type type="long"/>
+      </ExceptionField>
+    </Exception>
+    <Interface name="System" id="::framework::System">
+      <webidl>  interface System {
+
+    object createObject(in DOMString _interface);
+
+    getter DOMString (in DOMString keyName);
+  };</webidl>
+      <Operation name="createObject" id="::framework::System::createObject">
+        <webidl>    object createObject(in DOMString _interface);</webidl>
+        <Type type="object"/>
+        <ArgumentList>
+          <Argument in="in" name="_interface">
+            <Type type="DOMString"/>
+          </Argument>
+        </ArgumentList>
+      </Operation>
+      <Operation getter="getter">
+        <webidl>    getter DOMString (in DOMString keyName);</webidl>
+        <Type type="DOMString"/>
+        <ArgumentList>
+          <Argument in="in" name="keyName">
+            <Type type="DOMString"/>
+          </Argument>
+        </ArgumentList>
+      </Operation>
+    </Interface>
+    <Module name="gui" id="::framework::gui">
+      <webidl>  module gui {
+    
+    interface TextField {
+
+      attribute boolean _const;
+
+      attribute DOMString? _value;
+    };
+  };</webidl>
+      <Interface name="TextField" id="::framework::gui::TextField">
+        <webidl>    interface TextField {
+
+      attribute boolean _const;
+
+      attribute DOMString? _value;
+    };</webidl>
+        <Attribute name="_const" id="::framework::gui::TextField::_const">
+          <webidl>      attribute boolean _const;</webidl>
+          <Type type="boolean"/>
+        </Attribute>
+        <Attribute name="_value" id="::framework::gui::TextField::_value">
+          <webidl>      attribute DOMString? _value;</webidl>
+          <Type type="DOMString" nullable="nullable"/>
+        </Attribute>
+      </Interface>
+    </Module>
+  </Module>
+</Definitions>

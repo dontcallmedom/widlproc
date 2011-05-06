@@ -1,0 +1,18 @@
+// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+interface Dimensions {
+  attribute unsigned long width;
+  attribute unsigned long height;
+};
+
+exception NoPointerDevice { };
+
+interface Button {
+
+  // An operation that takes no arguments, returns a boolean, and could possibly
+  // raise an exception.
+  boolean isMouseOver() raises (NoPointerDevice);
+
+  // Overloaded operations.
+  void setDimensions(in Dimensions size);
+  void setDimensions(in unsigned long width, in unsigned long height);
+};

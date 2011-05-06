@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Dog" id="::Dog">
+    <webidl>interface Dog {
+  attribute DOMString name;
+  attribute DOMString owner;
+
+  boolean isMemberOfBreed([TreatNullAs=EmptyString] in DOMString breedName);
+};</webidl>
+    <Attribute name="name" id="::Dog::name">
+      <webidl>  attribute DOMString name;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+    <Attribute name="owner" id="::Dog::owner">
+      <webidl>  attribute DOMString owner;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+    <Operation name="isMemberOfBreed" id="::Dog::isMemberOfBreed">
+      <webidl>  boolean isMemberOfBreed([TreatNullAs=EmptyString] in DOMString breedName);</webidl>
+      <Type type="boolean"/>
+      <ArgumentList>
+        <Argument in="in" name="breedName">
+          <ExtendedAttributeList>
+            <ExtendedAttribute name="TreatNullAs" value="EmptyString"/>
+          </ExtendedAttributeList>
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

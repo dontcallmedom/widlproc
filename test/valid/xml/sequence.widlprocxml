@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="X" id="::X">
+    <webidl>interface X {
+  readonly attribute sequence&lt;long> numbers;
+};</webidl>
+    <Attribute readonly="readonly" name="numbers" id="::X::numbers">
+      <webidl>  readonly attribute sequence&lt;long> numbers;</webidl>
+      <Sequence>
+        <Type type="long"/>
+      </Sequence>
+    </Attribute>
+  </Interface>
+  <Interface name="Canvas" id="::Canvas">
+    <webidl>interface Canvas {
+
+  readonly attribute sequence&lt;DOMString> supportedImageCodecs;
+
+  void drawPolygon(in sequence&lt;float> coordinates);
+
+};</webidl>
+    <Attribute readonly="readonly" name="supportedImageCodecs" id="::Canvas::supportedImageCodecs">
+      <webidl>  readonly attribute sequence&lt;DOMString> supportedImageCodecs;</webidl>
+      <Sequence>
+        <Type type="DOMString"/>
+      </Sequence>
+    </Attribute>
+    <Operation name="drawPolygon" id="::Canvas::drawPolygon">
+      <webidl>  void drawPolygon(in sequence&lt;float> coordinates);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="coordinates">
+          <Sequence>
+            <Type type="float"/>
+          </Sequence>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="A" id="::A">
+    <webidl>interface A {
+};</webidl>
+  </Interface>
+  <Interface name="B" id="::B">
+    <webidl>interface B {
+};</webidl>
+  </Interface>
+  <Interface name="C" id="::C">
+    <webidl>interface C {
+  void f(in <ref>A</ref> x);
+  void f(in <ref>B</ref> x);
+};</webidl>
+    <Operation name="f" id="::C::f">
+      <webidl>  void f(in <ref>A</ref> x);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="x">
+          <Type name="A"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="f" id="::C::f">
+      <webidl>  void f(in <ref>B</ref> x);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="x">
+          <Type name="B"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+  <Interface name="A" id="::A">
+    <webidl>interface A {
+void f(in DOMString a);
+void f([AllowAny] in DOMString a, in DOMString b, in float... c);
+void f();
+void f(in long a, in DOMString b, in optional DOMString c, in float... d);
+};</webidl>
+    <Operation name="f" id="::A::f">
+      <webidl> void f(in DOMString a);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="a">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="f" id="::A::f">
+      <webidl> void f([AllowAny] in DOMString a, in DOMString b, in float... c);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="a">
+          <ExtendedAttributeList>
+            <ExtendedAttribute name="AllowAny"/>
+          </ExtendedAttributeList>
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" name="b">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" ellipsis="ellipsis" name="c">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="f" id="::A::f">
+      <webidl> void f();</webidl>
+      <Type type="void"/>
+      <ArgumentList/>
+    </Operation>
+    <Operation name="f" id="::A::f">
+      <webidl> void f(in long a, in DOMString b, in optional DOMString c, in float... d);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" name="a">
+          <Type type="long"/>
+        </Argument>
+        <Argument in="in" name="b">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" optional="optional" name="c">
+          <Type type="DOMString"/>
+        </Argument>
+        <Argument in="in" ellipsis="ellipsis" name="d">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

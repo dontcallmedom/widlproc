@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Module name="dom" id="::dom">
+    <webidl>module dom {
+  interface Node {
+    readonly attribute unsigned short nodeType;
+  };
+};</webidl>
+    <Interface name="Node" id="::dom::Node">
+      <webidl>  interface Node {
+    readonly attribute unsigned short nodeType;
+  };</webidl>
+      <Attribute readonly="readonly" name="nodeType" id="::dom::Node::nodeType">
+        <webidl>    readonly attribute unsigned short nodeType;</webidl>
+        <Type type="unsigned short"/>
+      </Attribute>
+    </Interface>
+  </Module>
+  <Module name="events" id="::events">
+    <webidl>module events {
+
+  interface EventTarget {
+    void addEventListener(in DOMString type,
+                          in <ref>EventListener</ref> listener,
+                          in boolean useCapture);
+  };
+
+  <ref>dom::Node</ref> implements <ref>EventTarget</ref>;
+};</webidl>
+    <Interface name="EventTarget" id="::events::EventTarget">
+      <webidl>  interface EventTarget {
+    void addEventListener(in DOMString type,
+                          in <ref>EventListener</ref> listener,
+                          in boolean useCapture);
+  };</webidl>
+      <Operation name="addEventListener" id="::events::EventTarget::addEventListener">
+        <webidl>    void addEventListener(in DOMString type,
+                          in <ref>EventListener</ref> listener,
+                          in boolean useCapture);</webidl>
+        <Type type="void"/>
+        <ArgumentList>
+          <Argument in="in" name="type">
+            <Type type="DOMString"/>
+          </Argument>
+          <Argument in="in" name="listener">
+            <Type name="EventListener"/>
+          </Argument>
+          <Argument in="in" name="useCapture">
+            <Type type="boolean"/>
+          </Argument>
+        </ArgumentList>
+      </Operation>
+    </Interface>
+    <Implements name1="domNode" name2="EventTarget">
+      <webidl>  <ref>dom::Node</ref> implements <ref>EventTarget</ref>;</webidl>
+    </Implements>
+  </Module>
+</Definitions>

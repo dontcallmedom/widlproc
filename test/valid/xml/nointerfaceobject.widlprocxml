@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Query" id="::Query">
+    <webidl>[NoInterfaceObject]
+interface Query {
+  any lookupEntry(in unsigned long key);
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="NoInterfaceObject"/>
+    </ExtendedAttributeList>
+    <Operation name="lookupEntry" id="::Query::lookupEntry">
+      <webidl>  any lookupEntry(in unsigned long key);</webidl>
+      <Type type="any"/>
+      <ArgumentList>
+        <Argument in="in" name="key">
+          <Type type="unsigned long"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

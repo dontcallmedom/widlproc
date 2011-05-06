@@ -1,0 +1,10 @@
+// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+interface Point { /* ... */ };
+
+interface Circle {
+  attribute float cx;
+  attribute float cy;
+  attribute float radius;
+
+  static Point triangulate(in Circle c1, in Circle c2, in Circle c3);
+};

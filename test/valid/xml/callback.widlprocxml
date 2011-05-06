@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Listener" id="::Listener">
+    <webidl>[Callback] interface Listener {
+  void eventOccurred();
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="Callback"/>
+    </ExtendedAttributeList>
+    <Operation name="eventOccurred" id="::Listener::eventOccurred">
+      <webidl>  void eventOccurred();</webidl>
+      <Type type="void"/>
+      <ArgumentList/>
+    </Operation>
+  </Interface>
+</Definitions>

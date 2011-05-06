@@ -1,0 +1,20 @@
+// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+interface A {
+  // ...
+};
+
+interface B {
+  // ...
+};
+
+interface C {
+  void f(in A x);
+  void f(in B x);
+};
+
+interface A {
+  /* f1 */ void f(in DOMString a);
+  /* f2 */ void f([AllowAny] in DOMString a, in DOMString b, in float... c);
+  /* f3 */ void f();
+  /* f4 */ void f(in long a, in DOMString b, in optional DOMString c, in float... d);
+};

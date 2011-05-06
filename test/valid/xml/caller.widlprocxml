@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="NumberQuadrupler" id="::NumberQuadrupler">
+    <webidl>interface NumberQuadrupler {
+  caller float compute(in float x);
+};</webidl>
+    <Operation caller="caller" name="compute" id="::NumberQuadrupler::compute">
+      <webidl>  caller float compute(in float x);</webidl>
+      <Type type="float"/>
+      <ArgumentList>
+        <Argument in="in" name="x">
+          <Type type="float"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

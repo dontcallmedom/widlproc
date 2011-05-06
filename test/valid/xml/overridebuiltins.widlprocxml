@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="StringMap2" id="::StringMap2">
+    <webidl>[OverrideBuiltins]
+interface StringMap2 {
+  readonly attribute unsigned long length;
+  getter DOMString lookup(in DOMString key);
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="OverrideBuiltins"/>
+    </ExtendedAttributeList>
+    <Attribute readonly="readonly" name="length" id="::StringMap2::length">
+      <webidl>  readonly attribute unsigned long length;</webidl>
+      <Type type="unsigned long"/>
+    </Attribute>
+    <Operation getter="getter" name="lookup" id="::StringMap2::lookup">
+      <webidl>  getter DOMString lookup(in DOMString key);</webidl>
+      <Type type="DOMString"/>
+      <ArgumentList>
+        <Argument in="in" name="key">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

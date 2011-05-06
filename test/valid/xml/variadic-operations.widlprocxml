@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="IntegerSet" id="::IntegerSet">
+    <webidl>interface IntegerSet {
+  readonly attribute unsigned long cardinality;
+
+  void union(in long... ints);
+  void intersection(in long... ints);
+};</webidl>
+    <Attribute readonly="readonly" name="cardinality" id="::IntegerSet::cardinality">
+      <webidl>  readonly attribute unsigned long cardinality;</webidl>
+      <Type type="unsigned long"/>
+    </Attribute>
+    <Operation name="union" id="::IntegerSet::union">
+      <webidl>  void union(in long... ints);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" ellipsis="ellipsis" name="ints">
+          <Type type="long"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="intersection" id="::IntegerSet::intersection">
+      <webidl>  void intersection(in long... ints);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument in="in" ellipsis="ellipsis" name="ints">
+          <Type type="long"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>
