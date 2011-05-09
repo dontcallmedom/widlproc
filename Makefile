@@ -135,6 +135,7 @@ widlproc-src-%.zip : $(SVNFILES) $(SVNLOG)
 examples :
 	$(MAKE) -C examples SRCDIR=../src OBJDIR=../obj EXAMPLESOBJDIR=../obj/examples
 
-test : $(MAKE) -C test SRCDIR=../src OBJDIR=../obj
+test : $(OBJS)
+	$(MAKE) -C test SRCDIR=../src OBJDIR=../obj
 
 .DELETE_ON_ERROR:
