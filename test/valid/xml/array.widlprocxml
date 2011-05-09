@@ -11,11 +11,11 @@ interface LotteryResults {
     </ExtendedAttributeList>
     <Attribute readonly="readonly" name="numbers" id="::LotteryResults::numbers">
       <webidl>  readonly attribute unsigned short[][] numbers;</webidl>
-      <Array>
-        <Array>
+      <Type type="array">
+        <Type type="array">
           <Type type="unsigned short"/>
-        </Array>
-      </Array>
+        </Type>
+      </Type>
     </Attribute>
   </Interface>
 </Definitions>

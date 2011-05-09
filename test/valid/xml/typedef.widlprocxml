@@ -68,9 +68,9 @@
         </Interface>
         <Typedef name="PointSequence" id="::gfx::geom::geom2d::PointSequence">
           <webidl>      typedef sequence&lt;<ref>Point</ref>> PointSequence;</webidl>
-          <Sequence>
+          <Type type="sequence">
             <Type name="Point"/>
-          </Sequence>
+          </Type>
         </Typedef>
         <Interface name="Rect" id="::gfx::geom::geom2d::Rect">
           <webidl>      interface Rect {

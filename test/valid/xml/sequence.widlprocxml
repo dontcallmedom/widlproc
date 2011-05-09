@@ -7,9 +7,9 @@
 };</webidl>
     <Attribute readonly="readonly" name="numbers" id="::X::numbers">
       <webidl>  readonly attribute sequence&lt;long> numbers;</webidl>
-      <Sequence>
+      <Type type="sequence">
         <Type type="long"/>
-      </Sequence>
+      </Type>
     </Attribute>
   </Interface>
   <Interface name="Canvas" id="::Canvas">
@@ -22,18 +22,18 @@
 };</webidl>
     <Attribute readonly="readonly" name="supportedImageCodecs" id="::Canvas::supportedImageCodecs">
       <webidl>  readonly attribute sequence&lt;DOMString> supportedImageCodecs;</webidl>
-      <Sequence>
+      <Type type="sequence">
         <Type type="DOMString"/>
-      </Sequence>
+      </Type>
     </Attribute>
     <Operation name="drawPolygon" id="::Canvas::drawPolygon">
       <webidl>  void drawPolygon(in sequence&lt;float> coordinates);</webidl>
       <Type type="void"/>
       <ArgumentList>
         <Argument in="in" name="coordinates">
-          <Sequence>
+          <Type type="sequence">
             <Type type="float"/>
-          </Sequence>
+          </Type>
         </Argument>
       </ArgumentList>
     </Operation>
