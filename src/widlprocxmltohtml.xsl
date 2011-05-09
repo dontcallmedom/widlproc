@@ -456,9 +456,17 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <xsl:template match="Type">
     <xsl:choose>
         <xsl:when test="Type">
-            <xsl:text>sequence &lt;</xsl:text>
-            <xsl:apply-templates/>
-            <xsl:text>></xsl:text>
+	  <xsl:choose>
+	    <xsl:when test="@type='sequence'">
+	      <xsl:text>sequence &lt;</xsl:text>
+	      <xsl:apply-templates/>
+	      <xsl:text>></xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:apply-templates/>
+	      <xsl:text>[]</xsl:text>
+	    </xsl:otherwise>
+	  </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
             <xsl:value-of select="@name"/>
