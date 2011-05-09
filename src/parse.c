@@ -279,7 +279,8 @@ parsenullabletype(struct tok *tok)
         addnode(node, newattr("type", parseunsignedintegertype(tok)));
         break;
     case TOK_sequence:
-        node = newelement("Sequence");
+        node = newelement("Type");
+        addnode(node, newattr("type", "sequence");
         lexnocomment();
         eat(tok, '<');
         addnode(node, parsetype(tok));
@@ -353,7 +354,8 @@ parsetype(struct tok *tok)
     }
     while (tok->type == TOK_DOUBLEBRACKET) {
         struct node *typenode = node;
-	node = newelement("Array");
+	node = newelement("Type");
+        addnode(node, newattr("type", "array");
         addnode(node, typenode);
         lexnocomment();
     }
