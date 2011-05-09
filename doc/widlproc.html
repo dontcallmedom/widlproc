@@ -591,7 +591,7 @@ scoped name of the exception being inherited from.
                     id CDATA #REQUIRED >
 
 &lt;!ELEMENT ExceptionInheritance (Name) >
-&lt;!ELEMENT ExceptionField (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+&lt;!ELEMENT ExceptionField (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 &lt;!ATTLIST ExceptionField name CDATA #REQUIRED
                          id CDATA #REQUIRED >
 </pre>
@@ -609,7 +609,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the typedef.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+&lt;!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 &lt;!ATTLIST Typedef name CDATA #REQUIRED
                   id CDATA #REQUIRED >
 </pre>
@@ -687,7 +687,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence),
+&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type),
     GetRaises?, SetRaises?) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
@@ -742,7 +742,7 @@ name when the corresponding syntax appears in the Web IDL input.
 
 <pre class="dtd">
 &lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        (Type | Array | Sequence), ArgumentList, Raises?) >
+        (Type), ArgumentList, Raises?) >
 &lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     static (static) #IMPLIED
                     omittable (omittable) #IMPLIED
@@ -758,7 +758,7 @@ name when the corresponding syntax appears in the Web IDL input.
 
 &lt;!ELEMENT ArgumentList (Argument*) >
 
-&lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+&lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type)) >
 &lt;!ATTLIST Argument in (in) #IMPLIED
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
@@ -836,7 +836,7 @@ representing an operation's return type.
 
 
 <pre class="dtd">
-&lt;!ELEMENT Type (descriptive?) >
+&lt;!ELEMENT Type (descriptive?, Type?) >
 &lt;!ATTLIST Type type CDATA #IMPLIED
                name NMTOKEN #IMPLIED
                nullable (nullable) #IMPLIED >
@@ -844,30 +844,16 @@ representing an operation's return type.
 
 <h4>Sequence</h4>
 
-<p>For a sequence type, the <em>Sequence</em> element contains an element <em>Type</em>, <em>Sequence</em>, or <em>Array</em> giving the sequence element type, and no other attributes or elements. If the sequence is specified in the Web IDL with a trailing <code>?</code>
+<p>For a sequence type, the <em>Type</em> element with an attribute <em>type</em> set to <em>sequence</em> contains an element <em>Type</em> giving the sequence element type, and no other attributes or elements. If the sequence is specified in the Web IDL with a trailing <code>?</code>
 sign, then there is an attribute <em>nullable</em> with the value
 <code>nullable</code>.
 
-
-<pre class="dtd">
-&lt;!ELEMENT Sequence (descriptive?, (Type | Array | Sequence)?) >
-&lt;!ATTLIST Sequence 
-               nullable (nullable) #IMPLIED >
-</pre>
 
 <h4>Array</h4>
 
-<p>For an array type, the <em>Array</em> element contains an element <em>Type</em>, <em>Sequence</em>, or <em>Array</em> giving the array element type, and no other attributes or elements. If the array is specified in the Web IDL with a trailing <code>?</code>
+<p>For an array type, the <em>Type</em> element with an attribute <em>type</em> set to <em>array</em> contains an element <em>Type</em> giving the array element type, and no other attributes or elements. If the array is specified in the Web IDL with a trailing <code>?</code>
 sign, then there is an attribute <em>nullable</em> with the value
 <code>nullable</code>.
-
-
-<pre class="dtd">
-&lt;!ELEMENT Array (descriptive?, (Type | Array | Sequence)?) >
-&lt;!ATTLIST Array 
-               nullable (nullable) #IMPLIED >
-</pre>
-
 
 
 <h4>Descriptive elements</h4>
