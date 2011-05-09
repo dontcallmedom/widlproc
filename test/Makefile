@@ -61,7 +61,7 @@ DTD = $(OBJDIR)/widlprocxml.dtd
 
 WIDLS = $(patsubst $(VALIDTESTDIR)/%, %, $(wildcard $(VALIDTESTDIR)/*.widl))
 
-test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(WIDLS))
+test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(WIDLS)) $(WIDLPROC)
 	@echo "$@ pass"
 
 #$(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml $(SRCDIR)/widlprocxmltohtml.xsl Makefile
