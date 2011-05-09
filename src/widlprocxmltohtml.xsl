@@ -326,6 +326,9 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <div class="synopsis">
             <h6>Signature</h6>
             <pre>
+	      <xsl:if test="@static">
+                    <xsl:value-of select="concat(@static, ' ')"/>
+	      </xsl:if>
                 <xsl:if test="@stringifier">
                     <xsl:value-of select="concat(@stringifier, ' ')"/>
                 </xsl:if>
