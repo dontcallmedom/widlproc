@@ -91,7 +91,7 @@ struct htmleldesc {
 static const struct htmleldesc htmleldescs[] = {
     { 1, "a", HTMLEL_INLINE, 0 },
     { 1, "b", HTMLEL_INLINE, 0 },
-    { 2, "br", HTMLEL_INLINE | HTMLEL_EMPTY, 0 },
+    { 2, "br", HTMLEL_INLINE, HTMLEL_EMPTY },
     { 2, "dd", HTMLEL_DLCONTENTS, HTMLEL_FLOW },
     { 2, "dl", HTMLEL_BLOCK, HTMLEL_DLCONTENTS },
     { 2, "dt", HTMLEL_DLCONTENTS, HTMLEL_INLINE },
@@ -1404,11 +1404,14 @@ parsehtmltag(const char *start, struct cnode **pcnode,
         cnode = endcnode(cnode);
     } else {
         /* Opening tag. */
-        cnode = starthtmlcnode(cnode, htmleldesc, endname, end - 1 - endname, filename, *plinenum);
-        if (close == 2 || (htmleldesc->content & HTMLEL_EMPTY)) {
-            /* Empty element -- close it again. */
-            cnode = endcnode(cnode);
-        }
+      if (close !=2)
+	   cnode = starthtmlcnode(cnode, htmleldesc, endname, end - 1 - endname, filename, *plinenum);
+      else // don't include the closing "/" in the attributes list
+	   cnode = starthtmlcnode(cnode, htmleldesc, endname, end - 2 - endname, filename, *plinenum);
+      if (close == 2 || (htmleldesc->content & HTMLEL_EMPTY)) {
+	/* Empty element -- close it again. */
+	cnode = endcnode(cnode);
+      }
     }
     *pcnode = cnode;
     *plinenum = linenum;
