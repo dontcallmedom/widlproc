@@ -1493,7 +1493,7 @@ checkforlineofstars:
             cnode = startpara(cnode, &para_funcs);
         /* Process text on the line. */
         starttext = p;
-        while (ch && ch != '\n') {
+        while (ch && ch != '\n' && ch != '\r') {
             if (ch != '\\' && ch != '<' /* && ch != '@' */ && ch != '$'
                     && ch != '&')
             {
