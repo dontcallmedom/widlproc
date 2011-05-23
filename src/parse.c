@@ -373,22 +373,25 @@ parseattributetype(struct tok *tok)
     case TOK_IDENTIFIER:
         node = newelement("Type");
         addnode(node, parsescopedname(tok, "name", 1));
+	node = parsetypesuffix(tok, node);
         break;
     case TOK_any:
         node = newelement("Type");
         addnode(node, newattr("type", "any"));
         lexnocomment();
+	node = parsetypesuffixstartingwitharray(tok, node);
         break;
     case TOK_object:
         node = newelement("Type");
         addnode(node, newattr("type", "object"));
         lexnocomment();
+	node = parsetypesuffix(tok, node);
         break;
     default:
         node = parseprimitiveorstringtype(tok);
+	node = parsetypesuffix(tok, node);
         break;
     }
-    node = parsetypesuffix(tok, node);
     return node;
 }
 
