@@ -1,31 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <Interface name="X" id="::X">
-    <webidl>interface X {
-  readonly attribute sequence&lt;long> numbers;
-};</webidl>
-    <Attribute readonly="readonly" name="numbers" id="::X::numbers">
-      <webidl>  readonly attribute sequence&lt;long> numbers;</webidl>
-      <Type type="sequence">
-        <Type type="long"/>
-      </Type>
-    </Attribute>
-  </Interface>
   <Interface name="Canvas" id="::Canvas">
     <webidl>interface Canvas {
-
-  readonly attribute sequence&lt;DOMString> supportedImageCodecs;
-
   void drawPolygon(in sequence&lt;float> coordinates);
-
+  sequence&lt;float> getInflectionPoints();
 };</webidl>
-    <Attribute readonly="readonly" name="supportedImageCodecs" id="::Canvas::supportedImageCodecs">
-      <webidl>  readonly attribute sequence&lt;DOMString> supportedImageCodecs;</webidl>
-      <Type type="sequence">
-        <Type type="DOMString"/>
-      </Type>
-    </Attribute>
     <Operation name="drawPolygon" id="::Canvas::drawPolygon">
       <webidl>  void drawPolygon(in sequence&lt;float> coordinates);</webidl>
       <Type type="void"/>
@@ -36,6 +16,13 @@
           </Type>
         </Argument>
       </ArgumentList>
+    </Operation>
+    <Operation name="getInflectionPoints" id="::Canvas::getInflectionPoints">
+      <webidl>  sequence&lt;float> getInflectionPoints();</webidl>
+      <Type type="sequence">
+        <Type type="float"/>
+      </Type>
+      <ArgumentList/>
     </Operation>
   </Interface>
 </Definitions>

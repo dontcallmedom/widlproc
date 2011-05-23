@@ -1,13 +1,7 @@
 // Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
-interface X {
-  readonly attribute sequence<long> numbers;
-};
-
+// edited to remove sequence as attributes, now invalid
 interface Canvas {
-
-  readonly attribute sequence<DOMString> supportedImageCodecs;
-
   void drawPolygon(in sequence<float> coordinates);
-
+  sequence<float> getInflectionPoints();
   // ...
 };
