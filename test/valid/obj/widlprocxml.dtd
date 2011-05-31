@@ -9,7 +9,7 @@
 
 <!ELEMENT webidl (#PCDATA | ref)* >
 
-<!ELEMENT Definitions (Module | Interface
+<!ELEMENT Definitions (Module | Interface | Dictionary
     | Exception | Typedef | Implements)* >
 
 <!ELEMENT Module (webidl, descriptive?, ExtendedAttributeList?,
@@ -27,17 +27,22 @@
 <!ELEMENT Name EMPTY >
 <!ATTLIST Name name CDATA #REQUIRED >
 
+<!ELEMENT Dictionary (webidl, descriptive?, DictionaryMember* ) >
+<!ATTLIST Dictionary name CDATA #REQUIRED
+                    id CDATA #REQUIRED >
+
+
 <!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?, ExceptionInheritance?,
         (Const | ExceptionField)* ) >
 <!ATTLIST Exception name CDATA #REQUIRED 
                     id CDATA #REQUIRED >
 
 <!ELEMENT ExceptionInheritance (Name) >
-<!ELEMENT ExceptionField (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+<!ELEMENT ExceptionField (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST ExceptionField name CDATA #REQUIRED
                          id CDATA #REQUIRED >
 
-<!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+<!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST Typedef name CDATA #REQUIRED
                   id CDATA #REQUIRED >
 
@@ -47,12 +52,13 @@
 
 <!ELEMENT Const (webidl, descriptive?, ExtendedAttributeList?, Type) >
 <!ATTLIST Const name CDATA #REQUIRED
-                value CDATA #REQUIRED
+                value CDATA #IMPLIED
+                stringvalue CDATA #IMPLIED
                 id CDATA #REQUIRED >
 
 <!ELEMENT Stringifier (webidl, descriptive?, ExtendedAttributeList?) >
 
-<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type | Array | Sequence),
+<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type),
     GetRaises?, SetRaises?) >
 <!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
@@ -67,7 +73,7 @@
 <!ATTLIST RaiseException name CDATA #REQUIRED >
 
 <!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        (Type | Array | Sequence), ArgumentList, Raises?) >
+        (Type), ArgumentList, Raises?) >
 <!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     static (static) #IMPLIED
                     omittable (omittable) #IMPLIED
@@ -83,11 +89,18 @@
 
 <!ELEMENT ArgumentList (Argument*) >
 
-<!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type | Array | Sequence)) >
+<!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST Argument in (in) #IMPLIED
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
                    name NMTOKEN #REQUIRED >
+
+<!ELEMENT DictionaryMember (webidl, descriptive?, ExtendedAttributeList?, Type) >
+<!ATTLIST DictionaryMember name CDATA #REQUIRED
+                    id CDATA #REQUIRED
+                value CDATA #IMPLIED
+                stringvalue CDATA #IMPLIED >
+
 
 <!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
 
@@ -95,17 +108,9 @@
 <!ATTLIST ExtendedAttribute name NMTOKEN #REQUIRED
                             value CDATA #IMPLIED >
 
-<!ELEMENT Type (descriptive?) >
+<!ELEMENT Type (descriptive?, Type?) >
 <!ATTLIST Type type CDATA #IMPLIED
                name NMTOKEN #IMPLIED
-               nullable (nullable) #IMPLIED >
-
-<!ELEMENT Sequence (descriptive?, (Type | Array | Sequence)?) >
-<!ATTLIST Sequence 
-               nullable (nullable) #IMPLIED >
-
-<!ELEMENT Array (descriptive?, (Type | Array | Sequence)?) >
-<!ATTLIST Array 
                nullable (nullable) #IMPLIED >
 
 <!ELEMENT descriptive (description | brief | throw | author

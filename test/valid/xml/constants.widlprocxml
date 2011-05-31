@@ -8,6 +8,8 @@
   const unsigned long BIT_MASK = 0x0000fc00;
   const float AVOGADRO = 6.022e23;
   const DOMString hello = &quot;world&quot;;
+  const DOMString? nullString = &quot;null&quot;;
+  const DOMString? nullable = null;
 };</webidl>
     <Const name="DEBUG" value="false" id="::Util::DEBUG">
       <webidl>  const boolean DEBUG = false;</webidl>
@@ -25,9 +27,17 @@
       <webidl>  const float AVOGADRO = 6.022e23;</webidl>
       <Type type="float"/>
     </Const>
-    <Const name="hello" value="world" id="::Util::hello">
+    <Const name="hello" stringvalue="world" id="::Util::hello">
       <webidl>  const DOMString hello = &quot;world&quot;;</webidl>
       <Type type="DOMString"/>
+    </Const>
+    <Const name="nullString" stringvalue="null" id="::Util::nullString">
+      <webidl>  const DOMString? nullString = &quot;null&quot;;</webidl>
+      <Type type="DOMString" nullable="nullable"/>
+    </Const>
+    <Const name="nullable" value="null" id="::Util::nullable">
+      <webidl>  const DOMString? nullable = null;</webidl>
+      <Type type="DOMString" nullable="nullable"/>
     </Const>
   </Interface>
   <Exception name="Error" id="::Error">

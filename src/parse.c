@@ -707,6 +707,68 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 }
 
 /***********************************************************************
+ * parseconstexpr : parse ConstExpr
+ *
+ * Enter:   tok = next token
+ *          node
+ *
+ * Return:  node updated with value
+ *          tok updated
+ */
+static struct node *
+parseconstexpr (struct tok *tok, struct node *node) {
+  char *s;
+  switch(tok->type) {
+  case TOK_true:
+  case TOK_false:
+  case TOK_INTEGER:
+  case TOK_FLOAT:
+  case TOK_STRING:
+  case TOK_null:
+    break;
+  default:
+    tokerrorexit(tok, "expected constant value");
+    break;
+  }
+  s = memalloc(tok->len + 1);
+  memcpy(s, tok->start, tok->len);
+  s[tok->len] = 0;
+  if (tok->type != TOK_STRING) {
+    addnode(node, newattr("value", s));
+  } else {
+    addnode(node, newattr("stringvalue", s));
+  }
+  lexnocomment();
+  return node;
+}
+
+/***********************************************************************
+ * parsedictionarymember : parse DictionaryMember
+ *
+ * Enter:   tok = next token
+ *          eal = 0 else extended attribute list node
+ *
+ * Return:  new node
+ *          tok on terminating ';'
+ */
+static struct node *
+parsedictionarymember(struct tok *tok, struct node *eal)
+{
+    struct node *node = newelement("DictionaryMember");
+    if (eal) addnode(node, eal);
+    setcommentnode(node);
+    addnode(node, parsetype(tok));
+    addnode(node, newattr("name", setidentifier(tok)));
+    tok = lexnocomment();
+    // Optional value
+    if (tok->type == '=') {
+      tok = lexnocomment();
+      node = parseconstexpr(tok, node);
+    }
+    return node;
+}
+
+/***********************************************************************
  * parseconst : parse [12] Const
  *
  * Enter:   tok = next token, known to be TOK_const
@@ -719,7 +781,6 @@ static struct node *
 parseconst(struct tok *tok, struct node *eal)
 {
     struct node *node = newelement("Const");
-    char *s;
     setcommentnode(node);
     if (eal) addnode(node, eal);
     tok = lexnocomment();
@@ -742,22 +803,7 @@ parseconst(struct tok *tok, struct node *eal)
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
     eat(tok, '=');
-    switch(tok->type) {
-    case TOK_true:
-    case TOK_false:
-    case TOK_INTEGER:
-    case TOK_FLOAT:
-    case TOK_STRING:
-        break;
-    default:
-        tokerrorexit(tok, "expected constant value");
-        break;
-    }
-    s = memalloc(tok->len + 1);
-    memcpy(s, tok->start, tok->len);
-    s[tok->len] = 0;
-    addnode(node, newattr("value", s));
-    lexnocomment();
+    node = parseconstexpr(tok, node);
     return node;
 }
 
@@ -886,6 +932,43 @@ parseinterface(struct tok *tok, struct node *eal)
 }
 
 /***********************************************************************
+ * parsedictionary : parse Dictionary
+ *
+ * Enter:   tok = next token, known to be TOK_dictionary
+ *          eal = 0 else extended attribute list node
+ *
+ * Return:  new node for the dictionary
+ *          tok updated to the terminating ';'
+ */
+static struct node *
+parsedictionary(struct tok *tok, struct node *eal)
+{
+    struct node *node = newelement("Dictionary");
+    if (eal) addnode(node, eal);
+    setcommentnode(node);
+    tok = lexnocomment();
+    addnode(node, newattr("name", setidentifier(tok)));
+    tok = lexnocomment();
+    eat(tok, '{');
+    while (tok->type != '}') {
+        const char *start = tok->prestart;
+        struct node *eal = parseextendedattributelist(tok);
+        struct node *node2;
+        if (tok->type == TOK_const)
+            addnode(node, node2 = parseconst(tok, eal));
+        else
+            addnode(node, node2 = parsedictionarymember(tok, eal));
+        node2->wsstart = start;
+        node2->end = tok->start + tok->len;
+        setid(node2);
+        eat(tok, ';');
+    }
+    lexnocomment();
+    return node;
+}
+
+
+/***********************************************************************
  * parsemodule : parse [3] Module
  *
  * Enter:   tok = next token, known to be TOK_module
@@ -931,6 +1014,9 @@ parsedefinitions(struct tok *tok, struct node *parent)
         case TOK_interface:
             node = parseinterface(tok, eal);
             break;
+	case TOK_dictionary:
+            node = parsedictionary(tok, eal);
+            break;	  
         case TOK_exception:
             node = parseexception(tok, eal);
             break;

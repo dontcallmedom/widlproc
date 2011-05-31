@@ -1,3 +1,4 @@
+
 /***********************************************************************
  * $Id$
  * Copyright 2009 Aplix Corporation. All rights reserved.
@@ -27,6 +28,7 @@
     "const\0" \
     "creator\0" \
     "deleter\0" \
+    "dictionary\0" \
     "double\0" \
     "exception\0" \
     "float\0" \
@@ -37,6 +39,7 @@
     "interface\0" \
     "long\0" \
     "module\0" \
+    "null\0" \
     "octet\0" \
     "omittable\0" \
     "optional\0" \
@@ -72,6 +75,7 @@ enum toktype {
     TOK_const,
     TOK_creator,
     TOK_deleter,
+    TOK_dictionary,
     TOK_double,
     TOK_exception,
     TOK_float,
@@ -82,6 +86,7 @@ enum toktype {
     TOK_interface,
     TOK_long,
     TOK_module,
+    TOK_null,
     TOK_octet,
     TOK_omittable,
     TOK_optional,

@@ -501,13 +501,13 @@ enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 
 <p>
 The <em>ExtendedAttributeList</em> specifies any extended attributes
-for the <em>Module</em>, <em>Interface</em>, <em>Exception</em>,
+for the <em>Module</em>, <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
 <em>Typedef</em>, <em>Valuetype</em> or <em>Const</em> in the
 <em>Definition</em>.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Definitions (Module | Interface
+&lt;!ELEMENT Definitions (Module | Interface | Dictionary
     | Exception | Typedef | Implements)* >
 </pre>
 
@@ -554,6 +554,25 @@ scoped name of the interface being inherited from.
 &lt;!ELEMENT Name EMPTY >
 &lt;!ATTLIST Name name CDATA #REQUIRED >
 </pre>
+
+<h4>Dictionary</h4>
+
+<p>
+A <em>Dictionary</em> represents a dictionary. The <em>name</em>
+attribute specifies the name of the dictionary. The <em>descriptive</em> element
+provides its documentation if any.
+The <em>id</em> attribute specifies the absolute scoped name of the dictionary.
+</p>
+
+
+<pre class="dtd">
+&lt;!ELEMENT Dictionary (webidl, descriptive?, DictionaryMember* ) >
+&lt;!ATTLIST Dictionary name CDATA #REQUIRED
+                    id CDATA #REQUIRED >
+
+</pre>
+
+
 
 <h4>Exception</h4>
 
@@ -639,7 +658,7 @@ provides the <em>Implements</em>'s documentation if any.
 syntax.
 The <em>Type</em> specifies the constant's type, the
 <em>name</em> attribute specifies the constant's name, and the
-<em>value</em> attribute specifies its value.
+<em>value</em> attribute specifies its value for non-string values, and <em>stringvalue</em> for string values.
 The <em>descriptive></em> element
 provides the <em>Const</em>'s documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the const.
@@ -648,7 +667,8 @@ The <em>id</em> attribute specifies the absolute scoped name of the const.
 <pre class="dtd">
 &lt;!ELEMENT Const (webidl, descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST Const name CDATA #REQUIRED
-                value CDATA #REQUIRED
+                value CDATA #IMPLIED
+                stringvalue CDATA #IMPLIED
                 id CDATA #REQUIRED >
 </pre>
 
@@ -701,6 +721,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 &lt;!ELEMENT RaiseException (descriptive?) >
 &lt;!ATTLIST RaiseException name CDATA #REQUIRED >
 </pre>
+
 
 <h4>Operation</h4>
 
@@ -764,6 +785,34 @@ name when the corresponding syntax appears in the Web IDL input.
                    ellipsis (ellipsis) #IMPLIED
                    name NMTOKEN #REQUIRED >
 </pre>
+
+
+<h4>DictionaryMember</h4>
+
+<p>
+A <em>DictionaryMember</em> represents a member of a dictionary.
+The <em>Type</em> element specifies its type. The <em>name</em>
+attribute specifies its name. 
+</p>
+
+<p>
+The <em>descriptive></em> element provides the attribute's documentation
+if any.
+The <em>id</em> attribute specifies the absolute scoped name of the attribute.
+</p>
+
+<p>The
+<em>value</em> attribute specifies its value for non-string values, and <em>stringvalue</em> for string values.</p>
+
+<pre class="dtd">
+&lt;!ELEMENT DictionaryMember (webidl, descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ATTLIST DictionaryMember name CDATA #REQUIRED
+                    id CDATA #REQUIRED
+                value CDATA #IMPLIED
+                stringvalue CDATA #IMPLIED >
+
+</pre>
+
 
 <h4>Extended attributes</h4>
 

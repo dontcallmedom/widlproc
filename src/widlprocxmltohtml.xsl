@@ -235,7 +235,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
   <xsl:if test="descriptive  or not($requiredescriptive)">
     <xsl:variable name="name" select="@name"/>
     <div class="interface" id="{@id}">
-        <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(preceding::Interface))"/>. <code><xsl:value-of select="@name"/></code></h3>
+        <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(preceding::Interface|preceding::Dictionary))"/>. <code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="../Implements[@name2=$name]/webidl"/>
@@ -270,6 +270,29 @@ XSLT stylesheet to convert widlprocxml into html documentation.
   </xsl:if>
 </xsl:template>
 
+<!--Dictionary.-->
+<xsl:template match="Dictionary">
+  <xsl:if test="descriptive  or not($requiredescriptive)">
+    <xsl:variable name="name" select="@name"/>
+    <div class="dictionary" id="{@id}">
+        <h3><xsl:value-of select="concat($interfaces-section-number,'.',1+count(preceding::Interface|preceding::Dictionary))"/>. <code><xsl:value-of select="@name"/></code></h3>
+        <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:if test="DictionaryMember[descriptive or not($requiredescriptive)]">
+            <div class="attributes">
+                <h4>Dictionary members</h4>
+                <dl>
+                  <xsl:apply-templates select="DictionaryMember[descriptive or not($requiredescriptive)]"/>
+                </dl>
+            </div>
+        </xsl:if>
+    </div>
+  </xsl:if>
+</xsl:template>
+
+
 <xsl:template match="InterfaceInheritance/ScopedNameList">
               <p>
                 <xsl:text>This interface inherits from: </xsl:text>
@@ -299,6 +322,21 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive"/>
           <xsl:apply-templates select="GetRaises"/>
           <xsl:apply-templates select="SetRaises"/>
+          <xsl:apply-templates select="descriptive/Code"/>
+        </dd>
+</xsl:template>
+
+<!--DictionaryMember-->
+<xsl:template match="DictionaryMember">
+    <dt class="member" id="{@name}">
+        <code>
+            <xsl:apply-templates select="Type"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="@name"/>
+        </code></dt>
+        <dd>
+          <xsl:apply-templates select="descriptive/brief"/>
+          <xsl:apply-templates select="descriptive"/>
           <xsl:apply-templates select="descriptive/Code"/>
         </dd>
 </xsl:template>
