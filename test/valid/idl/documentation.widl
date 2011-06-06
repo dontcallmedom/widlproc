@@ -1,5 +1,9 @@
 /**
 * \brief Testing documentation features
+*
+* This is a
+* single paragraph
+*
 * <p>This is valid.</p>
 * <p>This is <em>valid</em>.</p>
 * <p>This is <b>valid</b>.</p>

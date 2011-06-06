@@ -9,6 +9,10 @@
         </brief>
        <description>
         <p>
+This is a
+sigle paragraph
+        </p>
+        <p>
 This is valid.        </p>
         <p>
 This is <em>valid</em>.        </p>
