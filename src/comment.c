@@ -1496,9 +1496,9 @@ checkforlineofstars:
             cnode = startpara(cnode, &para_funcs);
         /* Process text on the line. */
         starttext = p;
-        while (ch && ch != '\n' && ch != '\r') {
+        while (ch && ch != '\n') {
             if (ch != '\\' && ch != '<' /* && ch != '@' */ && ch != '$'
-                    && ch != '&')
+                    && ch != '&' && ch != '\r')
             {
                 ch = *++p;
                 continue;
@@ -1506,6 +1506,12 @@ checkforlineofstars:
             /* Output any pending text. */
             if (p - starttext)
                 cnode = addtext(cnode, starttext, p - starttext);
+	    /* Ignore \r in DOS line returns */
+	    if (ch == '\r') {
+	        ch = *++p;
+  	        starttext = p;
+		continue;
+	    }
             if (ch == '$')
                 locerrorexit(comment->filename, linenum, "use \\$ instead of $");
             /* See if it is an html named entity. */
