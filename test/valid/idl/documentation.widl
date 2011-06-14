@@ -29,5 +29,6 @@
 * <p>This is <br> valid.</p>
 * <p>This is <br /> valid.</p>
 * <p>This is <br/> valid.</p>
+* <p><img src="foo.png" alt="Valid"/></p>
 */
 interface Documentation {};
