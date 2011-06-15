@@ -643,7 +643,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 
 <!--html elements-->
-<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul">
+<xsl:template match="a|b|br|dd|dl|dt|em|li|p|table|td|th|tr|ul|img">
     <xsl:element name="{name()}"><xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute></xsl:for-each><xsl:apply-templates/></xsl:element>
 </xsl:template>
 
