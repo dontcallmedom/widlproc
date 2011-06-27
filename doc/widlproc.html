@@ -538,6 +538,8 @@ provides its documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the interface.
 </p>
 
+<p>The <em>partial</em> attribute indicates that the definition of the interface complements an existing definition.</p>
+
 <p>
 The <em>InterfaceInheritance</em> element indicates that the interface
 inherits from other interface(s). Each <em>Name</em> in the
@@ -549,6 +551,7 @@ scoped name of the interface being inherited from.
 &lt;!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
         InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
+                    partial (partial) #IMPLIED
                     id CDATA #REQUIRED >
 
 &lt;!ELEMENT InterfaceInheritance (Name+) >

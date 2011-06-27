@@ -43,6 +43,7 @@
     "octet\0" \
     "omittable\0" \
     "optional\0" \
+    "partial\0" \
     "raises\0" \
     "readonly\0" \
     "sequence\0" \
@@ -90,6 +91,7 @@ enum toktype {
     TOK_octet,
     TOK_omittable,
     TOK_optional,
+    TOK_partial,
     TOK_raises,
     TOK_readonly,
     TOK_sequence,

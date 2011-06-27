@@ -901,9 +901,12 @@ parseexception(struct tok *tok, struct node *eal)
  *          tok updated to the terminating ';'
  */
 static struct node *
-parseinterface(struct tok *tok, struct node *eal)
+parseinterface(struct tok *tok, struct node *eal, unsigned int partial)
 {
     struct node *node = newelement("Interface");
+    if (partial) {
+      addnode(node, newattr("partial", "partial"));
+    }
     if (eal) addnode(node, eal);
     setcommentnode(node);
     tok = lexnocomment();
@@ -1015,8 +1018,12 @@ parsedefinitions(struct tok *tok, struct node *parent)
         case TOK_module:
             node = parsemodule(tok, eal);
             break;
+        case TOK_partial:
+	    eat(tok, TOK_partial);
+	    node = parseinterface(tok, eal, 1);
+            break;
         case TOK_interface:
-            node = parseinterface(tok, eal);
+  	    node = parseinterface(tok, eal, 0);
             break;
 	case TOK_dictionary:
             node = parsedictionary(tok, eal);
