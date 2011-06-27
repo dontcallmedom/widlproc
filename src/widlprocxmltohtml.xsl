@@ -280,6 +280,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
+        <xsl:apply-templates select="DictionaryInheritance"/>
         <xsl:if test="DictionaryMember[descriptive or not($requiredescriptive)]">
             <div class="attributes">
                 <h4>Dictionary members</h4>
@@ -293,7 +294,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 </xsl:template>
 
 
-<xsl:template match="InterfaceInheritance/ScopedNameList">
+<xsl:template match="InterfaceInheritance">
               <p>
                 <xsl:text>This interface inherits from: </xsl:text>
                 <xsl:for-each select="Name">
@@ -302,6 +303,17 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </xsl:for-each>
               </p>
 </xsl:template>
+
+<xsl:template match="DictionaryInheritance">
+              <p>
+                <xsl:text>This dictionary inherits from: </xsl:text>
+                <xsl:for-each select="Name">
+                  <code><xsl:value-of select="@name"/></code>
+                  <xsl:if test="position!=last()">, </xsl:if>
+                </xsl:for-each>
+              </p>
+</xsl:template>
+
 
 <!--Attribute-->
 <xsl:template match="Attribute">
