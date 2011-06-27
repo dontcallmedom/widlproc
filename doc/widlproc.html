@@ -480,7 +480,7 @@ with added XML elements representing the
 <pre class="dtd">
 &lt;!ENTITY % block 'dl | p | table | ul' >
 &lt;!ENTITY % Block '(%block;)*' >
-&lt;!ENTITY % inline 'a | b | br | em' >
+&lt;!ENTITY % inline 'a | b | br | em | img' >
 &lt;!ENTITY % Inline '(#PCDATA | %inline;)*' >
 &lt;!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
 
@@ -989,6 +989,11 @@ The following XHTML elements are part of widlprocxml:
 &lt;!ELEMENT dt %Inline; >
 
 &lt;!ELEMENT em %Inline; >
+
+&lt;!ELEMENT img %Inline; >
+&lt;!ATTLIST img src CDATA #REQUIRED 
+                 alt CDATA #IMPLIED>
+
 
 &lt;!ELEMENT li %Flow; >
 
