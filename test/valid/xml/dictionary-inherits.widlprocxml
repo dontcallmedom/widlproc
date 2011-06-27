@@ -24,9 +24,9 @@
     <webidl>dictionary WetPaintOptions : <ref>PaintOptions</ref> {
   float hydrometry;
 };</webidl>
-    <DictioanaryInheritance>
+    <DictionaryInheritance>
       <Name name="PaintOptions"/>
-    </DictioanaryInheritance>
+    </DictionaryInheritance>
     <DictionaryMember name="hydrometry" id="::WetPaintOptions::hydrometry">
       <webidl>  float hydrometry;</webidl>
       <Type type="float"/>
