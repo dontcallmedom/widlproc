@@ -949,6 +949,10 @@ parsedictionary(struct tok *tok, struct node *eal)
     tok = lexnocomment();
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
+    if (tok->type == ':') {
+        lexnocomment();
+        addnode(node, parsescopednamelist(tok, "DictionaryInheritance", "Name", 1));
+    }
     eat(tok, '{');
     while (tok->type != '}') {
         const char *start = tok->prestart;
