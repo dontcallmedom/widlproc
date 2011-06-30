@@ -36,6 +36,7 @@
     "getter\0" \
     "implements\0" \
     "in\0" \
+    "inherits\0" \
     "interface\0" \
     "long\0" \
     "module\0" \
@@ -84,6 +85,7 @@ enum toktype {
     TOK_getter,
     TOK_implements,
     TOK_in,
+    TOK_inherits,
     TOK_interface,
     TOK_long,
     TOK_module,

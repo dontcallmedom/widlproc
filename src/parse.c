@@ -642,6 +642,10 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
     if (tok->type == TOK_getraises) {
         lexnocomment();
         addnode(node, parseexceptionlist(tok, "GetRaises"));
+    } else if (tok->type == TOK_inherits) {
+        lexnocomment();
+	eat(tok, TOK_getter);
+	addnode(node, newattr("inherits", "getter"));
     }
     if (tok->type == TOK_setraises) {
         lexnocomment();

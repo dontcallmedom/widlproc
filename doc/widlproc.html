@@ -705,7 +705,7 @@ An <em>Attribute</em> represents an attribute as an interface member.
 The <em>Type</em> element specifies its type. The <em>name</em>
 attribute specifies its name. Each of the <em>stringifier</em> and
 <em>readonly</em> attributes is set to a value the same as the attribute
-name when the corresponding keyword appears in the Web IDL input.
+name when the corresponding keyword appears in the Web IDL input. The <em>inherits</em> attribute is set to <em>getter</em> when the attribute inherits its getter.
 </p>
 
 <p>
@@ -724,6 +724,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
     GetRaises?, SetRaises?) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
+                    inherits (getter) #IMPLIED
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <Interface name="Animal" id="::Animal">
+    <webidl>interface Animal {
+
+  readonly attribute DOMString name;
+};</webidl>
+    <Attribute readonly="readonly" name="name" id="::Animal::name">
+      <webidl>  readonly attribute DOMString name;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+  </Interface>
+  <Interface name="Person" id="::Person">
+    <webidl>interface Person : <ref>Animal</ref> {
+
+  readonly attribute unsigned short age;
+
+  attribute DOMString name inherits getter setraises (<ref>InvalidName</ref>);
+
+  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);
+};</webidl>
+    <InterfaceInheritance>
+      <Name name="Animal"/>
+    </InterfaceInheritance>
+    <Attribute readonly="readonly" name="age" id="::Person::age">
+      <webidl>  readonly attribute unsigned short age;</webidl>
+      <Type type="unsigned short"/>
+    </Attribute>
+    <Attribute name="name" inherits="getter" id="::Person::name">
+      <webidl>  attribute DOMString name inherits getter setraises (<ref>InvalidName</ref>);</webidl>
+      <Type type="DOMString"/>
+      <SetRaises>
+        <RaiseException name="InvalidName"/>
+      </SetRaises>
+    </Attribute>
+    <Attribute readonly="readonly" name="petName" id="::Person::petName">
+      <webidl>  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);</webidl>
+      <Type type="DOMString"/>
+      <GetRaises>
+        <RaiseException name="NoSuchPet"/>
+      </GetRaises>
+    </Attribute>
+  </Interface>
+</Definitions>
