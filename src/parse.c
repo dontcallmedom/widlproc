@@ -162,6 +162,10 @@ parsescopedname(struct tok *tok, const char *name, int ref)
         lexnocomment();
         if (tok->type != TOK_DOUBLECOLON)
             break;
+        s = memrealloc(s, len + tok->len + 1);
+        memcpy(s + len, tok->start, tok->len);
+        len += tok->len;
+        end = tok->start + tok->len;
         lexnocomment();
     }
     s[len] = 0;
