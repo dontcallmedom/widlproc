@@ -25,10 +25,10 @@ module framework {
 
     // Operation identifier:          "createObject"
     // Operation argument identifier: "interface"
-    object createObject(in DOMString _interface);
+    object createObject(DOMString _interface);
 
     // Operation has no identifier; it declares a getter.
-    getter DOMString (in DOMString keyName);
+    getter DOMString (DOMString keyName);
   };
 
   // Module identifier: "gui"

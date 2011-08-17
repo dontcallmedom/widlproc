@@ -3,13 +3,13 @@
 <Definitions>
   <Interface name="NumberQuadrupler" id="::NumberQuadrupler">
     <webidl>interface NumberQuadrupler {
-  caller float compute(in float x);
+  caller float compute(float x);
 };</webidl>
     <Operation caller="caller" name="compute" id="::NumberQuadrupler::compute">
-      <webidl>  caller float compute(in float x);</webidl>
+      <webidl>  caller float compute(float x);</webidl>
       <Type type="float"/>
       <ArgumentList>
-        <Argument in="in" name="x">
+        <Argument name="x">
           <Type type="float"/>
         </Argument>
       </ArgumentList>

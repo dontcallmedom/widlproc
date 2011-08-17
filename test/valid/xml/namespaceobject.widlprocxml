@@ -13,7 +13,7 @@ module acme {
     interface Contact { };
 
     [Constructor,
-     NamedConstructor=RecurringEvent(in long freq)]
+     NamedConstructor=RecurringEvent(long freq)]
     interface CalendarEvent { };
   };
 };</webidl>
@@ -30,7 +30,7 @@ module acme {
     interface Contact { };
 
     [Constructor,
-     NamedConstructor=RecurringEvent(in long freq)]
+     NamedConstructor=RecurringEvent(long freq)]
     interface CalendarEvent { };
   };</webidl>
       <Interface name="Contact" id="::acme::pim::Contact">
@@ -42,13 +42,13 @@ module acme {
       </Interface>
       <Interface name="CalendarEvent" id="::acme::pim::CalendarEvent">
         <webidl>    [Constructor,
-     NamedConstructor=RecurringEvent(in long freq)]
+     NamedConstructor=RecurringEvent(long freq)]
     interface CalendarEvent { };</webidl>
         <ExtendedAttributeList>
           <ExtendedAttribute name="Constructor"/>
           <ExtendedAttribute name="NamedConstructor" value="RecurringEvent">
             <ArgumentList>
-              <Argument in="in" name="freq">
+              <Argument name="freq">
                 <Type type="long"/>
               </Argument>
             </ArgumentList>

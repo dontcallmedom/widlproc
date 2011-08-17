@@ -13,6 +13,6 @@ interface Button {
   boolean isMouseOver() raises (NoPointerDevice);
 
   // Overloaded operations.
-  void setDimensions(in Dimensions size);
-  void setDimensions(in unsigned long width, in unsigned long height);
+  void setDimensions(Dimensions size);
+  void setDimensions(unsigned long width, unsigned long height);
 };

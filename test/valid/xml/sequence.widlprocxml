@@ -3,14 +3,14 @@
 <Definitions>
   <Interface name="Canvas" id="::Canvas">
     <webidl>interface Canvas {
-  void drawPolygon(in sequence&lt;float> coordinates);
+  void drawPolygon(sequence&lt;float> coordinates);
   sequence&lt;float> getInflectionPoints();
 };</webidl>
     <Operation name="drawPolygon" id="::Canvas::drawPolygon">
-      <webidl>  void drawPolygon(in sequence&lt;float> coordinates);</webidl>
+      <webidl>  void drawPolygon(sequence&lt;float> coordinates);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="coordinates">
+        <Argument name="coordinates">
           <Type type="sequence">
             <Type type="float"/>
           </Type>

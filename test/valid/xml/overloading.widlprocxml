@@ -11,23 +11,23 @@
   </Interface>
   <Interface name="C" id="::C">
     <webidl>interface C {
-  void f(in <ref>A</ref> x);
-  void f(in <ref>B</ref> x);
+  void f(<ref>A</ref> x);
+  void f(<ref>B</ref> x);
 };</webidl>
     <Operation name="f" id="::C::f">
-      <webidl>  void f(in <ref>A</ref> x);</webidl>
+      <webidl>  void f(<ref>A</ref> x);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="x">
+        <Argument name="x">
           <Type name="A"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="f" id="::C::f">
-      <webidl>  void f(in <ref>B</ref> x);</webidl>
+      <webidl>  void f(<ref>B</ref> x);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="x">
+        <Argument name="x">
           <Type name="B"/>
         </Argument>
       </ArgumentList>
@@ -35,34 +35,34 @@
   </Interface>
   <Interface name="A" id="::A">
     <webidl>interface A {
-void f(in DOMString a);
-void f([AllowAny] in DOMString a, in DOMString b, in float... c);
+void f(DOMString a);
+void f([AllowAny] DOMString a, DOMString b, float... c);
 void f();
-void f(in long a, in DOMString b, in optional DOMString c, in float... d);
+void f(long a, DOMString b, optional DOMString c, float... d);
 };</webidl>
     <Operation name="f" id="::A::f">
-      <webidl> void f(in DOMString a);</webidl>
+      <webidl> void f(DOMString a);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="a">
+        <Argument name="a">
           <Type type="DOMString"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="f" id="::A::f">
-      <webidl> void f([AllowAny] in DOMString a, in DOMString b, in float... c);</webidl>
+      <webidl> void f([AllowAny] DOMString a, DOMString b, float... c);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="a">
+        <Argument name="a">
           <ExtendedAttributeList>
             <ExtendedAttribute name="AllowAny"/>
           </ExtendedAttributeList>
           <Type type="DOMString"/>
         </Argument>
-        <Argument in="in" name="b">
+        <Argument name="b">
           <Type type="DOMString"/>
         </Argument>
-        <Argument in="in" ellipsis="ellipsis" name="c">
+        <Argument ellipsis="ellipsis" name="c">
           <Type type="float"/>
         </Argument>
       </ArgumentList>
@@ -73,19 +73,19 @@ void f(in long a, in DOMString b, in optional DOMString c, in float... d);
       <ArgumentList/>
     </Operation>
     <Operation name="f" id="::A::f">
-      <webidl> void f(in long a, in DOMString b, in optional DOMString c, in float... d);</webidl>
+      <webidl> void f(long a, DOMString b, optional DOMString c, float... d);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="a">
+        <Argument name="a">
           <Type type="long"/>
         </Argument>
-        <Argument in="in" name="b">
+        <Argument name="b">
           <Type type="DOMString"/>
         </Argument>
-        <Argument in="in" optional="optional" name="c">
+        <Argument optional="optional" name="c">
           <Type type="DOMString"/>
         </Argument>
-        <Argument in="in" ellipsis="ellipsis" name="d">
+        <Argument ellipsis="ellipsis" name="d">
           <Type type="float"/>
         </Argument>
       </ArgumentList>

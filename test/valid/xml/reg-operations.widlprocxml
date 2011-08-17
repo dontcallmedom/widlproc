@@ -23,8 +23,8 @@
 
   boolean isMouseOver() raises (<ref>NoPointerDevice</ref>);
 
-  void setDimensions(in <ref>Dimensions</ref> size);
-  void setDimensions(in unsigned long width, in unsigned long height);
+  void setDimensions(<ref>Dimensions</ref> size);
+  void setDimensions(unsigned long width, unsigned long height);
 };</webidl>
     <Operation name="isMouseOver" id="::Button::isMouseOver">
       <webidl>  boolean isMouseOver() raises (<ref>NoPointerDevice</ref>);</webidl>
@@ -35,22 +35,22 @@
       </Raises>
     </Operation>
     <Operation name="setDimensions" id="::Button::setDimensions">
-      <webidl>  void setDimensions(in <ref>Dimensions</ref> size);</webidl>
+      <webidl>  void setDimensions(<ref>Dimensions</ref> size);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="size">
+        <Argument name="size">
           <Type name="Dimensions"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="setDimensions" id="::Button::setDimensions">
-      <webidl>  void setDimensions(in unsigned long width, in unsigned long height);</webidl>
+      <webidl>  void setDimensions(unsigned long width, unsigned long height);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="width">
+        <Argument name="width">
           <Type type="unsigned long"/>
         </Argument>
-        <Argument in="in" name="height">
+        <Argument name="height">
           <Type type="unsigned long"/>
         </Argument>
       </ArgumentList>

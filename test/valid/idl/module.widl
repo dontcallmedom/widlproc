@@ -8,8 +8,8 @@ module gfx {
   };
 
   interface GraphicsContext {
-    void fillShape(in geom::Shape s);
-    void strokeShape(in geom::Shape s);
+    void fillShape(geom::Shape s);
+    void strokeShape(geom::Shape s);
   };
 };
 

@@ -3,14 +3,14 @@
 <Definitions>
   <Interface name="HTMLAudioElement" id="::HTMLAudioElement">
     <webidl>[NamedConstructor=Audio,
- NamedConstructor=Audio(in DOMString src)]
+ NamedConstructor=Audio(DOMString src)]
 interface HTMLAudioElement : <ref>HTMLMediaElement</ref> {
 };</webidl>
     <ExtendedAttributeList>
       <ExtendedAttribute name="NamedConstructor" value="Audio"/>
       <ExtendedAttribute name="NamedConstructor" value="Audio">
         <ArgumentList>
-          <Argument in="in" name="src">
+          <Argument name="src">
             <Type type="DOMString"/>
           </Argument>
         </ArgumentList>

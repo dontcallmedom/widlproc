@@ -10,7 +10,7 @@
   attribute float cy;
   attribute float radius;
 
-  static <ref>Point</ref> triangulate(in <ref>Circle</ref> c1, in <ref>Circle</ref> c2, in <ref>Circle</ref> c3);
+  static <ref>Point</ref> triangulate(<ref>Circle</ref> c1, <ref>Circle</ref> c2, <ref>Circle</ref> c3);
 };</webidl>
     <Attribute name="cx" id="::Circle::cx">
       <webidl>  attribute float cx;</webidl>
@@ -25,16 +25,16 @@
       <Type type="float"/>
     </Attribute>
     <Operation static="static" name="triangulate" id="::Circle::triangulate">
-      <webidl>  static <ref>Point</ref> triangulate(in <ref>Circle</ref> c1, in <ref>Circle</ref> c2, in <ref>Circle</ref> c3);</webidl>
+      <webidl>  static <ref>Point</ref> triangulate(<ref>Circle</ref> c1, <ref>Circle</ref> c2, <ref>Circle</ref> c3);</webidl>
       <Type name="Point"/>
       <ArgumentList>
-        <Argument in="in" name="c1">
+        <Argument name="c1">
           <Type name="Circle"/>
         </Argument>
-        <Argument in="in" name="c2">
+        <Argument name="c2">
           <Type name="Circle"/>
         </Argument>
-        <Argument in="in" name="c3">
+        <Argument name="c3">
           <Type name="Circle"/>
         </Argument>
       </ArgumentList>

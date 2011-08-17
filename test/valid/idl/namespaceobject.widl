@@ -10,7 +10,7 @@ module acme {
     interface Contact { };
 
     [Constructor,
-     NamedConstructor=RecurringEvent(in long freq)]
+     NamedConstructor=RecurringEvent(long freq)]
     interface CalendarEvent { };
   };
 };

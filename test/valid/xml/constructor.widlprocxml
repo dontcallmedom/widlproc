@@ -3,7 +3,7 @@
 <Definitions>
   <Interface name="Circle" id="::Circle">
     <webidl>[Constructor,
- Constructor(in float radius)]
+ Constructor(float radius)]
 interface Circle {
   attribute float r;
   attribute float cx;
@@ -14,7 +14,7 @@ interface Circle {
       <ExtendedAttribute name="Constructor"/>
       <ExtendedAttribute name="Constructor">
         <ArgumentList>
-          <Argument in="in" name="radius">
+          <Argument name="radius">
             <Type type="float"/>
           </Argument>
         </ArgumentList>

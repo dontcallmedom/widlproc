@@ -525,10 +525,6 @@ parseargument(struct tok *tok)
     struct node *eal = parseextendedattributelist(tok);
     setcommentnode(node);
     if (eal) addnode(node, eal);
-    if (tok->type == TOK_in) {
-        addnode(node, newattr("in", "in"));
-        lexnocomment();
-    }
     if (tok->type == TOK_optional) {
         addnode(node, newattr("optional", "optional"));
         lexnocomment();

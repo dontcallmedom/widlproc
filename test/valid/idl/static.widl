@@ -6,5 +6,5 @@ interface Circle {
   attribute float cy;
   attribute float radius;
 
-  static Point triangulate(in Circle c1, in Circle c2, in Circle c3);
+  static Point triangulate(Circle c1, Circle c2, Circle c3);
 };

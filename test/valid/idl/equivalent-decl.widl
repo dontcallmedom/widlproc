@@ -2,17 +2,17 @@
 interface Dictionary {
   readonly attribute unsigned long propertyCount;
 
-  getter float getProperty(in DOMString propertyName);
-  setter void setProperty(in DOMString propertyName, in float propertyValue);
+  getter float getProperty(DOMString propertyName);
+  setter void setProperty(DOMString propertyName, float propertyValue);
 };
 
 
 interface Dictionary {
   readonly attribute unsigned long propertyCount;
 
-  float getProperty(in DOMString propertyName);
-  void setProperty(in DOMString propertyName, in float propertyValue);
+  float getProperty(DOMString propertyName);
+  void setProperty(DOMString propertyName, float propertyValue);
 
-  getter float (in DOMString propertyName);
-  setter void (in DOMString propertyName, in float propertyValue);
+  getter float (DOMString propertyName);
+  setter void (DOMString propertyName, float propertyValue);
 };

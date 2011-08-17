@@ -5,7 +5,7 @@
     <webidl>[OverrideBuiltins]
 interface StringMap2 {
   readonly attribute unsigned long length;
-  getter DOMString lookup(in DOMString key);
+  getter DOMString lookup(DOMString key);
 };</webidl>
     <ExtendedAttributeList>
       <ExtendedAttribute name="OverrideBuiltins"/>
@@ -15,10 +15,10 @@ interface StringMap2 {
       <Type type="unsigned long"/>
     </Attribute>
     <Operation getter="getter" name="lookup" id="::StringMap2::lookup">
-      <webidl>  getter DOMString lookup(in DOMString key);</webidl>
+      <webidl>  getter DOMString lookup(DOMString key);</webidl>
       <Type type="DOMString"/>
       <ArgumentList>
-        <Argument in="in" name="key">
+        <Argument name="key">
           <Type type="DOMString"/>
         </Argument>
       </ArgumentList>

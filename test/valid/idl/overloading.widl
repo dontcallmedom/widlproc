@@ -8,13 +8,13 @@ interface B {
 };
 
 interface C {
-  void f(in A x);
-  void f(in B x);
+  void f(A x);
+  void f(B x);
 };
 
 interface A {
-  /* f1 */ void f(in DOMString a);
-  /* f2 */ void f([AllowAny] in DOMString a, in DOMString b, in float... c);
+  /* f1 */ void f(DOMString a);
+  /* f2 */ void f([AllowAny] DOMString a, DOMString b, float... c);
   /* f3 */ void f();
-  /* f4 */ void f(in long a, in DOMString b, in optional DOMString c, in float... d);
+  /* f4 */ void f(long a, DOMString b, optional DOMString c, float... d);
 };

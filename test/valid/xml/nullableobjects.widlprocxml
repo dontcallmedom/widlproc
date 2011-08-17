@@ -11,24 +11,24 @@
   </Interface>
   <Interface name="C" id="::C">
     <webidl>interface C {
-  void f(in <ref>A</ref>? x);
-  void f(in <ref>B</ref>? x);
+  void f(<ref>A</ref>? x);
+  void f(<ref>B</ref>? x);
 
 };</webidl>
     <Operation name="f" id="::C::f">
-      <webidl>  void f(in <ref>A</ref>? x);</webidl>
+      <webidl>  void f(<ref>A</ref>? x);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="x">
+        <Argument name="x">
           <Type name="A" nullable="nullable"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="f" id="::C::f">
-      <webidl>  void f(in <ref>B</ref>? x);</webidl>
+      <webidl>  void f(<ref>B</ref>? x);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="x">
+        <Argument name="x">
           <Type name="B" nullable="nullable"/>
         </Argument>
       </ArgumentList>

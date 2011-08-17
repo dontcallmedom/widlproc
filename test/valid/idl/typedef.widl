@@ -28,7 +28,7 @@ module gui {
 
     readonly attribute Rect bounds;
 
-    boolean pointWithinBounds(in Point p);
-    boolean allPointsWithinBounds(in PointSequence ps);
+    boolean pointWithinBounds(Point p);
+    boolean allPointsWithinBounds(PointSequence ps);
   };
 };

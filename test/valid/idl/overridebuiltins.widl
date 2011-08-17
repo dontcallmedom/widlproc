@@ -2,5 +2,5 @@
 [OverrideBuiltins]
 interface StringMap2 {
   readonly attribute unsigned long length;
-  getter DOMString lookup(in DOMString key);
+  getter DOMString lookup(DOMString key);
 };

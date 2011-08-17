@@ -7,7 +7,7 @@ exception NoSuchPet { };
 
 interface Person {
 
-  // A simple attribute that can be set to any value in the range an unsigned
+  // A simple attribute that can be set to any value the range an unsigned
   // short can take.
   attribute unsigned short age;
 
@@ -15,6 +15,6 @@ interface Person {
   attribute DOMString name setraises (InvalidName);
 
   // An attribute whose value cannot be assigned to, and which can raise an
-  // exception in some circumstances.
+  // exception some circumstances.
   readonly attribute DOMString petName getraises (NoSuchPet);
 };

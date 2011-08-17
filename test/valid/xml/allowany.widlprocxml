@@ -4,8 +4,8 @@
   <Interface name="B" id="::B">
     <webidl>interface B {
   void g();
-  void g(in <ref>B</ref> b);
-  void g([AllowAny] in DOMString s);
+  void g(<ref>B</ref> b);
+  void g([AllowAny] DOMString s);
 };</webidl>
     <Operation name="g" id="::B::g">
       <webidl>  void g();</webidl>
@@ -13,19 +13,19 @@
       <ArgumentList/>
     </Operation>
     <Operation name="g" id="::B::g">
-      <webidl>  void g(in <ref>B</ref> b);</webidl>
+      <webidl>  void g(<ref>B</ref> b);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="b">
+        <Argument name="b">
           <Type name="B"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="g" id="::B::g">
-      <webidl>  void g([AllowAny] in DOMString s);</webidl>
+      <webidl>  void g([AllowAny] DOMString s);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="s">
+        <Argument name="s">
           <ExtendedAttributeList>
             <ExtendedAttribute name="AllowAny"/>
           </ExtendedAttributeList>

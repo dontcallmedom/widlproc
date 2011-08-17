@@ -5,27 +5,27 @@
     <webidl>interface IntegerSet {
   readonly attribute unsigned long cardinality;
 
-  void union(in long... ints);
-  void intersection(in long... ints);
+  void union(long... ints);
+  void intersection(long... ints);
 };</webidl>
     <Attribute readonly="readonly" name="cardinality" id="::IntegerSet::cardinality">
       <webidl>  readonly attribute unsigned long cardinality;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
     <Operation name="union" id="::IntegerSet::union">
-      <webidl>  void union(in long... ints);</webidl>
+      <webidl>  void union(long... ints);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" ellipsis="ellipsis" name="ints">
+        <Argument ellipsis="ellipsis" name="ints">
           <Type type="long"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation name="intersection" id="::IntegerSet::intersection">
-      <webidl>  void intersection(in long... ints);</webidl>
+      <webidl>  void intersection(long... ints);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" ellipsis="ellipsis" name="ints">
+        <Argument ellipsis="ellipsis" name="ints">
           <Type type="long"/>
         </Argument>
       </ArgumentList>

@@ -3,5 +3,5 @@ interface Cat {
   attribute DOMString name;
   attribute DOMString owner;
 
-  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] in DOMString breedName);
+  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] DOMString breedName);
 };

@@ -15,9 +15,9 @@
 
   interface System {
 
-    object createObject(in DOMString _interface);
+    object createObject(DOMString _interface);
 
-    getter DOMString (in DOMString keyName);
+    getter DOMString (DOMString keyName);
   };
 
   module gui {
@@ -53,24 +53,24 @@
     <Interface name="System" id="::framework::System">
       <webidl>  interface System {
 
-    object createObject(in DOMString _interface);
+    object createObject(DOMString _interface);
 
-    getter DOMString (in DOMString keyName);
+    getter DOMString (DOMString keyName);
   };</webidl>
       <Operation name="createObject" id="::framework::System::createObject">
-        <webidl>    object createObject(in DOMString _interface);</webidl>
+        <webidl>    object createObject(DOMString _interface);</webidl>
         <Type type="object"/>
         <ArgumentList>
-          <Argument in="in" name="_interface">
+          <Argument name="_interface">
             <Type type="DOMString"/>
           </Argument>
         </ArgumentList>
       </Operation>
       <Operation getter="getter">
-        <webidl>    getter DOMString (in DOMString keyName);</webidl>
+        <webidl>    getter DOMString (DOMString keyName);</webidl>
         <Type type="DOMString"/>
         <ArgumentList>
-          <Argument in="in" name="keyName">
+          <Argument name="keyName">
             <Type type="DOMString"/>
           </Argument>
         </ArgumentList>

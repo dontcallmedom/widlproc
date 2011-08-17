@@ -21,32 +21,32 @@
     <webidl>module events {
 
   interface EventTarget {
-    void addEventListener(in DOMString type,
-                          in <ref>EventListener</ref> listener,
-                          in boolean useCapture);
+    void addEventListener(DOMString type,
+                          <ref>EventListener</ref> listener,
+                          boolean useCapture);
   };
 
   <ref>dom::Node</ref> implements <ref>EventTarget</ref>;
 };</webidl>
     <Interface name="EventTarget" id="::events::EventTarget">
       <webidl>  interface EventTarget {
-    void addEventListener(in DOMString type,
-                          in <ref>EventListener</ref> listener,
-                          in boolean useCapture);
+    void addEventListener(DOMString type,
+                          <ref>EventListener</ref> listener,
+                          boolean useCapture);
   };</webidl>
       <Operation name="addEventListener" id="::events::EventTarget::addEventListener">
-        <webidl>    void addEventListener(in DOMString type,
-                          in <ref>EventListener</ref> listener,
-                          in boolean useCapture);</webidl>
+        <webidl>    void addEventListener(DOMString type,
+                          <ref>EventListener</ref> listener,
+                          boolean useCapture);</webidl>
         <Type type="void"/>
         <ArgumentList>
-          <Argument in="in" name="type">
+          <Argument name="type">
             <Type type="DOMString"/>
           </Argument>
-          <Argument in="in" name="listener">
+          <Argument name="listener">
             <Type name="EventListener"/>
           </Argument>
-          <Argument in="in" name="useCapture">
+          <Argument name="useCapture">
             <Type type="boolean"/>
           </Argument>
         </ArgumentList>

@@ -100,8 +100,8 @@
 
     readonly attribute <ref>Rect</ref> bounds;
 
-    boolean pointWithinBounds(in <ref>Point</ref> p);
-    boolean allPointsWithinBounds(in <ref>PointSequence</ref> ps);
+    boolean pointWithinBounds(<ref>Point</ref> p);
+    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
   };
 };</webidl>
     <Typedef name="Point" id="::gui::Point">
@@ -121,27 +121,27 @@
 
     readonly attribute <ref>Rect</ref> bounds;
 
-    boolean pointWithinBounds(in <ref>Point</ref> p);
-    boolean allPointsWithinBounds(in <ref>PointSequence</ref> ps);
+    boolean pointWithinBounds(<ref>Point</ref> p);
+    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
   };</webidl>
       <Attribute readonly="readonly" name="bounds" id="::gui::Widget::bounds">
         <webidl>    readonly attribute <ref>Rect</ref> bounds;</webidl>
         <Type name="Rect"/>
       </Attribute>
       <Operation name="pointWithinBounds" id="::gui::Widget::pointWithinBounds">
-        <webidl>    boolean pointWithinBounds(in <ref>Point</ref> p);</webidl>
+        <webidl>    boolean pointWithinBounds(<ref>Point</ref> p);</webidl>
         <Type type="boolean"/>
         <ArgumentList>
-          <Argument in="in" name="p">
+          <Argument name="p">
             <Type name="Point"/>
           </Argument>
         </ArgumentList>
       </Operation>
       <Operation name="allPointsWithinBounds" id="::gui::Widget::allPointsWithinBounds">
-        <webidl>    boolean allPointsWithinBounds(in <ref>PointSequence</ref> ps);</webidl>
+        <webidl>    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);</webidl>
         <Type type="boolean"/>
         <ArgumentList>
-          <Argument in="in" name="ps">
+          <Argument name="ps">
             <Type name="PointSequence"/>
           </Argument>
         </ArgumentList>

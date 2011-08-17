@@ -11,8 +11,8 @@
   };
 
   interface GraphicsContext {
-    void fillShape(in <ref>geom::Shape</ref> s);
-    void strokeShape(in <ref>geom::Shape</ref> s);
+    void fillShape(<ref>geom::Shape</ref> s);
+    void strokeShape(<ref>geom::Shape</ref> s);
   };
 };</webidl>
     <Module name="geom" id="::gfx::geom">
@@ -39,23 +39,23 @@
     </Module>
     <Interface name="GraphicsContext" id="::gfx::GraphicsContext">
       <webidl>  interface GraphicsContext {
-    void fillShape(in <ref>geom::Shape</ref> s);
-    void strokeShape(in <ref>geom::Shape</ref> s);
+    void fillShape(<ref>geom::Shape</ref> s);
+    void strokeShape(<ref>geom::Shape</ref> s);
   };</webidl>
       <Operation name="fillShape" id="::gfx::GraphicsContext::fillShape">
-        <webidl>    void fillShape(in <ref>geom::Shape</ref> s);</webidl>
+        <webidl>    void fillShape(<ref>geom::Shape</ref> s);</webidl>
         <Type type="void"/>
         <ArgumentList>
-          <Argument in="in" name="s">
+          <Argument name="s">
             <Type name="geomShape"/>
           </Argument>
         </ArgumentList>
       </Operation>
       <Operation name="strokeShape" id="::gfx::GraphicsContext::strokeShape">
-        <webidl>    void strokeShape(in <ref>geom::Shape</ref> s);</webidl>
+        <webidl>    void strokeShape(<ref>geom::Shape</ref> s);</webidl>
         <Type type="void"/>
         <ArgumentList>
-          <Argument in="in" name="s">
+          <Argument name="s">
             <Type name="geomShape"/>
           </Argument>
         </ArgumentList>

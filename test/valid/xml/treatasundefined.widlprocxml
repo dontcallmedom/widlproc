@@ -6,7 +6,7 @@
   attribute DOMString name;
   attribute DOMString owner;
 
-  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] in DOMString breedName);
+  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] DOMString breedName);
 };</webidl>
     <Attribute name="name" id="::Cat::name">
       <webidl>  attribute DOMString name;</webidl>
@@ -17,10 +17,10 @@
       <Type type="DOMString"/>
     </Attribute>
     <Operation name="isMemberOfBreed" id="::Cat::isMemberOfBreed">
-      <webidl>  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] in DOMString breedName);</webidl>
+      <webidl>  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] DOMString breedName);</webidl>
       <Type type="boolean"/>
       <ArgumentList>
-        <Argument in="in" name="breedName">
+        <Argument name="breedName">
           <ExtendedAttributeList>
             <ExtendedAttribute name="TreatUndefinedAs" value="EmptyString"/>
           </ExtendedAttributeList>

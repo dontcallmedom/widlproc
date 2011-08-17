@@ -5,30 +5,30 @@
     <webidl>interface Dictionary {
   readonly attribute unsigned long propertyCount;
 
-  getter float (in DOMString propertyName);
-  setter void (in DOMString propertyName, in float propertyValue);
+  getter float (DOMString propertyName);
+  setter void (DOMString propertyName, float propertyValue);
 };</webidl>
     <Attribute readonly="readonly" name="propertyCount" id="::Dictionary::propertyCount">
       <webidl>  readonly attribute unsigned long propertyCount;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
     <Operation getter="getter">
-      <webidl>  getter float (in DOMString propertyName);</webidl>
+      <webidl>  getter float (DOMString propertyName);</webidl>
       <Type type="float"/>
       <ArgumentList>
-        <Argument in="in" name="propertyName">
+        <Argument name="propertyName">
           <Type type="DOMString"/>
         </Argument>
       </ArgumentList>
     </Operation>
     <Operation setter="setter">
-      <webidl>  setter void (in DOMString propertyName, in float propertyValue);</webidl>
+      <webidl>  setter void (DOMString propertyName, float propertyValue);</webidl>
       <Type type="void"/>
       <ArgumentList>
-        <Argument in="in" name="propertyName">
+        <Argument name="propertyName">
           <Type type="DOMString"/>
         </Argument>
-        <Argument in="in" name="propertyValue">
+        <Argument name="propertyValue">
           <Type type="float"/>
         </Argument>
       </ArgumentList>

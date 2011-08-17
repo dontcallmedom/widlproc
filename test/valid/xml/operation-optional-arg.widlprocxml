@@ -3,22 +3,22 @@
 <Definitions>
   <Interface name="ColorCreator" id="::ColorCreator">
     <webidl>interface ColorCreator {
-  object createColor(in float v1, in float v2, in float v3, in optional float alpha);
+  object createColor(float v1, float v2, float v3, optional float alpha);
 };</webidl>
     <Operation name="createColor" id="::ColorCreator::createColor">
-      <webidl>  object createColor(in float v1, in float v2, in float v3, in optional float alpha);</webidl>
+      <webidl>  object createColor(float v1, float v2, float v3, optional float alpha);</webidl>
       <Type type="object"/>
       <ArgumentList>
-        <Argument in="in" name="v1">
+        <Argument name="v1">
           <Type type="float"/>
         </Argument>
-        <Argument in="in" name="v2">
+        <Argument name="v2">
           <Type type="float"/>
         </Argument>
-        <Argument in="in" name="v3">
+        <Argument name="v3">
           <Type type="float"/>
         </Argument>
-        <Argument in="in" optional="optional" name="alpha">
+        <Argument optional="optional" name="alpha">
           <Type type="float"/>
         </Argument>
       </ArgumentList>
