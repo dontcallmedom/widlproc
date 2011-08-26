@@ -6,7 +6,3 @@ interface Dahut {
 exception SomeException {
 };
 
-interface ExceptionThrower {
-  // This attribute always throws a SomeException and never returns a value.
-  attribute long valueOf getraises(SomeException);
-};

@@ -708,10 +708,6 @@ attribute specifies its name. Each of the <em>stringifier</em> and
 name when the corresponding keyword appears in the Web IDL input. The <em>inherits</em> attribute is set to <em>getter</em> when the attribute inherits its getter.
 </p>
 
-<p>
-The <em>GetRaises</em> and <em>SetRaises</em> elements each provide a list
-of scoped names used in the corresponding clause in the Web IDL input.
-</p>
 
 <p>
 The <em>descriptive></em> element provides the attribute's documentation
@@ -720,20 +716,13 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type),
-    GetRaises?, SetRaises?) >
+&lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
                     inherits (getter) #IMPLIED
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
-&lt;!ELEMENT GetRaises (RaiseException+) >
-
-&lt;!ELEMENT SetRaises (RaiseException+) >
-
-&lt;!ELEMENT RaiseException (descriptive?) >
-&lt;!ATTLIST RaiseException name CDATA #REQUIRED >
 </pre>
 
 
@@ -752,10 +741,6 @@ attributes is set to a value the same as the attribute
 name when the corresponding keyword appears in the Web IDL input.
 </p>
 
-<p>
-The <em>Raises</em> element provides a list
-of scoped names used in the corresponding clause in the Web IDL input.
-</p>
 
 <p>
 The <em>descriptive></em> element provides the attribute's documentation
@@ -777,7 +762,7 @@ name when the corresponding syntax appears in the Web IDL input.
 
 <pre class="dtd">
 &lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        (Type), ArgumentList, Raises?) >
+        (Type), ArgumentList) >
 &lt;!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     static (static) #IMPLIED
                     omittable (omittable) #IMPLIED
@@ -789,7 +774,6 @@ name when the corresponding syntax appears in the Web IDL input.
                     name NMTOKEN #IMPLIED
                     id NMTOKEN #IMPLIED >
 
-&lt;!ELEMENT Raises (RaiseException+) >
 
 &lt;!ELEMENT ArgumentList (Argument*) >
 

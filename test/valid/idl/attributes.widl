@@ -11,10 +11,4 @@ interface Person {
   // short can take.
   attribute unsigned short age;
 
-  // An attribute that can raise an exception if it is set to an invalid value.
-  attribute DOMString name setraises (InvalidName);
-
-  // An attribute whose value cannot be assigned to, and which can raise an
-  // exception some circumstances.
-  readonly attribute DOMString petName getraises (NoSuchPet);
 };

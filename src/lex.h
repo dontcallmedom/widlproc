@@ -32,7 +32,6 @@
     "double\0" \
     "exception\0" \
     "float\0" \
-    "getraises\0" \
     "getter\0" \
     "implements\0" \
     "inherits\0" \
@@ -44,10 +43,8 @@
     "omittable\0" \
     "optional\0" \
     "partial\0" \
-    "raises\0" \
     "readonly\0" \
     "sequence\0" \
-    "setraises\0" \
     "setter\0" \
     "short\0" \
     "static\0" \
@@ -80,7 +77,6 @@ enum toktype {
     TOK_double,
     TOK_exception,
     TOK_float,
-    TOK_getraises,
     TOK_getter,
     TOK_implements,
     TOK_inherits,
@@ -92,10 +88,8 @@ enum toktype {
     TOK_omittable,
     TOK_optional,
     TOK_partial,
-    TOK_raises,
     TOK_readonly,
     TOK_sequence,
-    TOK_setraises,
     TOK_setter,
     TOK_short,
     TOK_static,

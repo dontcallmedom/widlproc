@@ -564,25 +564,6 @@ parseargumentlist(struct tok *tok)
 }
 
 /***********************************************************************
- * parseexceptionlist : parse [28] ExceptionList
- *
- * Enter:   tok = next token
- *          name = element name for list node
- *
- * Return:  new node for the scopednamelist
- *          tok updated
- */
-static struct node *
-parseexceptionlist(struct tok *tok, const char *name)
-{
-    struct node *node;
-    eat(tok, '(');
-    node = parsescopednamelist(tok, name, "RaiseException", 1);
-    eat(tok, ')');
-    return node;
-}
-
-/***********************************************************************
  * parseoperationrest : parse [25] OperationRest
  *
  * Enter:   tok = next token
@@ -607,10 +588,6 @@ parseoperationrest(struct tok *tok, struct node *eal, struct node *attrs)
     eat(tok, '(');
     addnode(node, parseargumentlist(tok));
     eat(tok, ')');
-    if (tok->type == TOK_raises) {
-        lexnocomment();
-        addnode(node, parseexceptionlist(tok, "Raises"));
-    }
     return node;
 }
 
@@ -639,17 +616,10 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
     addnode(node, parseattributetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     lexnocomment();
-    if (tok->type == TOK_getraises) {
-        lexnocomment();
-        addnode(node, parseexceptionlist(tok, "GetRaises"));
-    } else if (tok->type == TOK_inherits) {
+    if (tok->type == TOK_inherits) {
         lexnocomment();
 	eat(tok, TOK_getter);
 	addnode(node, newattr("inherits", "getter"));
-    }
-    if (tok->type == TOK_setraises) {
-        lexnocomment();
-        addnode(node, parseexceptionlist(tok, "SetRaises"));
     }
     return node;
 }
