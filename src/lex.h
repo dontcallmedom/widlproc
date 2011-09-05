@@ -50,7 +50,6 @@
     "stringifier\0" \
     "typedef\0" \
     "unsigned\0" \
-    "valuetype\0" \
     "void\0"
 
 
@@ -94,7 +93,6 @@ enum toktype {
     TOK_stringifier,
     TOK_typedef,
     TOK_unsigned,
-    TOK_valuetype,
     TOK_void,
 };
 
