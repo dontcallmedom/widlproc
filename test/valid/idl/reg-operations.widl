@@ -8,9 +8,8 @@ exception NoPointerDevice { };
 
 interface Button {
 
-  // An operation that takes no arguments, returns a boolean, and could possibly
-  // raise an exception.
-  boolean isMouseOver() raises (NoPointerDevice);
+  // An operation that takes no arguments, returns a boolean
+  boolean isMouseOver();
 
   // Overloaded operations.
   void setDimensions(Dimensions size);
