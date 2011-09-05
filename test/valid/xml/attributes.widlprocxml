@@ -18,27 +18,10 @@
 
   attribute unsigned short age;
 
-  attribute DOMString name setraises (<ref>InvalidName</ref>);
-
-  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);
 };</webidl>
     <Attribute name="age" id="::Person::age">
       <webidl>  attribute unsigned short age;</webidl>
       <Type type="unsigned short"/>
-    </Attribute>
-    <Attribute name="name" id="::Person::name">
-      <webidl>  attribute DOMString name setraises (<ref>InvalidName</ref>);</webidl>
-      <Type type="DOMString"/>
-      <SetRaises>
-        <RaiseException name="InvalidName"/>
-      </SetRaises>
-    </Attribute>
-    <Attribute readonly="readonly" name="petName" id="::Person::petName">
-      <webidl>  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);</webidl>
-      <Type type="DOMString"/>
-      <GetRaises>
-        <RaiseException name="NoSuchPet"/>
-      </GetRaises>
     </Attribute>
   </Interface>
 </Definitions>
