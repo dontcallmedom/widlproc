@@ -40,7 +40,6 @@
     "module\0" \
     "null\0" \
     "octet\0" \
-    "omittable\0" \
     "optional\0" \
     "partial\0" \
     "readonly\0" \
