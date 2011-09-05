@@ -47,7 +47,7 @@
         <Type type="void"/>
         <ArgumentList>
           <Argument name="s">
-            <Type name="geomShape"/>
+            <Type name="geom::Shape"/>
           </Argument>
         </ArgumentList>
       </Operation>
@@ -56,7 +56,7 @@
         <Type type="void"/>
         <ArgumentList>
           <Argument name="s">
-            <Type name="geomShape"/>
+            <Type name="geom::Shape"/>
           </Argument>
         </ArgumentList>
       </Operation>
@@ -85,7 +85,7 @@
       </InterfaceInheritance>
       <Operation name="getGraphicsContext" id="::gui::Window::getGraphicsContext">
         <webidl>    <ref>gfx::GraphicsContext</ref> getGraphicsContext();</webidl>
-        <Type name="gfxGraphicsContext"/>
+        <Type name="gfx::GraphicsContext"/>
         <ArgumentList/>
       </Operation>
     </Interface>
