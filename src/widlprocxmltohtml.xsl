@@ -385,9 +385,6 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 <xsl:if test="@stringifier">
                     <xsl:value-of select="concat(@stringifier, ' ')"/>
                 </xsl:if>
-                <xsl:if test="@omittable">
-                    <xsl:value-of select="concat(@omittable, ' ')"/>
-                </xsl:if>
                 <xsl:if test="@getter">
                     <xsl:value-of select="concat(@getter, ' ')"/>
                 </xsl:if>

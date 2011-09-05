@@ -655,10 +655,6 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
     }
     if (nodeisempty(attrs)) {
         int alreadyseen = 0;
-        if (tok->type == TOK_omittable) {
-            lexnocomment();
-            addnode(attrs, newattr("omittable", "omittable"));
-        }
         for (;;) {
             static const int t[] = { TOK_getter,
                 TOK_setter, TOK_creator, TOK_deleter, TOK_caller,

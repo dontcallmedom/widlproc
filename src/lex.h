@@ -85,7 +85,6 @@ enum toktype {
     TOK_module,
     TOK_null,
     TOK_octet,
-    TOK_omittable,
     TOK_optional,
     TOK_partial,
     TOK_readonly,
