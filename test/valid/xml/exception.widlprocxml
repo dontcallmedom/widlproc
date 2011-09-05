@@ -14,16 +14,4 @@
     <webidl>exception SomeException {
 };</webidl>
   </Exception>
-  <Interface name="ExceptionThrower" id="::ExceptionThrower">
-    <webidl>interface ExceptionThrower {
-  attribute long valueOf getraises(<ref>SomeException</ref>);
-};</webidl>
-    <Attribute name="valueOf" id="::ExceptionThrower::valueOf">
-      <webidl>  attribute long valueOf getraises(<ref>SomeException</ref>);</webidl>
-      <Type type="long"/>
-      <GetRaises>
-        <RaiseException name="SomeException"/>
-      </GetRaises>
-    </Attribute>
-  </Interface>
 </Definitions>
