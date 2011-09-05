@@ -21,18 +21,15 @@
   <Interface name="Button" id="::Button">
     <webidl>interface Button {
 
-  boolean isMouseOver() raises (<ref>NoPointerDevice</ref>);
+  boolean isMouseOver();
 
   void setDimensions(<ref>Dimensions</ref> size);
   void setDimensions(unsigned long width, unsigned long height);
 };</webidl>
     <Operation name="isMouseOver" id="::Button::isMouseOver">
-      <webidl>  boolean isMouseOver() raises (<ref>NoPointerDevice</ref>);</webidl>
+      <webidl>  boolean isMouseOver();</webidl>
       <Type type="boolean"/>
       <ArgumentList/>
-      <Raises>
-        <RaiseException name="NoPointerDevice"/>
-      </Raises>
     </Operation>
     <Operation name="setDimensions" id="::Button::setDimensions">
       <webidl>  void setDimensions(<ref>Dimensions</ref> size);</webidl>

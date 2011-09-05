@@ -16,9 +16,7 @@
 
   readonly attribute unsigned short age;
 
-  attribute DOMString name inherits getter setraises (<ref>InvalidName</ref>);
-
-  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);
+  attribute DOMString name inherits getter;
 };</webidl>
     <InterfaceInheritance>
       <Name name="Animal"/>
@@ -28,18 +26,8 @@
       <Type type="unsigned short"/>
     </Attribute>
     <Attribute name="name" inherits="getter" id="::Person::name">
-      <webidl>  attribute DOMString name inherits getter setraises (<ref>InvalidName</ref>);</webidl>
+      <webidl>  attribute DOMString name inherits getter;</webidl>
       <Type type="DOMString"/>
-      <SetRaises>
-        <RaiseException name="InvalidName"/>
-      </SetRaises>
-    </Attribute>
-    <Attribute readonly="readonly" name="petName" id="::Person::petName">
-      <webidl>  readonly attribute DOMString petName getraises (<ref>NoSuchPet</ref>);</webidl>
-      <Type type="DOMString"/>
-      <GetRaises>
-        <RaiseException name="NoSuchPet"/>
-      </GetRaises>
     </Attribute>
   </Interface>
 </Definitions>
