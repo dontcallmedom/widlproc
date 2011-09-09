@@ -3,10 +3,10 @@
 <Definitions>
   <Interface name="NumberQuadrupler" id="::NumberQuadrupler">
     <webidl>interface NumberQuadrupler {
-  caller float compute(float x);
+  legacycaller float compute(float x);
 };</webidl>
-    <Operation caller="caller" name="compute" id="::NumberQuadrupler::compute">
-      <webidl>  caller float compute(float x);</webidl>
+    <Operation legacycaller="legacycaller" name="compute" id="::NumberQuadrupler::compute">
+      <webidl>  legacycaller float compute(float x);</webidl>
       <Type type="float"/>
       <ArgumentList>
         <Argument name="x">

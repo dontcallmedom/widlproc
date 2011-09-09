@@ -657,7 +657,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
         int alreadyseen = 0;
         for (;;) {
             static const int t[] = { TOK_getter,
-                TOK_setter, TOK_creator, TOK_deleter, TOK_caller,
+                TOK_setter, TOK_creator, TOK_deleter, TOK_legacycaller,
                 0 };
             const int *tt = t;
             char *s;

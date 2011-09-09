@@ -24,7 +24,6 @@
     "attribute\0" \
     "boolean\0" \
     "byte\0" \
-    "caller\0" \
     "const\0" \
     "creator\0" \
     "deleter\0" \
@@ -36,6 +35,7 @@
     "implements\0" \
     "inherits\0" \
     "interface\0" \
+    "legacycaller\0" \
     "long\0" \
     "module\0" \
     "null\0" \
@@ -67,7 +67,6 @@ enum toktype {
     TOK_attribute,
     TOK_boolean,
     TOK_byte,
-    TOK_caller,
     TOK_const,
     TOK_creator,
     TOK_deleter,
@@ -79,6 +78,7 @@ enum toktype {
     TOK_implements,
     TOK_inherits,
     TOK_interface,
+    TOK_legacycaller,
     TOK_long,
     TOK_module,
     TOK_null,
