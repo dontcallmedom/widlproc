@@ -608,6 +608,10 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
     if (eal) addnode(node, eal);
     setcommentnode(node);
     addnode(node, attrs);
+    if (tok->type == TOK_inherit) {
+        lexnocomment();
+	addnode(node, newattr("inherit", "inherit"));
+    }
     if (tok->type == TOK_readonly) {
         lexnocomment();
         addnode(node, newattr("readonly", "readonly"));
@@ -616,11 +620,6 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
     addnode(node, parseattributetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     lexnocomment();
-    if (tok->type == TOK_inherits) {
-        lexnocomment();
-	eat(tok, TOK_getter);
-	addnode(node, newattr("inherits", "getter"));
-    }
     return node;
 }
 
@@ -646,7 +645,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
             return node;
         }
     }
-    if (tok->type == TOK_readonly || tok->type == TOK_attribute)
+    if (tok->type == TOK_inherit || tok->type == TOK_readonly || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
     if (tok->type == TOK_static) {
         lexnocomment();

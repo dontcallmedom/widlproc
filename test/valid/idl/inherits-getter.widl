@@ -12,5 +12,5 @@ interface Person : Animal {
   // An attribute that can raise an exception if it is set to an invalid value.
   // Its getter behavior is inherited from Animal, and need not be specified
   // the description of Person.
-  attribute DOMString name inherits getter;
+  inherit attribute DOMString name;
 };

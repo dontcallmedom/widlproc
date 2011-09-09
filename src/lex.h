@@ -33,7 +33,7 @@
     "float\0" \
     "getter\0" \
     "implements\0" \
-    "inherits\0" \
+    "inherit\0" \
     "interface\0" \
     "legacycaller\0" \
     "long\0" \
@@ -76,7 +76,7 @@ enum toktype {
     TOK_float,
     TOK_getter,
     TOK_implements,
-    TOK_inherits,
+    TOK_inherit,
     TOK_interface,
     TOK_legacycaller,
     TOK_long,

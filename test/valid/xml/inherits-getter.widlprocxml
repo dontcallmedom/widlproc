@@ -16,7 +16,7 @@
 
   readonly attribute unsigned short age;
 
-  attribute DOMString name inherits getter;
+  inherit attribute DOMString name;
 };</webidl>
     <InterfaceInheritance>
       <Name name="Animal"/>
@@ -25,8 +25,8 @@
       <webidl>  readonly attribute unsigned short age;</webidl>
       <Type type="unsigned short"/>
     </Attribute>
-    <Attribute name="name" inherits="getter" id="::Person::name">
-      <webidl>  attribute DOMString name inherits getter;</webidl>
+    <Attribute inherit="inherit" name="name" id="::Person::name">
+      <webidl>  inherit attribute DOMString name;</webidl>
       <Type type="DOMString"/>
     </Attribute>
   </Interface>

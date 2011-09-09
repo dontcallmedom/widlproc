@@ -705,7 +705,7 @@ An <em>Attribute</em> represents an attribute as an interface member.
 The <em>Type</em> element specifies its type. The <em>name</em>
 attribute specifies its name. Each of the <em>stringifier</em> and
 <em>readonly</em> attributes is set to a value the same as the attribute
-name when the corresponding keyword appears in the Web IDL input. The <em>inherits</em> attribute is set to <em>getter</em> when the attribute inherits its getter.
+name when the corresponding keyword appears in the Web IDL input. The <em>inherit</em> attribute is set to <em>inherit</em> when the attribute inherits its getter.
 </p>
 
 
@@ -719,7 +719,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 &lt;!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
-                    inherits (getter) #IMPLIED
+                    inherit (inherit) #IMPLIED
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
@@ -736,7 +736,7 @@ attribute specifies its name.
 
 <p>
 Each of the <em>stringifier</em>, <em>static</em>, <em>getter</em>,
-<em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>caller</em>
+<em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>legacycaller</em>
 attributes is set to a value the same as the attribute
 name when the corresponding keyword appears in the Web IDL input.
 </p>
@@ -769,7 +769,7 @@ name when the corresponding syntax appears in the Web IDL input.
                     setter (setter) #IMPLIED
                     creator (creator) #IMPLIED
                     deleter (deleter) #IMPLIED
-                    caller (caller) #IMPLIED
+                    legacycaller (legacycaller) #IMPLIED
                     name NMTOKEN #IMPLIED
                     id NMTOKEN #IMPLIED >
 
