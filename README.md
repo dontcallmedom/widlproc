@@ -8,6 +8,8 @@ widlproc's generated XML is used to generate [Webinos JavaScript APIs specificat
 
 widlproc is licensed under the Apache 2 License.
 
+Most of the work on widlproc was done by Tim Renouf and Paddy Byers. Aplix corporation owns the copyright of the code up to June 2011.
+
 # Documentation
 
 See doc/widlproc.html in the tree.
