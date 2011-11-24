@@ -1668,7 +1668,6 @@ attachcomments(struct comment *comment, struct node *root)
          * of the root, so does not detach a \param inside a
          * \def-device-cap.) */
         struct cnode **pcnode = &comment->root.children;
-        struct cnode *desccnode = 0;
         for (;;) {
             struct cnode *cnode = *pcnode;
             if (!cnode)
@@ -1711,7 +1710,6 @@ attachcomments(struct comment *comment, struct node *root)
                 /* Attach the new comment struct to the parse node. */
                 attachcommenttonode(node, newcomment);
             } else {
-                desccnode = 0;
                 pcnode = &cnode->next;
             }
         }
