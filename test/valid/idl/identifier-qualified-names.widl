@@ -1,8 +1,4 @@
 // Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
-// Module identifier: "framework"
-// Qualified name:    "::framework"
-module framework {
-
   // Typedef identifier: "number"
   // Qualified name:    "::framework::number"
   typedef float number;
@@ -31,9 +27,6 @@ module framework {
     getter DOMString (DOMString keyName);
   };
 
-  // Module identifier: "gui"
-  // Qualified name:    "::framework::gui"
-  module gui {
     
     // Interface identifier: "TextField"
     // Qualified name:       "::framework::gui::TextField"
@@ -45,5 +38,3 @@ module framework {
       // Attribute identifier: "value"
       attribute DOMString? _value;
     };
-  };
-};

@@ -1,8 +1,4 @@
 // Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
-module gfx {
-  module geom {
-    module geom2d {
-
       interface Point {
         attribute float x;
         attribute float y;
@@ -14,11 +10,6 @@ module gfx {
         attribute Point topleft;
         attribute Point bottomright;
       };
-    };
-  };
-};
-
-module gui {
 
   typedef gfx::geom::geom2d::Point Point;
   typedef gfx::geom::geom2d::PointSequence PointSequence;
@@ -31,4 +22,3 @@ module gui {
     boolean pointWithinBounds(Point p);
     boolean allPointsWithinBounds(PointSequence ps);
   };
-};
