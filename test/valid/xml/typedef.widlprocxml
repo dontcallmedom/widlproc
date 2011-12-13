@@ -1,151 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <Module name="gfx" id="::gfx">
-    <webidl>module gfx {
-  module geom {
-    module geom2d {
-
-      interface Point {
-        attribute float x;
-        attribute float y;
-      };
-
-      typedef sequence&lt;<ref>Point</ref>> PointSequence;
-
-      interface Rect {
-        attribute <ref>Point</ref> topleft;
-        attribute <ref>Point</ref> bottomright;
-      };
-    };
-  };
-};</webidl>
-    <Module name="geom" id="::gfx::geom">
-      <webidl>  module geom {
-    module geom2d {
-
-      interface Point {
-        attribute float x;
-        attribute float y;
-      };
-
-      typedef sequence&lt;<ref>Point</ref>> PointSequence;
-
-      interface Rect {
-        attribute <ref>Point</ref> topleft;
-        attribute <ref>Point</ref> bottomright;
-      };
-    };
-  };</webidl>
-      <Module name="geom2d" id="::gfx::geom::geom2d">
-        <webidl>    module geom2d {
-
-      interface Point {
-        attribute float x;
-        attribute float y;
-      };
-
-      typedef sequence&lt;<ref>Point</ref>> PointSequence;
-
-      interface Rect {
-        attribute <ref>Point</ref> topleft;
-        attribute <ref>Point</ref> bottomright;
-      };
-    };</webidl>
-        <Interface name="Point" id="::gfx::geom::geom2d::Point">
-          <webidl>      interface Point {
+  <Interface name="Point" id="::Point">
+    <webidl>      interface Point {
         attribute float x;
         attribute float y;
       };</webidl>
-          <Attribute name="x" id="::gfx::geom::geom2d::Point::x">
-            <webidl>        attribute float x;</webidl>
-            <Type type="float"/>
-          </Attribute>
-          <Attribute name="y" id="::gfx::geom::geom2d::Point::y">
-            <webidl>        attribute float y;</webidl>
-            <Type type="float"/>
-          </Attribute>
-        </Interface>
-        <Typedef name="PointSequence" id="::gfx::geom::geom2d::PointSequence">
-          <webidl>      typedef sequence&lt;<ref>Point</ref>> PointSequence;</webidl>
-          <Type type="sequence">
-            <Type name="Point"/>
-          </Type>
-        </Typedef>
-        <Interface name="Rect" id="::gfx::geom::geom2d::Rect">
-          <webidl>      interface Rect {
+    <Attribute name="x" id="::Point::x">
+      <webidl>        attribute float x;</webidl>
+      <Type type="float"/>
+    </Attribute>
+    <Attribute name="y" id="::Point::y">
+      <webidl>        attribute float y;</webidl>
+      <Type type="float"/>
+    </Attribute>
+  </Interface>
+  <Typedef name="PointSequence" id="::PointSequence">
+    <webidl>      typedef sequence&lt;<ref>Point</ref>> PointSequence;</webidl>
+    <Type type="sequence">
+      <Type name="Point"/>
+    </Type>
+  </Typedef>
+  <Interface name="Rect" id="::Rect">
+    <webidl>      interface Rect {
         attribute <ref>Point</ref> topleft;
         attribute <ref>Point</ref> bottomright;
       };</webidl>
-          <Attribute name="topleft" id="::gfx::geom::geom2d::Rect::topleft">
-            <webidl>        attribute <ref>Point</ref> topleft;</webidl>
-            <Type name="Point"/>
-          </Attribute>
-          <Attribute name="bottomright" id="::gfx::geom::geom2d::Rect::bottomright">
-            <webidl>        attribute <ref>Point</ref> bottomright;</webidl>
-            <Type name="Point"/>
-          </Attribute>
-        </Interface>
-      </Module>
-    </Module>
-  </Module>
-  <Module name="gui" id="::gui">
-    <webidl>module gui {
-
-  typedef <ref>gfx::geom::geom2d::Point</ref> Point;
-  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;
-  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;
-
-  interface Widget {
-
-    readonly attribute <ref>Rect</ref> bounds;
-
-    boolean pointWithinBounds(<ref>Point</ref> p);
-    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
-  };
-};</webidl>
-    <Typedef name="Point" id="::gui::Point">
-      <webidl>  typedef <ref>gfx::geom::geom2d::Point</ref> Point;</webidl>
-      <Type name="gfx::geom::geom2d::Point"/>
-    </Typedef>
-    <Typedef name="PointSequence" id="::gui::PointSequence">
-      <webidl>  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;</webidl>
-      <Type name="gfx::geom::geom2d::PointSequence"/>
-    </Typedef>
-    <Typedef name="Rect" id="::gui::Rect">
-      <webidl>  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;</webidl>
-      <Type name="gfx::geom::geom2d::Rect"/>
-    </Typedef>
-    <Interface name="Widget" id="::gui::Widget">
-      <webidl>  interface Widget {
+    <Attribute name="topleft" id="::Rect::topleft">
+      <webidl>        attribute <ref>Point</ref> topleft;</webidl>
+      <Type name="Point"/>
+    </Attribute>
+    <Attribute name="bottomright" id="::Rect::bottomright">
+      <webidl>        attribute <ref>Point</ref> bottomright;</webidl>
+      <Type name="Point"/>
+    </Attribute>
+  </Interface>
+  <Typedef name="Point" id="::Point">
+    <webidl>  typedef <ref>gfx::geom::geom2d::Point</ref> Point;</webidl>
+    <Type name="gfx::geom::geom2d::Point"/>
+  </Typedef>
+  <Typedef name="PointSequence" id="::PointSequence">
+    <webidl>  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;</webidl>
+    <Type name="gfx::geom::geom2d::PointSequence"/>
+  </Typedef>
+  <Typedef name="Rect" id="::Rect">
+    <webidl>  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;</webidl>
+    <Type name="gfx::geom::geom2d::Rect"/>
+  </Typedef>
+  <Interface name="Widget" id="::Widget">
+    <webidl>  interface Widget {
 
     readonly attribute <ref>Rect</ref> bounds;
 
     boolean pointWithinBounds(<ref>Point</ref> p);
     boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
   };</webidl>
-      <Attribute readonly="readonly" name="bounds" id="::gui::Widget::bounds">
-        <webidl>    readonly attribute <ref>Rect</ref> bounds;</webidl>
-        <Type name="Rect"/>
-      </Attribute>
-      <Operation name="pointWithinBounds" id="::gui::Widget::pointWithinBounds">
-        <webidl>    boolean pointWithinBounds(<ref>Point</ref> p);</webidl>
-        <Type type="boolean"/>
-        <ArgumentList>
-          <Argument name="p">
-            <Type name="Point"/>
-          </Argument>
-        </ArgumentList>
-      </Operation>
-      <Operation name="allPointsWithinBounds" id="::gui::Widget::allPointsWithinBounds">
-        <webidl>    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);</webidl>
-        <Type type="boolean"/>
-        <ArgumentList>
-          <Argument name="ps">
-            <Type name="PointSequence"/>
-          </Argument>
-        </ArgumentList>
-      </Operation>
-    </Interface>
-  </Module>
+    <Attribute readonly="readonly" name="bounds" id="::Widget::bounds">
+      <webidl>    readonly attribute <ref>Rect</ref> bounds;</webidl>
+      <Type name="Rect"/>
+    </Attribute>
+    <Operation name="pointWithinBounds" id="::Widget::pointWithinBounds">
+      <webidl>    boolean pointWithinBounds(<ref>Point</ref> p);</webidl>
+      <Type type="boolean"/>
+      <ArgumentList>
+        <Argument name="p">
+          <Type name="Point"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Operation name="allPointsWithinBounds" id="::Widget::allPointsWithinBounds">
+      <webidl>    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);</webidl>
+      <Type type="boolean"/>
+      <ArgumentList>
+        <Argument name="ps">
+          <Type name="PointSequence"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
 </Definitions>
