@@ -825,7 +825,7 @@ parsetypedef(struct tok *tok, struct node *eal)
  * Enter:   tok = next token, known to be TOK_exception
  *          eal = 0 else extended attribute list node
  *
- * Return:  new node for the module
+ * Return:  new node for the exception
  *          tok updated to the terminating ';'
  */
 static struct node *
@@ -866,7 +866,7 @@ parseexception(struct tok *tok, struct node *eal)
  * Enter:   tok = next token, known to be TOK_interface
  *          eal = 0 else extended attribute list node
  *
- * Return:  new node for the module
+ * Return:  new node for the interface
  *          tok updated to the terminating ';'
  */
 static struct node *
@@ -943,31 +943,6 @@ parsedictionary(struct tok *tok, struct node *eal)
     return node;
 }
 
-
-/***********************************************************************
- * parsemodule : parse [3] Module
- *
- * Enter:   tok = next token, known to be TOK_module
- *          eal = 0 else extended attribute list node
- *
- * Return:  new node for the module
- *          tok updated to the terminating ';'
- */
-static struct node *
-parsemodule(struct tok *tok, struct node *eal)
-{
-    struct node *node = newelement("Module");
-    setcommentnode(node);
-    if (eal) addnode(node, eal);
-    tok = lexnocomment();
-    addnode(node, newattr("name", setidentifier(tok)));
-    tok = lexnocomment();
-    eat(tok, '{');
-    parsedefinitions(tok, node);
-    eat(tok, '}');
-    return node;
-}
-
 /***********************************************************************
  * parsedefinitions : parse [1] Definitions
  *
@@ -984,9 +959,6 @@ parsedefinitions(struct tok *tok, struct node *parent)
         struct node *eal = parseextendedattributelist(tok);
         struct node *node;
         switch (tok->type) {
-        case TOK_module:
-            node = parsemodule(tok, eal);
-            break;
         case TOK_partial:
 	    eat(tok, TOK_partial);
 	    node = parseinterface(tok, eal, 1);

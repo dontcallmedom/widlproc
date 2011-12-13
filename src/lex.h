@@ -37,7 +37,6 @@
     "interface\0" \
     "legacycaller\0" \
     "long\0" \
-    "module\0" \
     "null\0" \
     "octet\0" \
     "optional\0" \
@@ -80,7 +79,6 @@ enum toktype {
     TOK_interface,
     TOK_legacycaller,
     TOK_long,
-    TOK_module,
     TOK_null,
     TOK_octet,
     TOK_optional,
