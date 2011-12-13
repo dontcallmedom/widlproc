@@ -503,30 +503,14 @@ enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 
 <p>
 The <em>ExtendedAttributeList</em> specifies any extended attributes
-for the <em>Module</em>, <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
+for the  <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
 <em>Typedef</em>, <em>Valuetype</em> or <em>Const</em> in the
 <em>Definition</em>.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Definitions (Module | Interface | Dictionary
+&lt;!ELEMENT Definitions ( Interface | Dictionary
     | Exception | Typedef | Implements)* >
-</pre>
-
-<h4>Module</h4>
-
-<p>
-A <em>Module</em> represents an API. The <em>name</em>
-attribute specifies the name of the API. The <em>descriptive</em> element
-provides its documentation if any.
-The <em>id</em> attribute specifies the absolute scoped name of the module.
-</p>
-
-<pre class="dtd">
-&lt;!ELEMENT Module (webidl, descriptive?, ExtendedAttributeList?,
-        (Module | Interface | Exception | Typedef | Implements)* ) >
-&lt;!ATTLIST Module name CDATA #REQUIRED 
-                 id CDATA #REQUIRED >
 </pre>
 
 <h4>Interface</h4>
