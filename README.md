@@ -12,7 +12,7 @@ widlproc is licensed under the Apache 2 License.
 
 Most of the work on widlproc was done by Tim Renouf and Paddy Byers. Aplix corporation owns the copyright of the code up to June 2011.
 
-Work on keeping the tool up to date with the changes in the spec is done through funding from the [webinos project](http://webinos.org/).
+The tool is kept up to date with the changes in the spec by Dominique Hazael-Massieux, through funding from the [webinos project](http://webinos.org/) since June 2011.
 
 # Documentation
 
