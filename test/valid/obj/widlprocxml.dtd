@@ -3,23 +3,19 @@
 
 <!ENTITY % block 'dl | p | table | ul' >
 <!ENTITY % Block '(%block;)*' >
-<!ENTITY % inline 'a | b | br | em' >
+<!ENTITY % inline 'a | b | br | em | img' >
 <!ENTITY % Inline '(#PCDATA | %inline;)*' >
 <!ENTITY % Flow '(#PCDATA | %inline; | %block;)*' >
 
 <!ELEMENT webidl (#PCDATA | ref)* >
 
-<!ELEMENT Definitions (Module | Interface | Dictionary
+<!ELEMENT Definitions ( Interface | Dictionary
     | Exception | Typedef | Implements)* >
-
-<!ELEMENT Module (webidl, descriptive?, ExtendedAttributeList?,
-        (Module | Interface | Exception | Typedef | Implements)* ) >
-<!ATTLIST Module name CDATA #REQUIRED 
-                 id CDATA #REQUIRED >
 
 <!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
         InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
 <!ATTLIST Interface name CDATA #REQUIRED
+                    partial (partial) #IMPLIED
                     id CDATA #REQUIRED >
 
 <!ELEMENT InterfaceInheritance (Name+) >
@@ -27,10 +23,11 @@
 <!ELEMENT Name EMPTY >
 <!ATTLIST Name name CDATA #REQUIRED >
 
-<!ELEMENT Dictionary (webidl, descriptive?, DictionaryMember* ) >
+<!ELEMENT Dictionary (webidl, descriptive?, DictionaryInheritance?, DictionaryMember* ) >
 <!ATTLIST Dictionary name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
+<!ELEMENT DictionaryInheritance (Name+) >
 
 <!ELEMENT Exception (webidl, descriptive?, ExtendedAttributeList?, ExceptionInheritance?,
         (Const | ExceptionField)* ) >
@@ -53,39 +50,30 @@
 <!ELEMENT Const (webidl, descriptive?, ExtendedAttributeList?, Type) >
 <!ATTLIST Const name CDATA #REQUIRED
                 value CDATA #IMPLIED
-                stringvalue CDATA #IMPLIED
                 id CDATA #REQUIRED >
 
 <!ELEMENT Stringifier (webidl, descriptive?, ExtendedAttributeList?) >
 
-<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type),
-    GetRaises?, SetRaises?) >
+<!ELEMENT Attribute (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
 <!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
+                    inherit (inherit) #IMPLIED
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
-<!ELEMENT GetRaises (RaiseException+) >
-
-<!ELEMENT SetRaises (RaiseException+) >
-
-<!ELEMENT RaiseException (descriptive?) >
-<!ATTLIST RaiseException name CDATA #REQUIRED >
 
 <!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
-        (Type), ArgumentList, Raises?) >
+        (Type), ArgumentList) >
 <!ATTLIST Operation stringifier (stringifier) #IMPLIED
                     static (static) #IMPLIED
-                    omittable (omittable) #IMPLIED
                     getter (getter) #IMPLIED
                     setter (setter) #IMPLIED
                     creator (creator) #IMPLIED
                     deleter (deleter) #IMPLIED
-                    caller (caller) #IMPLIED
+                    legacycaller (legacycaller) #IMPLIED
                     name NMTOKEN #IMPLIED
                     id NMTOKEN #IMPLIED >
 
-<!ELEMENT Raises (RaiseException+) >
 
 <!ELEMENT ArgumentList (Argument*) >
 
@@ -165,6 +153,11 @@
 <!ELEMENT dt %Inline; >
 
 <!ELEMENT em %Inline; >
+
+<!ELEMENT img %Inline; >
+<!ATTLIST img src CDATA #REQUIRED 
+                 alt CDATA #IMPLIED>
+
 
 <!ELEMENT li %Flow; >
 
