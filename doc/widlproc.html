@@ -655,7 +655,7 @@ provides the <em>Implements</em>'s documentation if any.
 syntax.
 The <em>Type</em> specifies the constant's type, the
 <em>name</em> attribute specifies the constant's name, and the
-<em>value</em> attribute specifies its value for non-string values, and <em>stringvalue</em> for string values.
+<em>value</em> attribute specifies its value.
 The <em>descriptive></em> element
 provides the <em>Const</em>'s documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the const.
@@ -665,7 +665,6 @@ The <em>id</em> attribute specifies the absolute scoped name of the const.
 &lt;!ELEMENT Const (webidl, descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST Const name CDATA #REQUIRED
                 value CDATA #IMPLIED
-                stringvalue CDATA #IMPLIED
                 id CDATA #REQUIRED >
 </pre>
 

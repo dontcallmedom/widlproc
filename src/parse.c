@@ -676,7 +676,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 }
 
 /***********************************************************************
- * parseconstexpr : parse ConstExpr
+ * parseconstexpr : parse ConstValue
  *
  * Enter:   tok = next token
  *          node
@@ -692,7 +692,6 @@ parseconstexpr (struct tok *tok, struct node *node) {
   case TOK_false:
   case TOK_INTEGER:
   case TOK_FLOAT:
-  case TOK_STRING:
   case TOK_null:
     break;
   default:
@@ -710,6 +709,32 @@ parseconstexpr (struct tok *tok, struct node *node) {
   lexnocomment();
   return node;
 }
+
+/***********************************************************************
+ * parsedefaultvalue : parse DefaultValue
+ *
+ * Enter:   tok = next token
+ *          node
+ *
+ * Return:  node updated with value
+ *          tok updated
+ */
+static struct node *
+parsedefaultvalue (struct tok *tok, struct node *node) {
+  char *s;
+  if (tok->type == TOK_STRING) {
+    s = memalloc(tok->len + 1);
+    memcpy(s, tok->start, tok->len);
+    s[tok->len] = 0;
+    addnode(node, newattr("stringvalue", s));
+    lexnocomment();
+    return node;
+  } else {
+    return parseconstexpr(tok, node);
+  }
+}
+
+
 
 /***********************************************************************
  * parsedictionarymember : parse DictionaryMember
@@ -732,7 +757,7 @@ parsedictionarymember(struct tok *tok, struct node *eal)
     // Optional value
     if (tok->type == '=') {
       tok = lexnocomment();
-      node = parseconstexpr(tok, node);
+      node = parsedefaultvalue(tok, node);
     }
     return node;
 }
@@ -759,7 +784,6 @@ parseconst(struct tok *tok, struct node *eal)
     case TOK_octet:
     case TOK_float:
     case TOK_double:
-    case TOK_DOMString:
     case TOK_unsigned:
     case TOK_short:
     case TOK_long:
