@@ -22,3 +22,5 @@
     boolean pointWithinBounds(Point p);
     boolean allPointsWithinBounds(PointSequence ps);
   };
+
+  typedef [Clamp] octet value;

@@ -837,7 +837,10 @@ parsetypedef(struct tok *tok, struct node *eal)
     setcommentnode(node);
     if (eal) addnode(node, eal);
     tok = lexnocomment();
-    addnode(node, parsetype(tok));
+    struct node *ealtype = parseextendedattributelist(tok);
+    struct node *typenode = parsetype(tok);
+    if (ealtype) addnode(typenode, ealtype);
+    addnode(node, typenode);
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
     return node;

@@ -78,4 +78,12 @@
       </ArgumentList>
     </Operation>
   </Interface>
+  <Typedef name="value" id="::value">
+    <webidl>  typedef [Clamp] octet value;</webidl>
+    <Type type="octet">
+      <ExtendedAttributeList>
+        <ExtendedAttribute name="Clamp"/>
+      </ExtendedAttributeList>
+    </Type>
+  </Typedef>
 </Definitions>

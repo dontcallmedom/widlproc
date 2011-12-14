@@ -863,9 +863,11 @@ if any, when the <em>Type</em> is a child of <em>Operation</em>, and thus
 representing an operation's return type.
 </p>
 
+<p>The <em>ExtendedAttributeList</em> element provides the optional extended attributes that can be defined for a type through typedef, &agrave; la <code>typedef [Clamp] octet Value;</code>.</p>
+
 <!-- can't use enumerated values for the values of type, since DTD don't allow enumerated values to have space in them (which would be needed e.g. for "long long") -->
 <pre class="dtd">
-&lt;!ELEMENT Type (descriptive?, Type?) >
+&lt;!ELEMENT Type (descriptive?, ExtendedAttributeList?, Type?) >
 &lt;!ATTLIST Type type CDATA #IMPLIED
                name NMTOKEN #IMPLIED
                nullable (nullable) #IMPLIED >
