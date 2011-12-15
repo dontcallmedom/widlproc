@@ -892,6 +892,7 @@ parseexception(struct tok *tok, struct node *eal)
  *
  * Enter:   tok = next token, known to be TOK_interface
  *          eal = 0 else extended attribute list node
+ *          partial = 0 else partial interface
  *
  * Return:  new node for the interface
  *          tok updated to the terminating ';'
