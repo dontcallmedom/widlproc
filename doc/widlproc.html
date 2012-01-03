@@ -510,7 +510,7 @@ for the  <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
 
 <pre class="dtd">
 &lt;!ELEMENT Definitions ( Interface | Dictionary
-    | Exception | Typedef | Implements)* >
+    | Enum | Exception | Typedef | Implements)* >
 </pre>
 
 <h4>Interface</h4>
@@ -567,6 +567,28 @@ scoped name of the dictionary being inherited from.
                     id CDATA #REQUIRED >
 
 &lt;!ELEMENT DictionaryInheritance (Name+) >
+</pre>
+
+<h4>Enum</h4>
+
+<p>
+An <em>Enum</em> represents an enumeration. The <em>name</em>
+attribute specifies the name of the enumeration. The <em>descriptive</em> element
+provides its documentation if any.
+</p>
+
+<p>
+The <em>EnumValue</em> element indicates the values defined for that enumeration in its <em>stringvalue</em> attribute.
+</p>
+
+
+<pre class="dtd">
+&lt;!ELEMENT Enum (webidl, descriptive?, EnumValue* ) >
+&lt;!ATTLIST Enum name CDATA #REQUIRED 
+                    id CDATA #REQUIRED >
+
+&lt;!ELEMENT EnumValue (webidl, descriptive?) >
+&lt;!ATTLIST EnumValue stringvalue CDATA #REQUIRED >
 </pre>
 
 

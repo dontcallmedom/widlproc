@@ -972,6 +972,49 @@ parsedictionary(struct tok *tok, struct node *eal)
 }
 
 /***********************************************************************
+ * parseenum : parse Enum
+ *
+ * Enter:   tok = next token, known to be TOK_dictionary
+ *
+ * Return:  new node for the enum
+ *          tok updated to the terminating ';'
+ */
+static struct node *
+parseenum(struct tok *tok, struct node *eal)
+{
+    struct node *node = newelement("Enum");
+    if (eal) addnode(node, eal);
+    setcommentnode(node);
+    tok = lexnocomment();
+    addnode(node, newattr("name", setidentifier(tok)));
+    tok = lexnocomment();
+    eat(tok, '{');
+    while (tok->type != '}') {
+      if (tok->type == TOK_STRING) {
+	const char *start = tok->prestart;
+	struct node *node2 = newelement("EnumValue");
+	char *s;
+	s = memalloc(tok->len + 1);
+	memcpy(s, tok->start, tok->len);
+	s[tok->len] = 0;
+	addnode(node2, newattr("stringvalue", s));
+        node2->wsstart = start;
+        node2->end = tok->start + tok->len;
+        setid(node2);
+	addnode(node, node2);
+      } else {
+	tokerrorexit(tok, "expected string in enum");
+      }
+      lexnocomment();
+      if (tok->type == ',') {
+	lexnocomment();
+      }
+    }
+    eat(tok, '}');
+    return node;
+}
+
+/***********************************************************************
  * parsedefinitions : parse [1] Definitions
  *
  * Enter:   tok = next token
@@ -996,6 +1039,9 @@ parsedefinitions(struct tok *tok, struct node *parent)
             break;
 	case TOK_dictionary:
             node = parsedictionary(tok, eal);
+            break;	  
+	case TOK_enum:
+            node = parseenum(tok, eal);
             break;	  
         case TOK_exception:
             node = parseexception(tok, eal);

@@ -29,6 +29,7 @@
     "deleter\0" \
     "dictionary\0" \
     "double\0" \
+    "enum\0" \
     "exception\0" \
     "float\0" \
     "getter\0" \
@@ -71,6 +72,7 @@ enum toktype {
     TOK_deleter,
     TOK_dictionary,
     TOK_double,
+    TOK_enum,
     TOK_exception,
     TOK_float,
     TOK_getter,
