@@ -8,6 +8,10 @@ widlproc's generated XML is used to generate [webinos JavaScript APIs specificat
 
 widlproc is licensed under the Apache 2 License.
 
+# Others
+
+See also [webidl.js](https://github.com/darobin/webidl.js), a JavaScript-based Web IDL parser used by various tools in W3C.
+
 # Credits
 
 Most of the work on widlproc was done by Tim Renouf and Paddy Byers. Aplix corporation owns the copyright of the code up to June 2011.
