@@ -125,6 +125,7 @@ setidentifier(struct tok *tok)
 
 /* Prototypes for funcs that have a forward reference. */
 static struct node *parsetype(struct tok *tok);
+static struct node *parseuniontype(struct tok *tok);
 static struct node *parseargumentlist(struct tok *tok);
 static void parsedefinitions(struct tok *tok, struct node *parent);
 static struct node *parsetypesuffixstartingwitharray(struct tok *tok, struct node *node);
@@ -361,7 +362,7 @@ parseprimitiveorstringtype(struct tok *tok)
 }
 
 /***********************************************************************
- * parseattributetype : parse [44] AttributeType
+ * parsenonanytype : parse NonAnyType
  *
  * Enter:   tok = next token
  *
@@ -369,7 +370,7 @@ parseprimitiveorstringtype(struct tok *tok)
  *          tok updated
  */
 static struct node *
-parseattributetype(struct tok *tok)
+parsenonanytype(struct tok *tok)
 {
     struct node *node;
     switch (tok->type) {
@@ -379,11 +380,17 @@ parseattributetype(struct tok *tok)
         addnode(node, parsescopedname(tok, "name", 1));
 	node = parsetypesuffix(tok, node);
         break;
-    case TOK_any:
+    case TOK_sequence:
         node = newelement("Type");
-        addnode(node, newattr("type", "any"));
+        addnode(node, newattr("type", "sequence"));
         lexnocomment();
-	node = parsetypesuffixstartingwitharray(tok, node);
+        eat(tok, '<');
+        addnode(node, parsetype(tok));
+        eat(tok, '>');
+	if (tok->type == '?') {
+	  addnode(node, newattr("nullable", "nullable"));
+	  lexnocomment();
+	}
         break;
     case TOK_object:
         node = newelement("Type");
@@ -393,12 +400,69 @@ parseattributetype(struct tok *tok)
         break;
     default:
         node = parseprimitiveorstringtype(tok);
-	node = parsetypesuffix(tok, node);
+        node = parsetypesuffix(tok, node);
         break;
-    }
+    }       
     return node;
 }
 
+/***********************************************************************
+ * parseunionmembertype: parse UnionMemberType
+ *
+ * Enter:   tok = next token
+ *
+ * Return:  node for type
+ *          tok updated
+ */
+static struct node *
+parseunionmembertype(struct tok *tok)
+{
+  struct node *node;
+  if (tok->type == TOK_any) {
+    struct node *typenode = newelement("Type");
+    addnode(typenode, newattr("type", "any"));
+    lexnocomment();
+    eat(tok, TOK_DOUBLEBRACKET);
+    node = newelement("Type");
+    addnode(node, newattr("type", "array"));
+    addnode(node, typenode);
+    lexnocomment();
+    node = parsetypesuffix(tok, node);
+  } else if (tok->type == '(') { 
+    node = parseuniontype(tok);
+  } else {
+    node = parsenonanytype(tok);
+  }
+  return node;
+}
+
+
+/***********************************************************************
+ * parseuniontype : parse UnionType
+ *
+ * Enter:   tok = next token
+ *
+ * Return:  node for type
+ *          tok updated
+ */
+static struct node *
+parseuniontype(struct tok *tok)
+{
+  eat(tok, '(');
+  struct node* node = newelement("Type");
+  addnode(node, newattr("type", "union"));
+  if (tok->type != ')') {
+    for (;;) {
+      addnode(node, parseunionmembertype(tok));
+      if (tok->type != TOK_or)
+	break;
+      lexnocomment();
+    }
+  }
+  eat(tok, ')');
+  node = parsetypesuffix(tok, node);      
+  return node;
+}
 
 /***********************************************************************
  * parsetype : parse [44] Type
@@ -412,20 +476,16 @@ static struct node *
 parsetype(struct tok *tok)
 {
     struct node *node;
-    switch (tok->type) {
-    case TOK_sequence:
-        node = newelement("Type");
-        addnode(node, newattr("type", "sequence"));
-        lexnocomment();
-        eat(tok, '<');
-        addnode(node, parsetype(tok));
-        eat(tok, '>');
-	node = parsetypesuffix(tok, node);
-        break;
-    default:
-        node = parseattributetype(tok);
-        break;
-    }       
+    if (tok->type == '(') {
+      node = parseuniontype(tok);
+    } else if (tok->type == TOK_any) {
+      node = newelement("Type");
+      addnode(node, newattr("type", "any"));
+      lexnocomment();
+      node = parsetypesuffixstartingwitharray(tok, node);
+    } else {
+      node = parsenonanytype(tok);	
+    }
     return node;
 }
 
@@ -617,7 +677,7 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
         addnode(node, newattr("readonly", "readonly"));
     }
     eat(tok, TOK_attribute);
-    addnode(node, parseattributetype(tok));
+    addnode(node, parsetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     lexnocomment();
     return node;
