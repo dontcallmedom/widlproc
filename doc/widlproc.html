@@ -509,7 +509,7 @@ for the  <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Definitions ( Interface | Dictionary
+&lt;!ELEMENT Definitions ( Interface | Dictionary | Callback
     | Enum | Exception | Typedef | Implements)* >
 </pre>
 
@@ -522,7 +522,7 @@ provides its documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the interface.
 </p>
 
-<p>The <em>partial</em> attribute indicates that the definition of the interface complements an existing definition.</p>
+<p>The <em>partial</em> attribute indicates that the definition of the interface complements an existing definition. The <em>callback</em> attribute specificies that a given interface is a callback interface.</p>
 
 <p>
 The <em>InterfaceInheritance</em> element indicates that the interface
@@ -536,6 +536,7 @@ scoped name of the interface being inherited from.
         InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
                     partial (partial) #IMPLIED
+                    callback (callback) #IMPLIED
                     id CDATA #REQUIRED >
 
 &lt;!ELEMENT InterfaceInheritance (Name+) >
@@ -568,6 +569,28 @@ scoped name of the dictionary being inherited from.
 
 &lt;!ELEMENT DictionaryInheritance (Name+) >
 </pre>
+
+<h4>Callback</h4>
+
+<p>
+A <em>Callback</em> represents a callback type. The <em>name</em>
+attribute specifies the name of the dictionary. The <em>descriptive</em> element
+provides its documentation if any.</p>
+
+<p>The <em>Type</em> element specifies its return type.</p>
+
+<p>
+An <em>Argument</em> is an argument to an operation.
+The <em>Type</em> element specifies its type. The <em>name</em>
+attribute specifies its name if it has one.
+</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Callback (webidl, descriptive?, Type, ArgumentList? ) >
+&lt;!ATTLIST Callback name CDATA #REQUIRED
+                      id CDATA #REQUIRED>
+</pre>
+
 
 <h4>Enum</h4>
 
@@ -760,7 +783,7 @@ attribute specifies its name if it has one.
 </p>
 
 <p>
-Each of the <em>in</em>, <em>optional</em> and <em>ellipsis</em>
+Each of the <em>optional</em> and <em>ellipsis</em>
 attributes is set to a value the same as the attribute
 name when the corresponding syntax appears in the Web IDL input.
 </p>
@@ -782,7 +805,7 @@ name when the corresponding syntax appears in the Web IDL input.
 &lt;!ELEMENT ArgumentList (Argument*) >
 
 &lt;!ELEMENT Argument (descriptive?, ExtendedAttributeList?, (Type)) >
-&lt;!ATTLIST Argument in (in) #IMPLIED
+&lt;!ATTLIST Argument
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
                    name NMTOKEN #REQUIRED >

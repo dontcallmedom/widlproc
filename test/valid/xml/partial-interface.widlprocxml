@@ -10,7 +10,7 @@
       <Type type="DOMString"/>
     </Attribute>
   </Interface>
-  <Interface partial="partial" name="Foo" id="::Foo">
+  <Interface name="Foo" partial="partial" id="::Foo">
     <webidl>partial interface Foo {
   attribute DOMString quux;
 };</webidl>

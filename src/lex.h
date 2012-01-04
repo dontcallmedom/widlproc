@@ -24,6 +24,7 @@
     "attribute\0" \
     "boolean\0" \
     "byte\0" \
+    "callback\0" \
     "const\0" \
     "creator\0" \
     "deleter\0" \
@@ -41,6 +42,7 @@
     "null\0" \
     "octet\0" \
     "optional\0" \
+    "or\0" \
     "partial\0" \
     "readonly\0" \
     "sequence\0" \
@@ -67,6 +69,7 @@ enum toktype {
     TOK_attribute,
     TOK_boolean,
     TOK_byte,
+    TOK_callback,
     TOK_const,
     TOK_creator,
     TOK_deleter,
@@ -84,6 +87,7 @@ enum toktype {
     TOK_null,
     TOK_octet,
     TOK_optional,
+    TOK_or,
     TOK_partial,
     TOK_readonly,
     TOK_sequence,

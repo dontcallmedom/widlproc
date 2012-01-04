@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <Interface name="Listener" id="::Listener">
-    <webidl>[Callback] interface Listener {
-  void eventOccurred();
+  <Callback name="AsyncOperationCallback" id="::AsyncOperationCallback">
+    <webidl>callback AsyncOperationCallback = void (DOMString status);</webidl>
+    <Type type="void"/>
+    <ArgumentList>
+      <Argument name="status">
+        <Type type="DOMString"/>
+      </Argument>
+    </ArgumentList>
+  </Callback>
+  <Interface name="EventHandler" callback="callback" id="::EventHandler">
+    <webidl>callback interface EventHandler {
+  void eventOccurred(DOMString details);
 };</webidl>
-    <ExtendedAttributeList>
-      <ExtendedAttribute name="Callback"/>
-    </ExtendedAttributeList>
-    <Operation name="eventOccurred" id="::Listener::eventOccurred">
-      <webidl>  void eventOccurred();</webidl>
+    <Operation name="eventOccurred" id="::EventHandler::eventOccurred">
+      <webidl>  void eventOccurred(DOMString details);</webidl>
       <Type type="void"/>
-      <ArgumentList/>
+      <ArgumentList>
+        <Argument name="details">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
     </Operation>
   </Interface>
 </Definitions>

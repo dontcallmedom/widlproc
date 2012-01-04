@@ -898,12 +898,9 @@ parseexception(struct tok *tok, struct node *eal)
  *          tok updated to the terminating ';'
  */
 static struct node *
-parseinterface(struct tok *tok, struct node *eal, unsigned int partial)
+parseinterface(struct tok *tok, struct node *eal)
 {
     struct node *node = newelement("Interface");
-    if (partial) {
-      addnode(node, newattr("partial", "partial"));
-    }
     if (eal) addnode(node, eal);
     setcommentnode(node);
     tok = lexnocomment();
@@ -929,6 +926,37 @@ parseinterface(struct tok *tok, struct node *eal, unsigned int partial)
     }
     lexnocomment();
     return node;
+}
+
+/***********************************************************************
+ * parsecallback : parse Callback
+ *
+ * Enter:   tok = next token, known to be TOK_dictionary
+ *          eal = 0 else extended attribute list node
+ *
+ * Return:  new node for the enum
+ *          tok updated to the terminating ';'
+ */
+static struct node *
+parsecallback(struct tok *tok, struct node *eal)
+{
+  struct node *node;
+  if (tok->type == TOK_interface) {
+    node = parseinterface(tok, eal);
+    addnode(node, newattr("callback", "callback"));    
+  } else {
+    node = newelement("Callback");
+    if (eal) addnode(node, eal);
+    setcommentnode(node);
+    addnode(node, newattr("name", setidentifier(tok)));
+    tok = lexnocomment();
+    eat(tok, '=');
+    addnode(node, parsereturntype(tok));
+    eat(tok, '(');
+    addnode(node, parseargumentlist(tok));
+    eat(tok, ')');
+  }
+  return node;
 }
 
 /***********************************************************************
@@ -975,6 +1003,7 @@ parsedictionary(struct tok *tok, struct node *eal)
  * parseenum : parse Enum
  *
  * Enter:   tok = next token, known to be TOK_dictionary
+ *          eal = 0 else extended attribute list node
  *
  * Return:  new node for the enum
  *          tok updated to the terminating ';'
@@ -1032,10 +1061,15 @@ parsedefinitions(struct tok *tok, struct node *parent)
         switch (tok->type) {
         case TOK_partial:
 	    eat(tok, TOK_partial);
-	    node = parseinterface(tok, eal, 1);
+	    node = parseinterface(tok, eal);
+	    addnode(node, newattr("partial", "partial"));
             break;
         case TOK_interface:
-  	    node = parseinterface(tok, eal, 0);
+  	    node = parseinterface(tok, eal);
+            break;
+	case TOK_callback:
+	    eat(tok, TOK_callback);
+	    node = parsecallback(tok, eal);
             break;
 	case TOK_dictionary:
             node = parsedictionary(tok, eal);

@@ -1,4 +1,5 @@
-// Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
-[Callback] interface Listener {
-  void eventOccurred();
+callback AsyncOperationCallback = void (DOMString status);
+
+callback interface EventHandler {
+  void eventOccurred(DOMString details);
 };
