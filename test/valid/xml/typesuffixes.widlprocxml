@@ -3,20 +3,16 @@
 <Definitions>
   <Interface name="Suffixes" id="::Suffixes">
     <webidl>interface Suffixes {
-  void test(sequence&lt;DOMString[]?>?[][] foo);
+  void test(sequence&lt;DOMString[]?>? foo);
 };</webidl>
     <Operation name="test" id="::Suffixes::test">
-      <webidl>  void test(sequence&lt;DOMString[]?>?[][] foo);</webidl>
+      <webidl>  void test(sequence&lt;DOMString[]?>? foo);</webidl>
       <Type type="void"/>
       <ArgumentList>
         <Argument name="foo">
-          <Type type="array">
-            <Type type="array">
-              <Type type="sequence" nullable="nullable">
-                <Type type="array" nullable="nullable">
-                  <Type type="DOMString"/>
-                </Type>
-              </Type>
+          <Type type="sequence" nullable="nullable">
+            <Type type="array" nullable="nullable">
+              <Type type="DOMString"/>
             </Type>
           </Type>
         </Argument>
