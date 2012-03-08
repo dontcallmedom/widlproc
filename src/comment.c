@@ -466,6 +466,31 @@ static const struct cnodefuncs return_funcs = {
 };
 
 /***********************************************************************
+ * author_output : output name cnode
+ *
+ * Enter:   cnode for root
+ *          indent = indent (nesting) level
+ */
+static void
+name_output(struct cnode *cnode, unsigned int indent)
+{
+    printf("%*s<name>\n", indent, "");
+    outputchildren(cnode, indent, 1);
+    printf("%*s</name>\n", indent, "");
+}
+
+/***********************************************************************
+ * cnode type name
+ */
+static const struct cnodefuncs name_funcs = {
+    0, /* !indesc */
+    0, /* !needpara */
+    &default_askend,
+    0, /* end */
+    &name_output,
+};
+
+/***********************************************************************
  * author_output : output author cnode
  *
  * Enter:   cnode for root
@@ -1299,6 +1324,7 @@ static const struct command commands[] = {
     { &dox_throw, &def_api_feature_funcs, 15, "def-api-feature" },
     { &dox_throw, &def_api_feature_set_funcs, 19, "def-api-feature-set" },
     { &dox_para, &def_instantiated_funcs, 16, "def-instantiated" },
+    { &dox_para, &name_funcs, 4, "name" },
     { &dox_para, &author_funcs, 6, "author" },
     { &dox_b, 0, 1, "b" },
     { &dox_para, &brief_funcs, 5, "brief" },
