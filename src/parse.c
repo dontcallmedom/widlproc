@@ -1172,6 +1172,7 @@ struct node *
 parse(void)
 {
     struct node *root = newelement("Definitions");
+    setcommentnode(root);
     struct tok *tok = lexnocomment();
     parsedefinitions(tok, root);
     if (tok->type != TOK_EOF)
