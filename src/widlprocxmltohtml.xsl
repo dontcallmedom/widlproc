@@ -19,7 +19,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 
 <xsl:param name="date" select="'error: missing date'"/>
 
-<xsl:variable name="title" select="concat('The ',/Definitions/*[1]/@name,' Module - Version ',/Definitions/descriptive/version)"/>
+<xsl:variable name="title" select="concat('The ',/Definitions/descriptive/name,' Module - Version ',/Definitions/descriptive/version)"/>
 
 <!--Root of document.-->
 <xsl:template match="/">
@@ -48,13 +48,15 @@ XSLT stylesheet to convert widlprocxml into html documentation.
           <xsl:apply-templates select="descriptive/author"/>
         </ul>
 
-        <p class="copyright"><small>© 2009 OMTP Ltd. All rights reserved. OMTP and OMTP BONDI are registered trademarks of OMTP Ltd.</small></p>
+        <p class="copyright"><small>© The authors, 2012. All rights reserved.</small></p>
 
         <hr/>
 
         <h2>Abstract</h2>
 
         <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="descriptive/description"/>
+        <xsl:apply-templates select="descriptive/Code"/>
 
         <h2>Table of Contents</h2>
         <ul class="toc">
@@ -124,8 +126,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
         <xsl:call-template name="summary"/>
         
         <h2 id="intro">Introduction</h2>
-        <xsl:apply-templates select="descriptive/description"/>
 
+        <xsl:apply-templates select="descriptive/description"/>
         <xsl:apply-templates select="descriptive/Code"/>
 
         <xsl:if test="descriptive/def-api-feature-set">
@@ -288,6 +290,14 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </dl>
             </div>
         </xsl:if>
+        <xsl:if test="ExtendedAttributeList/ExtendedAttribute/descriptive">
+            <div class="constructors">
+                <h4>Constructors</h4>
+                <dl>
+                  <xsl:apply-templates select="ExtendedAttributeList/ExtendedAttribute"/>
+                </dl>
+            </div>
+        </xsl:if>
         <xsl:if test="Attribute/descriptive">
             <div class="attributes">
                 <h4>Attributes</h4>
@@ -312,11 +322,10 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Dictionary.-->
 <xsl:template match="Dictionary[descriptive]">
     <xsl:variable name="name" select="@name"/>
-    <div class="interface" id="{@id}">
+    <div class="dictionary" id="{@id}">
         <h3><code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
-        <xsl:apply-templates select="../Implements[@name2=$name]/webidl"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="descriptive/Code"/>
         <xsl:apply-templates select="InterfaceInheritance"/>
@@ -390,47 +399,72 @@ XSLT stylesheet to convert widlprocxml into html documentation.
   </dd>
 </xsl:template>
 
-<!--Operation-->
-<xsl:template match="Operation">
-    <dt class="method" id="{concat(@name,generate-id(.))}">
-        <code><xsl:value-of select="@name"/></code>
+<!--ExtendedAttribute name==Constructor || name==NamedConstructor-->
+<xsl:template match="ExtendedAttributeList/ExtendedAttribute">
+    <dt class="constructor" id="{concat(@name,generate-id(.))}">
+        <code>
+            <xsl:value-of select="../../@name"/>
+             <xsl:text>(</xsl:text>
+            <xsl:apply-templates select="ArgumentList">
+                <xsl:with-param name="nodesc" select="1"/>
+            </xsl:apply-templates>
+            <xsl:text>);</xsl:text>
+        </code>
     </dt>
     <dd>
         <xsl:apply-templates select="descriptive/brief"/>
-        <div class="synopsis">
-            <h6>Signature</h6>
-            <pre>
-                <xsl:if test="@stringifier">
-                    <xsl:value-of select="concat(@stringifier, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@omittable">
-                    <xsl:value-of select="concat(@omittable, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@getter">
-                    <xsl:value-of select="concat(@getter, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@setter">
-                    <xsl:value-of select="concat(@setter, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@creator">
-                    <xsl:value-of select="concat(@creator, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@deleter">
-                    <xsl:value-of select="concat(@deleter, ' ')"/>
-                </xsl:if>
-                <xsl:if test="@caller">
-                    <xsl:value-of select="concat(@caller, ' ')"/>
-                </xsl:if>
-                <xsl:apply-templates select="Type"/>
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="@name"/>
-                <xsl:text>(</xsl:text>
-                <xsl:apply-templates select="ArgumentList">
-                    <xsl:with-param name="nodesc" select="1"/>
-                </xsl:apply-templates>
-                <xsl:text>);
-</xsl:text></pre>
-        </div>
+        <xsl:apply-templates select="descriptive"/>
+        <xsl:apply-templates select="ArgumentList"/>
+        <xsl:apply-templates select="Raises"/>
+        <xsl:if test="descriptive/api-feature">
+            <div class="api-features">
+                <h6>API features</h6>
+                <dl>
+                    <xsl:apply-templates select="descriptive/api-feature"/>
+                </dl>
+            </div>
+        </xsl:if>
+        <xsl:apply-templates select="descriptive/Code"/>
+    </dd>
+</xsl:template>
+
+<!--Operation-->
+<xsl:template match="Operation">
+    <dt class="method" id="{concat(@name,generate-id(.))}">
+        <code>
+            <xsl:if test="@stringifier">
+                <xsl:value-of select="concat(@stringifier, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@omittable">
+                <xsl:value-of select="concat(@omittable, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@getter">
+                <xsl:value-of select="concat(@getter, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@setter">
+                <xsl:value-of select="concat(@setter, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@creator">
+            	<xsl:value-of select="concat(@creator, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@deleter">
+                <xsl:value-of select="concat(@deleter, ' ')"/>
+            </xsl:if>
+            <xsl:if test="@caller">
+                <xsl:value-of select="concat(@caller, ' ')"/>
+            </xsl:if>
+            <xsl:apply-templates select="Type"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>(</xsl:text>
+            <xsl:apply-templates select="ArgumentList">
+                <xsl:with-param name="nodesc" select="1"/>
+            </xsl:apply-templates>
+            <xsl:text>);</xsl:text>
+        </code>
+    </dt>
+    <dd>
+        <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="ArgumentList"/>
         <xsl:if test="Type/descriptive">
@@ -455,7 +489,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Callback-->
 <xsl:template match="Callback">
     <xsl:variable name="name" select="@name"/>
-    <div class="interface" id="{@id}">
+    <div class="callback" id="{@id}">
         <h3><code><xsl:value-of select="@name"/></code></h3>
 
 	    <dd>
@@ -583,7 +617,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Enum.-->
 <xsl:template match="Enum[descriptive]">
     <xsl:variable name="name" select="@name"/>
-    <div class="interface" id="{@id}">
+    <div class="enum" id="{@id}">
         <h3><code><xsl:value-of select="@name"/></code></h3>
         <xsl:apply-templates select="descriptive/brief"/>
         <xsl:apply-templates select="webidl"/>
