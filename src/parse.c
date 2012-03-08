@@ -1082,6 +1082,7 @@ parseenum(struct tok *tok, struct node *eal)
       if (tok->type == TOK_STRING) {
 	const char *start = tok->prestart;
 	struct node *node2 = newelement("EnumValue");
+	setcommentnode(node2);
 	char *s;
 	s = memalloc(tok->len + 1);
 	memcpy(s, tok->start, tok->len);
