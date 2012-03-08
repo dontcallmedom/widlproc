@@ -507,7 +507,10 @@ static struct node *
 parseextendedattribute(struct tok *tok)
 {
     struct node *node = newelement("ExtendedAttribute");
-    addnode(node, newattr("name", setidentifier(tok)));
+    char *attrname = setidentifier(tok);
+    addnode(node, newattr("name", attrname));
+    if(!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor"))
+	    setcommentnode(node);
     lexnocomment();
     if (tok->type == '=') {
         lexnocomment();
