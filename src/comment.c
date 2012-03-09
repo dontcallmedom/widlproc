@@ -1217,6 +1217,7 @@ static const char *
 dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
          const char *filename, unsigned int linenum, const char *cmdname)
 {
+	if(iswhitespace(*p)) ++p;
     *pcnode = startpara(*pcnode, &code_funcs);
     (*pcnode)->filename = filename;
     (*pcnode)->linenum = linenum; /* for reporting mismatched \code error */
@@ -1343,6 +1344,8 @@ dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
 	memcpy(&newattrtext[offset], word, wordlen);
 	strcpy(&newattrtext[offset + wordlen], "\"");
 	parent->attrtext = newattrtext;
+	/* skip delimiter because it won't be done otherwise */
+	if(incode && iswhitespace(*p)) ++p;
     return p;
 }
 
