@@ -29,6 +29,7 @@ struct cnode {
     struct cnode *children;
     struct cnode *parent;
     const struct cnodefuncs *funcs;
+    const char *attrtext;
     const char *filename;
     unsigned int linenum;
 };
@@ -568,7 +569,10 @@ static void
 code_output(struct cnode *cnode, unsigned int indent)
 {
     /* Note capitalization to differentiate it from HTML code element. */
-    printf("%*s<Code>", indent, "");
+    if(cnode->attrtext)
+	    printf("%*s<Code %s>", indent, "", cnode->attrtext);
+	else
+	    printf("%*s<Code>", indent, "");
     outputchildren(cnode, indent, 1);
     printf("</Code>\n");
 }
@@ -1175,7 +1179,7 @@ parseword(const char **pp)
  */
 static const char *
 dox_b(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-      const char *filename, unsigned int linenum)
+      const char *filename, unsigned int linenum, const char *cmdname)
 {
     struct cnode *cnode = *pcnode;
     const char *word = parseword(&p);
@@ -1197,7 +1201,7 @@ dox_b(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_n(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-      const char *filename, unsigned int linenum)
+      const char *filename, unsigned int linenum, const char *cmdname)
 {
     struct cnode *cnode = *pcnode;
     cnode = starthtmlcnode(cnode, HTMLELDESC_BR, 0, 0, filename, linenum);
@@ -1211,7 +1215,7 @@ dox_n(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-         const char *filename, unsigned int linenum)
+         const char *filename, unsigned int linenum, const char *cmdname)
 {
     *pcnode = startpara(*pcnode, &code_funcs);
     (*pcnode)->filename = filename;
@@ -1225,7 +1229,7 @@ dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_endcode(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-            const char *filename, unsigned int linenum)
+            const char *filename, unsigned int linenum, const char *cmdname)
 {
     incode = 0;
     *pcnode = endspecificcnode(*pcnode, &code_funcs, filename, linenum);
@@ -1237,7 +1241,7 @@ dox_endcode(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-          const char *filename, unsigned int linenum)
+          const char *filename, unsigned int linenum, const char *cmdname)
 {
     struct cnode *cnode = *pcnode;
     unsigned int inout = 0;
@@ -1281,7 +1285,7 @@ dox_param(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_para(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-         const char *filename, unsigned int linenum)
+         const char *filename, unsigned int linenum, const char *cmdname)
 {
     *pcnode = startpara(*pcnode, type);
     return p;
@@ -1292,7 +1296,7 @@ dox_para(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
  */
 static const char *
 dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
-          const char *filename, unsigned int linenum)
+          const char *filename, unsigned int linenum, const char *cmdname)
 {
     struct cnode *cnode = *pcnode;
     const char *word;
@@ -1312,10 +1316,41 @@ dox_throw(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
 }
 
 /***********************************************************************
+ * Doxygen command handler : \lang
+ */
+static const char *
+dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
+          const char *filename, unsigned int linenum, const char *cmdname)
+{
+    struct cnode *cnode = *pcnode, *parent = cnode->parent;
+    const char *word;
+    int len, wordlen, offset = 0;
+    /* Get the next word as the attribute value. */
+    word = parseword(&p);
+    if (!word)
+        locerrorexit(filename, linenum, "expected word after \\%s", cmdname);
+
+	len = strlen(cmdname) + (wordlen = p-word) + 4; /* p="word"\0 */
+	if(parent->attrtext)
+	  len += (offset = strlen(parent->attrtext)) + 1; /* add space for space */
+	char *newattrtext = memalloc(len);
+	if(offset) {
+		memcpy(newattrtext, parent->attrtext, offset);
+		newattrtext[offset++] = ' ';
+		memfree(((void*)cnode->attrtext));
+	}
+	offset += sprintf(&newattrtext[offset], "%s=\"", cmdname);
+	memcpy(&newattrtext[offset], word, wordlen);
+	strcpy(&newattrtext[offset + wordlen], "\"");
+	parent->attrtext = newattrtext;
+    return p;
+}
+
+/***********************************************************************
  * commands : table of Doxygen commands
  */
 struct command {
-    const char *(*func)(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, const char *filename, unsigned int linenum);
+    const char *(*func)(const char *p, struct cnode **pcnode, const struct cnodefuncs *type, const char *filename, unsigned int linenum, const char *cmdname);
     const struct cnodefuncs *type;
     unsigned int namelen;
     const char *name;
@@ -1330,6 +1365,7 @@ static const struct command commands[] = {
     { &dox_para, &brief_funcs, 5, "brief" },
     { &dox_code, 0, 4, "code" },
     { &dox_throw, &def_device_cap_funcs, 14, "def-device-cap" },
+    { &dox_attr, 0, 4, "lang" },
     { &dox_endcode, 0, 7, "endcode" },
     { &dox_n, 0, 1, "n" },
     { &dox_param, &param_funcs, 5, "param" },
@@ -1625,7 +1661,7 @@ checkforlineofstars:
                     command++;
                 }
                 p = (*command->func)(p, &cnode, command->type,
-                        comment->filename, linenum);
+                        comment->filename, linenum, command->name);
                 ch = *p;
                 starttext = p;
             }
