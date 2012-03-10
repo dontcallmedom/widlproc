@@ -1217,7 +1217,6 @@ static const char *
 dox_code(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
          const char *filename, unsigned int linenum, const char *cmdname)
 {
-	if(iswhitespace(*p)) ++p;
     *pcnode = startpara(*pcnode, &code_funcs);
     (*pcnode)->filename = filename;
     (*pcnode)->linenum = linenum; /* for reporting mismatched \code error */
@@ -1323,7 +1322,7 @@ static const char *
 dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
           const char *filename, unsigned int linenum, const char *cmdname)
 {
-    struct cnode *cnode = *pcnode, *parent = cnode->parent;
+  struct cnode *cnode = *pcnode;
     const char *word;
     int len, wordlen, offset = 0;
     /* Get the next word as the attribute value. */
@@ -1332,18 +1331,18 @@ dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
         locerrorexit(filename, linenum, "expected word after \\%s", cmdname);
 
 	len = strlen(cmdname) + (wordlen = p-word) + 4; /* p="word"\0 */
-	if(parent->attrtext)
-	  len += (offset = strlen(parent->attrtext)) + 1; /* add space for space */
-	char *newattrtext = memalloc(len);
+	if(cnode->attrtext)
+	  len += (offset = strlen(cnode->attrtext)) + 1; /* add space for space */
+	char *attrtext = memalloc(len);
 	if(offset) {
-		memcpy(newattrtext, parent->attrtext, offset);
-		newattrtext[offset++] = ' ';
+		memcpy(attrtext, cnode->attrtext, offset);
+		attrtext[offset++] = ' ';
 		memfree(((void*)cnode->attrtext));
 	}
-	offset += sprintf(&newattrtext[offset], "%s=\"", cmdname);
-	memcpy(&newattrtext[offset], word, wordlen);
-	strcpy(&newattrtext[offset + wordlen], "\"");
-	parent->attrtext = newattrtext;
+	offset += sprintf(&attrtext[offset], "%s=\"", cmdname);
+	memcpy(&attrtext[offset], word, wordlen);
+	strcpy(&attrtext[offset + wordlen], "\"");
+	cnode->attrtext = attrtext;
 	/* skip delimiter because it won't be done otherwise */
 	if(incode && iswhitespace(*p)) ++p;
     return p;
