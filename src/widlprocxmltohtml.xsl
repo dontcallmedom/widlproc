@@ -424,6 +424,7 @@ XSLT stylesheet to convert widlprocxml into html documentation.
                 </dl>
             </div>
         </xsl:if>
+        <xsl:apply-templates select="webidl"/>
         <xsl:apply-templates select="descriptive/Code"/>
     </dd>
 </xsl:template>
@@ -465,6 +466,8 @@ XSLT stylesheet to convert widlprocxml into html documentation.
     </dt>
     <dd>
         <xsl:apply-templates select="descriptive/brief"/>
+        <xsl:apply-templates select="webidl"/>
+        <xsl:apply-templates select="descriptive/Code"/>
         <xsl:apply-templates select="descriptive"/>
         <xsl:apply-templates select="ArgumentList"/>
         <xsl:if test="Type/descriptive">
@@ -690,13 +693,21 @@ XSLT stylesheet to convert widlprocxml into html documentation.
 <!--Code-->
 <xsl:template match="Code">
     <div class="example">
-        <h5>Code example</h5>
+    	<xsl:choose>
+        	<xsl:when test="@lang">
+	       		<h5><xsl:value-of select="@lang"/></h5>
+        	</xsl:when>
+        	<xsl:otherwise>
+	       		<h5>Code example</h5>
+        	</xsl:otherwise>
+    	</xsl:choose>
         <pre class="examplecode"><xsl:apply-templates/></pre>
     </div>
 </xsl:template>
 
 <!--webidl : literal Web IDL from input-->
 <xsl:template match="webidl">
+    <h5>WebIDL</h5>
     <pre class="webidl"><xsl:apply-templates/></pre>
 </xsl:template>
 
