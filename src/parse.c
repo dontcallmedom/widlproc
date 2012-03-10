@@ -509,8 +509,12 @@ parseextendedattribute(struct tok *tok)
     struct node *node = newelement("ExtendedAttribute");
     char *attrname = setidentifier(tok);
     addnode(node, newattr("name", attrname));
-    if(!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor"))
+    const char *start = tok->prestart;
+    node->wsstart = start;
+    node->end = tok->start + tok->len;
+    if(!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor")) {
 	    setcommentnode(node);
+	}
     lexnocomment();
     if (tok->type == '=') {
         lexnocomment();
@@ -519,6 +523,7 @@ parseextendedattribute(struct tok *tok)
     if (tok->type == '(') {
         lexnocomment();
         addnode(node, parseargumentlist(tok));
+	    node->end = tok->start + tok->len;
         eat(tok, ')');
     }
     return node;
