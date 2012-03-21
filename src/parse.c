@@ -337,6 +337,16 @@ parseprimitiveorstringtype(struct tok *tok)
         default:
             tokerrorexit(tok, "expected type");
             break;
+	case TOK_unrestricted:
+	  lexnocomment();
+	  if (tok->type == TOK_float) {
+            addnode(node, newattr("type", "unrestricted float"));
+	  } else if (tok->type == TOK_double) {
+            addnode(node, newattr("type", "unrestricted double"));
+	  } else {
+            tokerrorexit(tok, "expected float or double after unrestricted");
+	  }
+	  break;
         case TOK_boolean:
             addnode(node, newattr("type", "boolean"));
             break;
@@ -758,9 +768,12 @@ parseconstexpr (struct tok *tok, struct node *node) {
   switch(tok->type) {
   case TOK_true:
   case TOK_false:
+  case TOK_minusinfinity:
   case TOK_INTEGER:
   case TOK_FLOAT:
   case TOK_null:
+  case TOK_infinity:
+  case TOK_NaN:
     break;
   default:
     tokerrorexit(tok, "expected constant value");
@@ -853,6 +866,7 @@ parseconst(struct tok *tok, struct node *eal)
     case TOK_float:
     case TOK_double:
     case TOK_unsigned:
+    case TOK_unrestricted:
     case TOK_short:
     case TOK_long:
         addnode(node, parsetype(tok));

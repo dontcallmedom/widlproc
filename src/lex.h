@@ -35,10 +35,13 @@
     "float\0" \
     "getter\0" \
     "implements\0" \
+    "Infinity\0" \
+    "-Infinity\0" \
     "inherit\0" \
     "interface\0" \
     "legacycaller\0" \
     "long\0" \
+    "NaN\0" \
     "null\0" \
     "octet\0" \
     "optional\0" \
@@ -51,6 +54,7 @@
     "static\0" \
     "stringifier\0" \
     "typedef\0" \
+    "unrestricted\0" \
     "unsigned\0" \
     "void\0"
 
@@ -80,10 +84,13 @@ enum toktype {
     TOK_float,
     TOK_getter,
     TOK_implements,
+    TOK_infinity,
+    TOK_minusinfinity,
     TOK_inherit,
     TOK_interface,
     TOK_legacycaller,
     TOK_long,
+    TOK_NaN,
     TOK_null,
     TOK_octet,
     TOK_optional,
@@ -96,6 +103,7 @@ enum toktype {
     TOK_static,
     TOK_stringifier,
     TOK_typedef,
+    TOK_unrestricted,
     TOK_unsigned,
     TOK_void,
 };

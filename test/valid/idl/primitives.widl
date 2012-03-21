@@ -10,4 +10,6 @@ interface Primitives {
   attribute  unsigned long long bigbigpositive;
   attribute float real;
   attribute double bigreal; 
+  attribute unrestricted float realwithinfinity;
+  attribute unrestricted double bigrealwithinfinity; 
 };

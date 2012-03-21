@@ -182,8 +182,22 @@ lexnumber(const char *start)
         enum { STATE_START, STATE_INT, STATE_HEX, STATE_OCTAL, STATE_BADOCTAL,
                 STATE_DP, STATE_EXPSTART, STATE_EXPSIGN, STATE_EXP
                 } state = STATE_START;
-        if (ch == '-')
+        if (ch == '-') {
             ch = *++p;
+	    if (ch == 'I') { // starts of Infinity
+	      char * infinity = "-Infinity";
+              unsigned int len = strlen(infinity);
+	      if (!memcmp(start, infinity, len)) {
+                tok.type = TOK_minusinfinity;
+		tok.start = start;
+		tok.len = len;
+		tok.filename = file->filename;
+		tok.linenum = file->linenum;
+		file->pos = start + len;
+		return &tok;
+	      }
+	    }
+	}
         if (ch == '0') {
             state = STATE_OCTAL;
             ch = *++p;
@@ -192,6 +206,7 @@ lexnumber(const char *start)
                 ch = *++p;
             }
         }
+
         for (;;) {
             if ((unsigned)(ch - '0') >= 8) {
                 if ((ch & -2) == '8') {
