@@ -7,7 +7,9 @@ interface Query {
   any lookupEntry(unsigned long key);
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="NoInterfaceObject"/>
+      <ExtendedAttribute name="NoInterfaceObject">
+        <webidl>NoInterfaceObject</webidl>
+      </ExtendedAttribute>
     </ExtendedAttributeList>
     <Operation name="lookupEntry" id="::Query::lookupEntry">
       <webidl>  any lookupEntry(unsigned long key);</webidl>

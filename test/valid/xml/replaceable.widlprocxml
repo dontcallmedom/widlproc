@@ -9,7 +9,9 @@
     <Attribute readonly="readonly" name="value" id="::Counter::value">
       <webidl>  [Replaceable] readonly attribute unsigned long value;</webidl>
       <ExtendedAttributeList>
-        <ExtendedAttribute name="Replaceable"/>
+        <ExtendedAttribute name="Replaceable">
+          <webidl>Replaceable</webidl>
+        </ExtendedAttribute>
       </ExtendedAttributeList>
       <Type type="unsigned long"/>
     </Attribute>

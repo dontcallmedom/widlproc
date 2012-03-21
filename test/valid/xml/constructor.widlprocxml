@@ -11,8 +11,11 @@ interface Circle {
   readonly attribute float circumference;
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="Constructor"/>
       <ExtendedAttribute name="Constructor">
+        <webidl>Constructor</webidl>
+      </ExtendedAttribute>
+      <ExtendedAttribute name="Constructor">
+        <webidl> Constructor(float radius)</webidl>
         <ArgumentList>
           <Argument name="radius">
             <Type type="float"/>

@@ -11,7 +11,9 @@ interface Student {
   stringifier DOMString ();
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="Constructor"/>
+      <ExtendedAttribute name="Constructor">
+        <webidl>Constructor</webidl>
+      </ExtendedAttribute>
     </ExtendedAttributeList>
     <Attribute name="id" id="::Student::id">
       <webidl>  attribute unsigned long id;</webidl>

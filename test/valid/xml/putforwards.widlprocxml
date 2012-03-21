@@ -9,7 +9,9 @@
     <Attribute readonly="readonly" name="name" id="::Person::name">
       <webidl>  [PutForwards=full] readonly attribute <ref>Name</ref> name;</webidl>
       <ExtendedAttributeList>
-        <ExtendedAttribute name="PutForwards" value="full"/>
+        <ExtendedAttribute name="PutForwards" value="full">
+          <webidl>PutForwards</webidl>
+        </ExtendedAttribute>
       </ExtendedAttributeList>
       <Type name="Name"/>
     </Attribute>

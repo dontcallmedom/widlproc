@@ -82,7 +82,9 @@
     <webidl>  typedef [Clamp] octet value;</webidl>
     <Type type="octet">
       <ExtendedAttributeList>
-        <ExtendedAttribute name="Clamp"/>
+        <ExtendedAttribute name="Clamp">
+          <webidl>Clamp</webidl>
+        </ExtendedAttribute>
       </ExtendedAttributeList>
     </Type>
   </Typedef>

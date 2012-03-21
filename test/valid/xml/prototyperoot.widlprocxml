@@ -7,7 +7,9 @@ interface Node {
   readonly attribute unsigned short nodeType;
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="PrototypeRoot"/>
+      <ExtendedAttribute name="PrototypeRoot">
+        <webidl>PrototypeRoot</webidl>
+      </ExtendedAttribute>
     </ExtendedAttributeList>
     <Attribute readonly="readonly" name="nodeType" id="::Node::nodeType">
       <webidl>  readonly attribute unsigned short nodeType;</webidl>

@@ -14,6 +14,8 @@
   attribute  unsigned long long bigbigpositive;
   attribute float real;
   attribute double bigreal; 
+  attribute unrestricted float realwithinfinity;
+  attribute unrestricted double bigrealwithinfinity; 
 };</webidl>
     <Attribute name="truth" id="::Primitives::truth">
       <webidl>  attribute boolean truth;</webidl>
@@ -58,6 +60,14 @@
     <Attribute name="bigreal" id="::Primitives::bigreal">
       <webidl>  attribute double bigreal;</webidl>
       <Type type="double"/>
+    </Attribute>
+    <Attribute name="realwithinfinity" id="::Primitives::realwithinfinity">
+      <webidl>  attribute unrestricted float realwithinfinity;</webidl>
+      <Type type="unrestricted float"/>
+    </Attribute>
+    <Attribute name="bigrealwithinfinity" id="::Primitives::bigrealwithinfinity">
+      <webidl>  attribute unrestricted double bigrealwithinfinity;</webidl>
+      <Type type="unrestricted double"/>
     </Attribute>
   </Interface>
 </Definitions>

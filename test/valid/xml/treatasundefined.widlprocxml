@@ -22,7 +22,9 @@
       <ArgumentList>
         <Argument name="breedName">
           <ExtendedAttributeList>
-            <ExtendedAttribute name="TreatUndefinedAs" value="EmptyString"/>
+            <ExtendedAttribute name="TreatUndefinedAs" value="EmptyString">
+              <webidl>TreatUndefinedAs</webidl>
+            </ExtendedAttribute>
           </ExtendedAttributeList>
           <Type type="DOMString"/>
         </Argument>

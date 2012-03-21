@@ -27,7 +27,9 @@
       <ArgumentList>
         <Argument name="s">
           <ExtendedAttributeList>
-            <ExtendedAttribute name="AllowAny"/>
+            <ExtendedAttribute name="AllowAny">
+              <webidl>AllowAny</webidl>
+            </ExtendedAttribute>
           </ExtendedAttributeList>
           <Type type="DOMString"/>
         </Argument>

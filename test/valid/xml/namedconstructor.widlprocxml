@@ -7,8 +7,11 @@
 interface HTMLAudioElement : <ref>HTMLMediaElement</ref> {
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="NamedConstructor" value="Audio"/>
       <ExtendedAttribute name="NamedConstructor" value="Audio">
+        <webidl>NamedConstructor</webidl>
+      </ExtendedAttribute>
+      <ExtendedAttribute name="NamedConstructor" value="Audio">
+        <webidl> NamedConstructor=Audio(DOMString src)</webidl>
         <ArgumentList>
           <Argument name="src">
             <Type type="DOMString"/>

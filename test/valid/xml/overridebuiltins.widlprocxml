@@ -8,7 +8,9 @@ interface StringMap2 {
   getter DOMString lookup(DOMString key);
 };</webidl>
     <ExtendedAttributeList>
-      <ExtendedAttribute name="OverrideBuiltins"/>
+      <ExtendedAttribute name="OverrideBuiltins">
+        <webidl>OverrideBuiltins</webidl>
+      </ExtendedAttribute>
     </ExtendedAttributeList>
     <Attribute readonly="readonly" name="length" id="::StringMap2::length">
       <webidl>  readonly attribute unsigned long length;</webidl>
