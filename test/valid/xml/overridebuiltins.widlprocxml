@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>[OverrideBuiltins]
+interface StringMap2 {
+  readonly attribute unsigned long length;
+  getter DOMString lookup(DOMString key);
+};</webidl>
   <Interface name="StringMap2" id="::StringMap2">
     <webidl>[OverrideBuiltins]
 interface StringMap2 {

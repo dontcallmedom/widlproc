@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface A {
+};
+interface B {
+};
+interface C {
+  void f(<ref>A</ref>? x);
+  void f(<ref>B</ref>? x);
+
+};</webidl>
   <Interface name="A" id="::A">
     <webidl>interface A {
 };</webidl>

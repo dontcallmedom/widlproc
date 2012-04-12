@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface ColorCreator {
+  object createColor(float v1, float v2, float v3, optional float alpha);
+};</webidl>
   <Interface name="ColorCreator" id="::ColorCreator">
     <webidl>interface ColorCreator {
   object createColor(float v1, float v2, float v3, optional float alpha);

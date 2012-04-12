@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>dictionary PaintOptions {
+  DOMString? fillPattern = &quot;black&quot;;
+  DOMString? strokePattern = null;
+  <ref>Point</ref> position;
+};
+
+dictionary WetPaintOptions : <ref>PaintOptions</ref> {
+  float hydrometry;
+};</webidl>
   <Dictionary name="PaintOptions" id="::PaintOptions">
     <webidl>dictionary PaintOptions {
   DOMString? fillPattern = &quot;black&quot;;

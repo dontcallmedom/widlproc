@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Person {
+  [PutForwards=full] readonly attribute <ref>Name</ref> name;
+  attribute unsigned short age;
+};</webidl>
   <Interface name="Person" id="::Person">
     <webidl>interface Person {
   [PutForwards=full] readonly attribute <ref>Name</ref> name;

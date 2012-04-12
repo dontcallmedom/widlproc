@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface OrderedMap {
+  readonly attribute unsigned long size;
+
+  getter any getByIndex(unsigned long index);
+  setter void setByIndex(unsigned long index, any value);
+  deleter void removeByIndex(unsigned long index);
+
+  getter any get(DOMString name);
+  setter creator void set(DOMString name, any value);
+  deleter void remove(DOMString name);
+};</webidl>
   <Interface name="OrderedMap" id="::OrderedMap">
     <webidl>interface OrderedMap {
   readonly attribute unsigned long size;

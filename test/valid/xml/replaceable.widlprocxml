@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Counter {
+  [Replaceable] readonly attribute unsigned long value;
+  void increment();
+};</webidl>
   <Interface name="Counter" id="::Counter">
     <webidl>interface Counter {
   [Replaceable] readonly attribute unsigned long value;

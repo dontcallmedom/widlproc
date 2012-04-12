@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface NumberQuadrupler {
+  legacycaller float compute(float x);
+};</webidl>
   <Interface name="NumberQuadrupler" id="::NumberQuadrupler">
     <webidl>interface NumberQuadrupler {
   legacycaller float compute(float x);

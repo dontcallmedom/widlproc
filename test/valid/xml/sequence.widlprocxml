@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Canvas {
+  void drawPolygon(sequence&lt;float> coordinates);
+  sequence&lt;float> getInflectionPoints();
+};</webidl>
   <Interface name="Canvas" id="::Canvas">
     <webidl>interface Canvas {
   void drawPolygon(sequence&lt;float> coordinates);

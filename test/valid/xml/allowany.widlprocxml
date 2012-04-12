@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface B {
+  void g();
+  void g(<ref>B</ref> b);
+  void g([AllowAny] DOMString s);
+};</webidl>
   <Interface name="B" id="::B">
     <webidl>interface B {
   void g();

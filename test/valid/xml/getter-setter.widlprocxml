@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Dictionary {
+  readonly attribute unsigned long propertyCount;
+
+  getter float (DOMString propertyName);
+  setter void (DOMString propertyName, float propertyValue);
+};</webidl>
   <Interface name="Dictionary" id="::Dictionary">
     <webidl>interface Dictionary {
   readonly attribute unsigned long propertyCount;

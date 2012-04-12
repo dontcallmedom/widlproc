@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>  typedef float number;
+
+  exception FrameworkException {
+
+    const long ERR_NOT_FOUND = 1;
+
+    long code;
+  };
+
+  interface System {
+
+    object createObject(DOMString _interface);
+
+    getter DOMString (DOMString keyName);
+  };
+
+    
+    interface TextField {
+
+      attribute boolean _const;
+
+      attribute DOMString? _value;
+    };
+
+interface Foo {
+ void op(object interface);
+};</webidl>
   <Typedef name="number" id="::number">
     <webidl>  typedef float number;</webidl>
     <Type type="float"/>

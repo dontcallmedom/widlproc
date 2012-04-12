@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>      interface Point {
+        attribute float x;
+        attribute float y;
+      };
+
+      typedef sequence&lt;<ref>Point</ref>> PointSequence;
+
+      interface Rect {
+        attribute <ref>Point</ref> topleft;
+        attribute <ref>Point</ref> bottomright;
+      };
+
+  typedef <ref>gfx::geom::geom2d::Point</ref> Point;
+  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;
+  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;
+
+  interface Widget {
+
+    readonly attribute <ref>Rect</ref> bounds;
+
+    boolean pointWithinBounds(<ref>Point</ref> p);
+    boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
+  };
+
+  typedef [Clamp] octet value;</webidl>
   <Interface name="Point" id="::Point">
     <webidl>      interface Point {
         attribute float x;

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Union {
+ attribute (float or (<ref>Date</ref> or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
+};</webidl>
   <Interface name="Union" id="::Union">
     <webidl>interface Union {
  attribute (float or (<ref>Date</ref> or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;

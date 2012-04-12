@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Dimensions {
+  attribute unsigned long width;
+  attribute unsigned long height;
+};
+
+exception NoPointerDevice { };
+
+interface Button {
+
+  boolean isMouseOver();
+
+  void setDimensions(<ref>Dimensions</ref> size);
+  void setDimensions(unsigned long width, unsigned long height);
+};</webidl>
   <Interface name="Dimensions" id="::Dimensions">
     <webidl>interface Dimensions {
   attribute unsigned long width;

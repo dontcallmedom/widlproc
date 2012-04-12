@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>callback AsyncOperationCallback = void (DOMString status);
+
+callback interface EventHandler {
+  void eventOccurred(DOMString details);
+};</webidl>
   <Callback name="AsyncOperationCallback" id="::AsyncOperationCallback">
     <webidl>callback AsyncOperationCallback = void (DOMString status);</webidl>
     <Type type="void"/>

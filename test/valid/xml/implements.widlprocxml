@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>  interface Node {
+    readonly attribute unsigned short nodeType;
+  };
+
+  interface EventTarget {
+    void addEventListener(DOMString type,
+                          <ref>EventListener</ref> listener,
+                          boolean useCapture);
+  };
+
+  <ref>dom::Node</ref> implements <ref>EventTarget</ref>;</webidl>
   <Interface name="Node" id="::Node">
     <webidl>  interface Node {
     readonly attribute unsigned short nodeType;

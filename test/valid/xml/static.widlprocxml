@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Point {  };
+
+interface Circle {
+  attribute float cx;
+  attribute float cy;
+  attribute float radius;
+
+  static <ref>Point</ref> triangulate(<ref>Circle</ref> c1, <ref>Circle</ref> c2, <ref>Circle</ref> c3);
+};</webidl>
   <Interface name="Point" id="::Point">
     <webidl>interface Point {  };</webidl>
   </Interface>

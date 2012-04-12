@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Foo {
+  attribute DOMString bar;
+};
+
+partial interface Foo {
+  attribute DOMString quux;
+};</webidl>
   <Interface name="Foo" id="::Foo">
     <webidl>interface Foo {
   attribute DOMString bar;

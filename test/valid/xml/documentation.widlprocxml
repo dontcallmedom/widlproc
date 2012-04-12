@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Documentation {};</webidl>
   <Interface name="Documentation" id="::Documentation">
     <webidl>interface Documentation {};</webidl>
     <descriptive>

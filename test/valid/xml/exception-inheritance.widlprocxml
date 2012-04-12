@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>  exception DOMException {
+    unsigned short code;
+  };
+
+  exception HierarchyRequestError : <ref>DOMException</ref> { };
+  exception NoModificationAllowedError : <ref>DOMException</ref> { };</webidl>
   <Exception name="DOMException" id="::DOMException">
     <webidl>  exception DOMException {
     unsigned short code;

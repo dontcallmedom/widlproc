@@ -1154,6 +1154,7 @@ parseenum(struct tok *tok, struct node *eal)
 static void
 parsedefinitions(struct tok *tok, struct node *parent)
 {
+    parent->wsstart = tok->prestart;
     for (;;) {
         const char *wsstart = tok->prestart;
         struct node *eal = parseextendedattributelist(tok);
@@ -1204,6 +1205,7 @@ parsedefinitions(struct tok *tok, struct node *parent)
         eat(tok, ';');
         addnode(parent, node);
         setid(node);
+        parent->end = node->end;
     }
 }
 

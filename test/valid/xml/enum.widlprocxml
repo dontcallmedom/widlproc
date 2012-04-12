@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; };
+
+interface Meal {
+  attribute <ref>MealType</ref> type;
+  attribute float size;     
+
+  void initialize(<ref>MealType</ref> type, float size);
+};</webidl>
   <Enum name="MealType" id="::MealType">
     <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; };</webidl>
     <EnumValue stringvalue="rice">

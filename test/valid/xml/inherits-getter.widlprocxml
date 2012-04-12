@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Animal {
+
+  readonly attribute DOMString name;
+};
+
+interface Person : <ref>Animal</ref> {
+
+  readonly attribute unsigned short age;
+
+  inherit attribute DOMString name;
+};</webidl>
   <Interface name="Animal" id="::Animal">
     <webidl>interface Animal {
 

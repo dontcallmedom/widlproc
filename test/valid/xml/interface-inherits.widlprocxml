@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Animal {
+  attribute DOMString name;
+};
+
+interface Human : <ref>Animal</ref> {
+  attribute <ref>Dog</ref> pet;
+};
+
+interface Dog : <ref>Animal</ref> {
+  attribute <ref>Human</ref> owner;
+};</webidl>
   <Interface name="Animal" id="::Animal">
     <webidl>interface Animal {
   attribute DOMString name;

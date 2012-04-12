@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface Cat {
+  attribute DOMString name;
+  attribute DOMString owner;
+
+  boolean isMemberOfBreed([TreatUndefinedAs=EmptyString] DOMString breedName);
+};</webidl>
   <Interface name="Cat" id="::Cat">
     <webidl>interface Cat {
   attribute DOMString name;

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
+  <webidl>interface A {
+};
+
+interface B {
+};
+
+interface C {
+  void f(<ref>A</ref> x);
+  void f(<ref>B</ref> x);
+};
+
+interface A {
+void f(DOMString a);
+void f([AllowAny] DOMString a, DOMString b, float... c);
+void f();
+void f(long a, DOMString b, optional DOMString c, float... d);
+};</webidl>
   <Interface name="A" id="::A">
     <webidl>interface A {
 };</webidl>
