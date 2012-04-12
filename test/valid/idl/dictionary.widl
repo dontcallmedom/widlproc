@@ -4,3 +4,8 @@ dictionary PaintOptions {
   DOMString? strokePattern = null;
   Point position;
 };
+
+partial dictionary A {
+  long h;
+  long d;
+};

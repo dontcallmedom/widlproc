@@ -974,7 +974,6 @@ parseexception(struct tok *tok, struct node *eal)
  *
  * Enter:   tok = next token, known to be TOK_interface
  *          eal = 0 else extended attribute list node
- *          partial = 0 else partial interface
  *
  * Return:  new node for the interface
  *          tok updated to the terminating ';'
@@ -1144,7 +1143,11 @@ parsedefinitions(struct tok *tok, struct node *parent)
         switch (tok->type) {
         case TOK_partial:
 	    eat(tok, TOK_partial);
-	    node = parseinterface(tok, eal);
+	    if (tok->type == TOK_dictionary) {
+	      node = parsedictionary(tok, eal);
+	    } else {
+	      node = parseinterface(tok, eal);
+	    }
 	    addnode(node, newattr("partial", "partial"));
             break;
         case TOK_interface:

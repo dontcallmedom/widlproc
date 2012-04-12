@@ -20,4 +20,18 @@
       <Type name="Point"/>
     </DictionaryMember>
   </Dictionary>
+  <Dictionary name="A" partial="partial" id="::A">
+    <webidl>partial dictionary A {
+  long h;
+  long d;
+};</webidl>
+    <DictionaryMember name="h" id="::A::h">
+      <webidl>  long h;</webidl>
+      <Type type="long"/>
+    </DictionaryMember>
+    <DictionaryMember name="d" id="::A::d">
+      <webidl>  long d;</webidl>
+      <Type type="long"/>
+    </DictionaryMember>
+  </Dictionary>
 </Definitions>

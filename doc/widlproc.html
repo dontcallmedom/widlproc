@@ -562,6 +562,8 @@ provides its documentation if any.
 The <em>id</em> attribute specifies the absolute scoped name of the dictionary.
 </p>
 
+<p>The <em>partial</em> attribute indicates that the definition of the interface complements an existing definition.</p>
+
 <p>
 The <em>DictionaryInheritance</em> element indicates that the dictionary
 inherits from other dictionary(s). Each <em>Name</em> in the
@@ -573,6 +575,7 @@ scoped name of the dictionary being inherited from.
 <pre class="dtd">
 &lt;!ELEMENT Dictionary (webidl, descriptive?, DictionaryInheritance?, DictionaryMember* ) >
 &lt;!ATTLIST Dictionary name CDATA #REQUIRED
+                    partial (partial) #IMPLIED
                     id CDATA #REQUIRED >
 
 &lt;!ELEMENT DictionaryInheritance (Name+) >
