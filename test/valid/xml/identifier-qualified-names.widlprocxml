@@ -63,4 +63,18 @@
       <Type type="DOMString" nullable="nullable"/>
     </Attribute>
   </Interface>
+  <Interface name="Foo" id="::Foo">
+    <webidl>interface Foo {
+ void op(object interface);
+};</webidl>
+    <Operation name="op" id="::Foo::op">
+      <webidl> void op(object interface);</webidl>
+      <Type type="void"/>
+      <ArgumentList>
+        <Argument name="interface">
+          <Type type="object"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
 </Definitions>

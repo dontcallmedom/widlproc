@@ -15,48 +15,49 @@
 #ifndef lex_h
 #define lex_h
 
+// starting from "attribute" are the list of names allowed as arguments identifier
 #define KEYWORDS \
     "DOMString\0" \
     "false\0" \
     "object\0" \
     "true\0" \
     "any\0" \
-    "attribute\0" \
     "boolean\0" \
     "byte\0" \
-    "callback\0" \
-    "const\0" \
-    "creator\0" \
-    "deleter\0" \
-    "dictionary\0" \
     "double\0" \
-    "enum\0" \
-    "exception\0" \
     "float\0" \
-    "getter\0" \
-    "implements\0" \
     "Infinity\0" \
     "-Infinity\0" \
-    "inherit\0" \
-    "interface\0" \
-    "legacycaller\0" \
     "long\0" \
     "NaN\0" \
     "null\0" \
     "octet\0" \
     "optional\0" \
     "or\0" \
-    "partial\0" \
     "readonly\0" \
     "sequence\0" \
-    "setter\0" \
     "short\0" \
+    "unsigned\0" \
+    "void\0" \
+    "attribute\0" \
+    "callback\0" \
+    "const\0" \
+    "creator\0" \
+    "deleter\0" \
+    "dictionary\0" \
+    "enum\0" \
+    "exception\0" \
+    "getter\0" \
+    "implements\0" \
+    "inherit\0" \
+    "interface\0" \
+    "legacycaller\0" \
+    "partial\0" \
+    "setter\0" \
     "static\0" \
     "stringifier\0" \
     "typedef\0" \
-    "unrestricted\0" \
-    "unsigned\0" \
-    "void\0"
+    "unrestricted\0"
 
 
 enum toktype {
@@ -70,42 +71,43 @@ enum toktype {
     TOK_object,
     TOK_true,
     TOK_any,
-    TOK_attribute,
     TOK_boolean,
     TOK_byte,
-    TOK_callback,
-    TOK_const,
-    TOK_creator,
-    TOK_deleter,
-    TOK_dictionary,
     TOK_double,
-    TOK_enum,
-    TOK_exception,
     TOK_float,
-    TOK_getter,
-    TOK_implements,
     TOK_infinity,
     TOK_minusinfinity,
-    TOK_inherit,
-    TOK_interface,
-    TOK_legacycaller,
     TOK_long,
     TOK_NaN,
     TOK_null,
     TOK_octet,
     TOK_optional,
     TOK_or,
-    TOK_partial,
     TOK_readonly,
     TOK_sequence,
-    TOK_setter,
     TOK_short,
+    TOK_unsigned,
+    TOK_void,
+    /* Below that line are keywords that are allowed as arguments names */
+    TOK_attribute,
+    TOK_callback,
+    TOK_const,
+    TOK_creator,
+    TOK_deleter,
+    TOK_dictionary,
+    TOK_enum,
+    TOK_exception,
+    TOK_getter,
+    TOK_implements,
+    TOK_inherit,
+    TOK_interface,
+    TOK_legacycaller,
+    TOK_partial,
+    TOK_setter,
     TOK_static,
     TOK_stringifier,
     TOK_typedef,
     TOK_unrestricted,
-    TOK_unsigned,
-    TOK_void,
 };
 
 struct tok {

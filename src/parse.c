@@ -123,6 +123,24 @@ setidentifier(struct tok *tok)
     return s;
 }
 
+/***********************************************************************
+ * setargumentname : allocate 0-terminated string for identifier token
+ *
+ * Enter:   tok = token, error given if not identifier
+ *
+ * Return:  allocated 0-terminated string
+ */
+static char *
+setargumentname(struct tok *tok)
+{
+    char *s;
+    if (tok->type != TOK_IDENTIFIER && tok->type < TOK_attribute)
+        tokerrorexit(tok, "expected argument name");
+    s = memprintf("%.*s", tok->len, tok->start);
+    return s;
+}
+
+
 /* Prototypes for funcs that have a forward reference. */
 static struct node *parsetype(struct tok *tok);
 static struct node *parseuniontype(struct tok *tok);
@@ -612,7 +630,7 @@ parseargument(struct tok *tok)
         addnode(node, newattr("ellipsis", "ellipsis"));
         lexnocomment();
     }
-    addnode(node, newattr("name", setidentifier(tok)));
+    addnode(node, newattr("name", setargumentname(tok)));
     lexnocomment();
     return node;
 }
