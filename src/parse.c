@@ -143,6 +143,7 @@ setargumentname(struct tok *tok)
 
 /* Prototypes for funcs that have a forward reference. */
 static struct node *parsetype(struct tok *tok);
+static struct node *parsedefaultvalue(struct tok *tok, struct node *parent);
 static struct node *parseuniontype(struct tok *tok);
 static struct node *parseargumentlist(struct tok *tok);
 static void parsedefinitions(struct tok *tok, struct node *parent);
@@ -632,6 +633,11 @@ parseargument(struct tok *tok)
     }
     addnode(node, newattr("name", setargumentname(tok)));
     lexnocomment();
+    // Optional default value
+    if (tok->type == '=') {
+      tok = lexnocomment();
+      node = parsedefaultvalue(tok, node);
+    }
     return node;
 }
 

@@ -799,6 +799,10 @@ attributes is set to a value the same as the attribute
 name when the corresponding syntax appears in the Web IDL input.
 </p>
 
+<p>The
+<em>value</em> attribute used on optional arguments specifies default value for non-string values, and <em>stringvalue</em> for string values.</p>
+
+
 <pre class="dtd">
 &lt;!ELEMENT Operation (webidl, descriptive?, ExtendedAttributeList?,
         (Type), ArgumentList) >
@@ -819,6 +823,8 @@ name when the corresponding syntax appears in the Web IDL input.
 &lt;!ATTLIST Argument
                    optional (optional) #IMPLIED
                    ellipsis (ellipsis) #IMPLIED
+                value CDATA #IMPLIED
+                stringvalue CDATA #IMPLIED
                    name NMTOKEN #REQUIRED >
 </pre>
 
