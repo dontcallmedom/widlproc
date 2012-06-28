@@ -753,20 +753,18 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	    struct node *nodeMap = newelement("Map");
 	    lexnocomment();
 	    if (tok->type == TOK_getter) {
-	      addnode(nodeMap, newattr("attributes", "getter"));
+	      addnode(nodeMap, newattr("pattern", "getter"));
 	      done = 1;
 	    } else if (tok->type == TOK_attribute) {
-	      addnode(nodeMap, newattr("attributes", "all"));
+	      addnode(nodeMap, newattr("pattern", "all"));
 	      done = 1;
 	    } else if (tok->type == TOK_inherit) {
 	      addnode(nodeMap, newattr("inherit", "inherit"));
 	      lexnocomment();
 	      eat(tok, ',');
 	      if (tok->type == TOK_attribute) {
-		addnode(nodeMap, newattr("attributes", "all"));
+		addnode(nodeMap, newattr("pattern", "all"));
 		done = 1;
-	      } else {
-		addnode(nodeMap, newattr("attributes", "selected"));
 	      }
 	    } else if (tok->type != TOK_IDENTIFIER) {
 	      tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
@@ -775,10 +773,11 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	      lexnocomment();
 	      eat(tok, '}');
 	    } else {
+	      addnode(nodeMap, newattr("pattern", "selection"));
 	      do {
 		if (tok->type != TOK_IDENTIFIER)
 		  tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
-		struct node *nodeAttribute = newelement("Attribute");
+		struct node *nodeAttribute = newelement("PatternAttribute");
 		addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 		addnode(nodeMap, nodeAttribute);
 		lexnocomment();
@@ -792,14 +791,15 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	    struct node *nodeList = newelement("List");
 	    lexnocomment();
 	    if (tok->type == TOK_getter) {
-	      addnode(nodeList, newattr("getter", "getter"));
+	      addnode(nodeList, newattr("pattern", "getter"));
 	      lexnocomment();
 	      eat(tok, ']');
 	    } else {
+	      addnode(nodeList, newattr("pattern", "selection"));
 	     do {
 	       if (tok->type != TOK_IDENTIFIER)
 		 tokerrorexit(tok, "expected attribute identifiers in serializer list");
-	       struct node *nodeAttribute = newelement("Attribute");
+	       struct node *nodeAttribute = newelement("PatternAttribute");
 	       addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 	       addnode(nodeList, nodeAttribute);
 	       lexnocomment();

@@ -541,7 +541,7 @@ scoped name of the interface being inherited from.
 
 <pre class="dtd">
 &lt;!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
-        InterfaceInheritance?, (Const | Stringifier | Attribute | Operation)* ) >
+        InterfaceInheritance?, (Const | Stringifier | Attribute | Operation | Serializer)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
                     partial (partial) #IMPLIED
                     callback (callback) #IMPLIED
@@ -742,7 +742,7 @@ provides the <em>Stringifier</em>'s documentation if any.
 <p>
 An <em>Attribute</em> represents an attribute as an interface member.
 The <em>Type</em> element specifies its type. The <em>name</em>
-attribute specifies its name. Each of the <em>stringifier</em> and
+attribute specifies its name. Each of the <em>stringifier</em>, <em>static</em> and
 <em>readonly</em> attributes is set to a value the same as the attribute
 name when the corresponding keyword appears in the Web IDL input. The <em>inherit</em> attribute is set to <em>inherit</em> when the attribute inherits its getter.
 </p>
@@ -759,6 +759,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 &lt;!ATTLIST Attribute stringifier (stringifier) #IMPLIED
                     readonly (readonly) #IMPLIED
                     inherit (inherit) #IMPLIED
+                    static (static) #IMPLIED
                     name CDATA #REQUIRED
                     id CDATA #REQUIRED >
 
@@ -775,7 +776,7 @@ attribute specifies its name.
 
 <p>
 Each of the <em>stringifier</em>, <em>static</em>, <em>getter</em>,
-<em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>legacycaller</em>
+<em>setter</em>, <em>creator</em>, <em>deleter</em> and <em>legacycaller</em>, <em>serializer</em>
 attributes is set to a value the same as the attribute
 name when the corresponding keyword appears in the Web IDL input.
 </p>
@@ -812,6 +813,7 @@ name when the corresponding syntax appears in the Web IDL input.
                     setter (setter) #IMPLIED
                     creator (creator) #IMPLIED
                     deleter (deleter) #IMPLIED
+                    serializer (serializer) #IMPLIED
                     legacycaller (legacycaller) #IMPLIED
                     name NMTOKEN #IMPLIED
                     id NMTOKEN #IMPLIED >
@@ -828,6 +830,39 @@ name when the corresponding syntax appears in the Web IDL input.
                    name NMTOKEN #REQUIRED >
 </pre>
 
+<h4>Serializer</h4>
+<p>A <em>Serializer</em> represents a serializer for an interface, either defined in the prose or via a pattern.</p>
+
+<p>The <em>descriptive</em> element provides the serializer's documentation if any.</p>
+
+
+<p>The <em>attribute</em> attribute defines the attribute that is used for serialization if any.</p>
+
+<p>The optional <em>Map</em> and <em>List</em> elements describe the pattern (if any) for the serializer. They take <em>PatternAttribute</em> elements with a <em>name</em> attribute that describes the attributes used for serialization.</p>
+
+<p><em>Map</em> elements take a <em>pattern</em> attribute that can be set to either "getter" (if the getter is used for serialization), "all" if all serializable attributes are to be used, or "selection" if the attributes named as children elements are to be used. Optionally, they take a <em>inherit</em> attribute set to "inherit" if the serialization takes also into account inherited attributes.</p>
+
+<p><em>List</em> elements take a <em>pattern</em> attribute that can be set to either "getter" (if the getter is used for serialization), or "selection" if the attributes named as children elements are to be used.</p>
+
+<pre class="dtd">
+&lt;!ELEMENT Serializer (webidl, descriptive?, ExtendedAttributeList?, (Map | List)?) >
+&lt;!ATTLIST Serializer attribute CDATA #IMPLIED >
+
+&lt;!ELEMENT Map  ((PatternAttribute*)) >
+
+&lt;!ATTLIST Map inherit (inherit) #IMPLIED
+                 pattern (getter|all|selection) #REQUIRED>
+
+&lt;!ELEMENT List  ((PatternAttribute*)) >
+
+&lt;!ATTLIST List pattern (getter|selection) #REQUIRED>
+
+&lt;!ELEMENT PatternAttribute EMPTY>
+&lt;!ATTLIST PatternAttribute name CDATA #REQUIRED>
+
+</pre>
+
+
 
 <h4>DictionaryMember</h4>
 
@@ -838,7 +873,7 @@ attribute specifies its name.
 </p>
 
 <p>
-The <em>descriptive></em> element provides the attribute's documentation
+The <em>descriptive></em> element provides the dictionary member's documentation
 if any.
 The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
