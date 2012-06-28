@@ -665,24 +665,19 @@ parseargumentlist(struct tok *tok)
     return node;
 }
 
+
 /***********************************************************************
  * parseoperationrest : parse [25] OperationRest
  *
  * Enter:   tok = next token
- *          eal = 0 else extended attribute list node
- *          attrs = list-of-attrs node containing attrs to add to new node
+ *          node
  *
- * Return:  new node
+ * Return:  node
  *          tok on terminating ';'
  */
 static struct node *
-parseoperationrest(struct tok *tok, struct node *eal, struct node *attrs)
+parseoperationrest(struct tok *tok, struct node *node)
 {
-    struct node *node = newelement("Operation");
-    if (eal) addnode(node, eal);
-    setcommentnode(node);
-    addnode(node, attrs);
-    addnode(node, parsereturntype(tok));
     if (tok->type == TOK_IDENTIFIER) {
         addnode(node, newattr("name", setidentifier(tok)));
         lexnocomment();
@@ -694,13 +689,94 @@ parseoperationrest(struct tok *tok, struct node *eal, struct node *attrs)
 }
 
 /***********************************************************************
+ * parsereturntypeandoperationrest: parse ReturnType OperationRest
+ * Enter:   tok = next token
+ *          eal
+ *          attrs list of attributes
+ * Return:  node
+ *          tok on terminating ';'
+ */
+static struct node *
+parsereturntypeandoperationrest(struct tok *tok, struct node *eal, struct node *attrs) 
+{
+  struct node *node =  newelement("Operation");
+  struct node *nodeType = parsereturntype(tok);
+  if (eal) addnode(node, eal);
+  setcommentnode(node);
+  addnode(node, attrs);
+  addnode(node, nodeType);
+  return parseoperationrest(tok, node);
+}
+
+/***********************************************************************
+ * parseiteratorrest : parse OptionalIteratorInterface
+ *
+ * Enter:   tok = next token
+ *          node
+ *
+ * Return:  node
+ *          tok on terminating ';'
+ */
+static struct node *
+parseoptionaliteratorinterface(struct tok *tok, struct node *node)
+{
+  if (tok->type == '=') {
+    lexnocomment();
+    addnode(node, newattr("interface", setidentifier(tok)));
+    lexnocomment();
+  }
+  return node;
+}
+
+/***********************************************************************
+ * parseoperationoriteratorrest : parse [25] OperationOrIteratorRest
+ *
+ * Enter:   tok = next token
+ *          eal = 0 else extended attribute list node
+ *          attrs = list-of-attrs node containing attrs to add to new node
+ *
+ * Return:  new node
+ *          tok on terminating ';'
+ */
+static struct node *
+parseoperationoriteratorrest(struct tok *tok, struct node *eal, struct node *attrs)
+{
+  struct node *node;
+  struct node *nodeType = parsereturntype(tok);
+  unsigned int isIterator = 0;
+  if (tok->type == TOK_iterator) {
+    lexnocomment();
+    if (tok->type == TOK_object) {
+      lexnocomment();
+      node = newelement("IteratorObject");
+      addnode(node, nodeType);
+      return node;
+    } else {
+      node = newelement("Iterator");
+      isIterator = 1;    
+    }
+  } else {
+    node = newelement("Operation");
+  }
+  if (eal) addnode(node, eal);
+  setcommentnode(node);
+  addnode(node, attrs);
+  addnode(node, nodeType);
+  if (isIterator)
+    return parseoptionaliteratorinterface(tok, node);
+  else
+    return parseoperationrest(tok, node);
+}
+
+
+/***********************************************************************
  * parseattribute : parse [17] Attribute
  *
  * Enter:   tok = next token ("readonly" or "attribute")
  *          eal = 0 else extended attribute list node
  *          attrs = list-of-attrs node containing attrs to add to new node
  *
- * Return:  new node
+ * Return:  node
  *          tok on terminating ';'
  */
 static struct node *
@@ -726,7 +802,96 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
 }
 
 /***********************************************************************
- * parseattributeoroperation : parse [15] AttributeOrOperation
+ * parseserializer : parse Serializer
+ *
+ * Enter:   tok = next token
+ *          eal
+ *
+ * Return:  node updated with value
+ *          tok updated
+ */
+static struct node *
+parseserializer (struct tok *tok, struct node *eal) {
+  struct node *node = newelement("Serializer");
+  if (tok->type == '=') {
+    if (eal) addnode(node, eal);
+    lexnocomment();
+    if (tok->type == TOK_IDENTIFIER) {
+      addnode(node, newattr("attribute", setidentifier(tok)));
+      lexnocomment();
+    } else if (tok->type == '{') {
+      unsigned int done = 0;
+      struct node *nodeMap = newelement("Map");
+      lexnocomment();
+      if (tok->type == TOK_getter) {
+	addnode(nodeMap, newattr("pattern", "getter"));
+	done = 1;
+      } else if (tok->type == TOK_attribute) {
+	addnode(nodeMap, newattr("pattern", "all"));
+	done = 1;
+      } else if (tok->type == TOK_inherit) {
+	addnode(nodeMap, newattr("inherit", "inherit"));
+	lexnocomment();
+	eat(tok, ',');
+	if (tok->type == TOK_attribute) {
+	  addnode(nodeMap, newattr("pattern", "all"));
+	  done = 1;
+	}
+      } else if (tok->type != TOK_IDENTIFIER) {
+	tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
+      }
+      if (done) {
+	lexnocomment();
+	eat(tok, '}');
+      } else {
+	addnode(nodeMap, newattr("pattern", "selection"));
+	do {
+	  if (tok->type != TOK_IDENTIFIER)
+	    tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
+	  struct node *nodeAttribute = newelement("PatternAttribute");
+	  addnode(nodeAttribute, newattr("name", setidentifier(tok)));
+	  addnode(nodeMap, nodeAttribute);
+	  lexnocomment();
+	  if (tok->type == ',')
+	    lexnocomment();
+	} while (tok->type != '}');
+	eat(tok, '}');
+      }
+      addnode(node, nodeMap);
+    } else if (tok->type == '[') {
+      struct node *nodeList = newelement("List");
+      lexnocomment();
+      if (tok->type == TOK_getter) {
+	addnode(nodeList, newattr("pattern", "getter"));
+	lexnocomment();
+	eat(tok, ']');
+      } else {
+	addnode(nodeList, newattr("pattern", "selection"));
+	do {
+	  if (tok->type != TOK_IDENTIFIER)
+	    tokerrorexit(tok, "expected attribute identifiers in serializer list");
+	  struct node *nodeAttribute = newelement("PatternAttribute");
+	  addnode(nodeAttribute, newattr("name", setidentifier(tok)));
+	  addnode(nodeList, nodeAttribute);
+	  lexnocomment();
+	  if (tok->type == ',')
+	    lexnocomment();
+	} while (tok->type != ']');	    
+	eat(tok, ']');
+      }
+      addnode(node, nodeList);
+    } else {
+      tokerrorexit(tok, "Expected '{', '[' or an attribute identifier in the serializer declaration");
+    }
+    return node;
+  } else {
+    if (eal) addnode(node, eal);
+    return node;
+  }
+}
+
+/***********************************************************************
+ * parseattributeoroperationoriterator : parse [15] AttributeOrOperationOrIterator
  *
  * Enter:   tok = next token
  *          eal = 0 else extended attribute list node
@@ -735,91 +900,17 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
  *          tok on terminating ';'
  */
 static struct node *
-parseattributeoroperation(struct tok *tok, struct node *eal)
+parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
 {
     struct node *attrs = newattrlist();
     if (tok->type == TOK_serializer) {
-        addnode(attrs, newattr("serializer", "serializer"));
-        lexnocomment();
-        if (tok->type == '=') {
-	  struct node *node = newelement("Serializer");
-	  if (eal) addnode(node, eal);
-	  lexnocomment();
-	  if (tok->type == TOK_IDENTIFIER) {
-	    addnode(node, newattr("attribute", setidentifier(tok)));
-	    lexnocomment();
-	  } else if (tok->type == '{') {
-	    unsigned int done = 0;
-	    struct node *nodeMap = newelement("Map");
-	    lexnocomment();
-	    if (tok->type == TOK_getter) {
-	      addnode(nodeMap, newattr("pattern", "getter"));
-	      done = 1;
-	    } else if (tok->type == TOK_attribute) {
-	      addnode(nodeMap, newattr("pattern", "all"));
-	      done = 1;
-	    } else if (tok->type == TOK_inherit) {
-	      addnode(nodeMap, newattr("inherit", "inherit"));
-	      lexnocomment();
-	      eat(tok, ',');
-	      if (tok->type == TOK_attribute) {
-		addnode(nodeMap, newattr("pattern", "all"));
-		done = 1;
-	      }
-	    } else if (tok->type != TOK_IDENTIFIER) {
-	      tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
-	    }
-	    if (done) {
-	      lexnocomment();
-	      eat(tok, '}');
-	    } else {
-	      addnode(nodeMap, newattr("pattern", "selection"));
-	      do {
-		if (tok->type != TOK_IDENTIFIER)
-		  tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
-		struct node *nodeAttribute = newelement("PatternAttribute");
-		addnode(nodeAttribute, newattr("name", setidentifier(tok)));
-		addnode(nodeMap, nodeAttribute);
-		lexnocomment();
-		if (tok->type == ',')
-		  lexnocomment();
-	      } while (tok->type != '}');
-	      eat(tok, '}');
-	    }
-	    addnode(node, nodeMap);
-	  } else if (tok->type == '[') {
-	    struct node *nodeList = newelement("List");
-	    lexnocomment();
-	    if (tok->type == TOK_getter) {
-	      addnode(nodeList, newattr("pattern", "getter"));
-	      lexnocomment();
-	      eat(tok, ']');
-	    } else {
-	      addnode(nodeList, newattr("pattern", "selection"));
-	     do {
-	       if (tok->type != TOK_IDENTIFIER)
-		 tokerrorexit(tok, "expected attribute identifiers in serializer list");
-	       struct node *nodeAttribute = newelement("PatternAttribute");
-	       addnode(nodeAttribute, newattr("name", setidentifier(tok)));
-	       addnode(nodeList, nodeAttribute);
-	       lexnocomment();
-	       if (tok->type == ',')
-		 lexnocomment();
-	       } while (tok->type != ']');	    
-	      eat(tok, ']');
-	     }
-	    addnode(node, nodeList);
-	  } else {
-	    tokerrorexit(tok, "Expected '{', '[' or an attribute identifier in the serializer declaration");
-	  }
-	  return node;
-	} else if (tok->type == ';') {
-	    struct node *node = newelement("Serializer");
-	    if (eal) addnode(node, eal);
-	    return node;
-	} else {
-	    return parseoperationrest(tok, eal, attrs);
-	}
+      lexnocomment();
+      if (tok->type == '=' || tok->type ==';') {
+	return parseserializer(tok, eal);
+      } else {
+	addnode(attrs, newattr("serializer", "serializer"));
+	return parsereturntypeandoperationrest(tok, eal, attrs);
+      }
     }
     if (tok->type == TOK_stringifier) {
         addnode(attrs, newattr("stringifier", "stringifier"));
@@ -836,30 +927,32 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
     }
     if (tok->type == TOK_inherit || tok->type == TOK_readonly || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
-    if (!nodeisempty(attrs)) {
- 	return parseoperationrest(tok, eal, attrs);
-    } else {
-        int alreadyseen = 0;
-        for (;;) {
-            static const int t[] = { TOK_getter,
-                TOK_setter, TOK_creator, TOK_deleter, TOK_legacycaller,
-                0 };
-            const int *tt = t;
-            char *s;
-            while (*tt && *tt != tok->type)
-                tt++;
-            if (!*tt)
-                break;
-            s = memprintf("%.*s", tok->len, tok->start);
-            if (alreadyseen & (1 << (tt - t)))
-                tokerrorexit(tok, "'%s' qualifier cannot be repeated", s);
-            alreadyseen |= 1 << (tt - t);
-            addnode(attrs, newattr(s, s));
-            lexnocomment();
-        }
+    if (!nodeisempty(attrs))
+ 	return parsereturntypeandoperationrest(tok, eal, attrs);
+    int alreadyseen = 0;
+    for (;;) {
+      static const int t[] = { TOK_getter,
+			       TOK_setter, TOK_creator, TOK_deleter, TOK_legacycaller,
+			       0 };
+      const int *tt = t;
+      char *s;
+      while (*tt && *tt != tok->type)
+	tt++;
+      if (!*tt)
+	break;
+      s = memprintf("%.*s", tok->len, tok->start);
+      if (alreadyseen & (1 << (tt - t)))
+	tokerrorexit(tok, "'%s' qualifier cannot be repeated", s);
+      alreadyseen |= 1 << (tt - t);
+      addnode(attrs, newattr(s, s));
+      lexnocomment();
     }
-    return parseoperationrest(tok, eal, attrs);
+    if (!nodeisempty(attrs))    
+      return parsereturntypeandoperationrest(tok, eal, attrs);
+    else
+      return parseoperationoriteratorrest(tok, eal, attrs);
 }
+
 
 /***********************************************************************
  * parseconstexpr : parse ConstValue
@@ -1107,7 +1200,7 @@ parseinterface(struct tok *tok, struct node *eal)
         if (tok->type == TOK_const)
             addnode(node, node2 = parseconst(tok, eal));
         else
-            addnode(node, node2 = parseattributeoroperation(tok, eal));
+            addnode(node, node2 = parseattributeoroperationoriterator(tok, eal));
         node2->wsstart = start;
         node2->end = tok->start + tok->len;
         setid(node2);

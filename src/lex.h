@@ -28,6 +28,7 @@
     "float\0" \
     "Infinity\0" \
     "-Infinity\0" \
+    "iterator\0" \
     "long\0" \
     "NaN\0" \
     "null\0" \
@@ -78,6 +79,7 @@ enum toktype {
     TOK_float,
     TOK_infinity,
     TOK_minusinfinity,
+    TOK_iterator,
     TOK_long,
     TOK_NaN,
     TOK_null,
