@@ -745,7 +745,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	  struct node *node = newelement("Serializer");
 	  if (eal) addnode(node, eal);
 	  lexnocomment();
-	  if (tok->type == TOK_identifier) {
+	  if (tok->type == TOK_IDENTIFIER) {
 	    addnode(node, newattr("attribute", setidentifier(tok)));
 	  } else if (tok->type == '{') {
 	    unsigned int done = 0;
@@ -766,7 +766,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	      } else {
 		addnode(nodeMap, newattr("attributes", "selected"));
 	      }
-	    } else if (tok->type != TOK_identifier) {
+	    } else if (tok->type != TOK_IDENTIFIER) {
 	      tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
 	    }
 	    if (done) {
@@ -774,16 +774,15 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	      eat(tok, '}');
 	    } else {
 	      do {
-		if (tok->type != TOK_identifier)
+		if (tok->type != TOK_IDENTIFIER)
 		  tokerrorexit(tok, "expected attribute identifiers in serializer map");
 		struct node *nodeAttribute = newelement("Attribute");
-		addnode(nodeAttribute, newattr("name", setidentifer(tok)));
+		addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 		addnode(nodeMap, nodeAttribute);
-	      }
-	      lexnocomment();
-	      if (tok->type == ',') {
 		lexnocomment();
-	      } while (tok->type != '}');
+		if (tok->type == ',')
+		  lexnocomment();
+		} while (tok->type != '}');
 	    }
 	  } else if (tok->type == '[') {
 	    struct node *nodeList = newelement("List");
@@ -792,21 +791,25 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	      addnode(nodeList, newattr("getter", "getter"));
 	    } else {
 	     do {
-	       if (tok->type != TOK_identifier)
+	       if (tok->type != TOK_IDENTIFIER)
 		 tokerrorexit(tok, "expected attribute identifiers in serializer list");
 	       struct node *nodeAttribute = newelement("Attribute");
-	       addnode(nodeAttribute, newattr("name", setidentifer(tok)));
+	       addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 	       addnode(nodeList, nodeAttribute);
-	     }
-	     lexnocomment();
-	     if (tok->type == ',') {
 	       lexnocomment();
-	     } while (tok->type != ']');	    
+	       if (tok->type == ',')
+		 lexnocomment();
+	       } while (tok->type != ']');	    
+	     }
 	  } else {
 	    tokerrorexit(tok, "Expected '{', '[' or an attribute identifier in the serializer declaration");
 	  }
 	  return node;
-        } else {
+	} else if (tok->type == ';') {
+	    struct node *node = newelement("Serializer");
+	    if (eal) addnode(node, eal);
+	    return node;
+	} else {
 	    return parseoperationrest(tok, eal, attrs);
 	}
     }
