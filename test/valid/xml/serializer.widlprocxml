@@ -14,6 +14,7 @@
 interface Account {
   attribute DOMString name;
   attribute unsigned long number;
+  serializer DOMString serialize();
 };
 
 interface Transaction2 {
@@ -102,6 +103,7 @@ interface Account8 {
     <webidl>interface Account {
   attribute DOMString name;
   attribute unsigned long number;
+  serializer DOMString serialize();
 };</webidl>
     <Attribute name="name" id="::Account::name">
       <webidl>  attribute DOMString name;</webidl>
@@ -111,6 +113,11 @@ interface Account8 {
       <webidl>  attribute unsigned long number;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
+    <Operation serializer="serializer" name="serialize" id="::Account::serialize">
+      <webidl>  serializer DOMString serialize();</webidl>
+      <Type type="DOMString"/>
+      <ArgumentList/>
+    </Operation>
   </Interface>
   <Interface name="Transaction2" id="::Transaction2">
     <webidl>interface Transaction2 {
