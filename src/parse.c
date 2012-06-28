@@ -738,6 +738,78 @@ static struct node *
 parseattributeoroperation(struct tok *tok, struct node *eal)
 {
     struct node *attrs = newattrlist();
+    if (tok->type == TOK_serializer) {
+        addnode(attrs, newattr("serializer", "serializer"));
+        lexnocomment();
+        if (tok->type == '=') {
+	  struct node *node = newelement("Serializer");
+	  if (eal) addnode(node, eal);
+	  lexnocomment();
+	  if (tok->type == TOK_identifier) {
+	    addnode(node, newattr("attribute", setidentifier(tok)));
+	  } else if (tok->type == '{') {
+	    unsigned int done = 0;
+	    struct node *nodeMap = newelement("Map");
+	    lexnocomment();
+	    if (tok->type == TOK_getter) {
+	      addnode(nodeMap, newattr("attributes", "getter"));
+	      done = 1;
+	    } else if (tok->type == TOK_attribute) {
+	      addnode(nodeMap, newattr("attributes", "all"));
+	      done = 1;
+	    } else if (tok->type == TOK_inherit) {
+	      addnode(nodeMap, newattr("inherit", "inherit"));
+	      lexnocomment();
+	      if (tok->type == TOK_attribute) {
+		addnode(nodeMap, newattr("attributes", "all"));
+		done = 1;
+	      } else {
+		addnode(nodeMap, newattr("attributes", "selected"));
+	      }
+	    } else if (tok->type != TOK_identifier) {
+	      tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
+	    }
+	    if (done) {
+	      lexnocomment();
+	      eat(tok, '}');
+	    } else {
+	      do {
+		if (tok->type != TOK_identifier)
+		  tokerrorexit(tok, "expected attribute identifiers in serializer map");
+		struct node *nodeAttribute = newelement("Attribute");
+		addnode(nodeAttribute, newattr("name", setidentifer(tok)));
+		addnode(nodeMap, nodeAttribute);
+	      }
+	      lexnocomment();
+	      if (tok->type == ',') {
+		lexnocomment();
+	      } while (tok->type != '}');
+	    }
+	  } else if (tok->type == '[') {
+	    struct node *nodeList = newelement("List");
+	    lexnocomment();
+	    if (tok->type == TOK_getter) {
+	      addnode(nodeList, newattr("getter", "getter"));
+	    } else {
+	     do {
+	       if (tok->type != TOK_identifier)
+		 tokerrorexit(tok, "expected attribute identifiers in serializer list");
+	       struct node *nodeAttribute = newelement("Attribute");
+	       addnode(nodeAttribute, newattr("name", setidentifer(tok)));
+	       addnode(nodeList, nodeAttribute);
+	     }
+	     lexnocomment();
+	     if (tok->type == ',') {
+	       lexnocomment();
+	     } while (tok->type != ']');	    
+	  } else {
+	    tokerrorexit(tok, "Expected '{', '[' or an attribute identifier in the serializer declaration");
+	  }
+	  return node;
+        } else {
+	    return parseoperationrest(tok, eal, attrs);
+	}
+    }
     if (tok->type == TOK_stringifier) {
         addnode(attrs, newattr("stringifier", "stringifier"));
         lexnocomment();
@@ -747,14 +819,15 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
             return node;
         }
     }
-    if (tok->type == TOK_inherit || tok->type == TOK_readonly || tok->type == TOK_attribute)
-        return parseattribute(tok, eal, attrs);
     if (tok->type == TOK_static) {
         lexnocomment();
         addnode(attrs, newattr("static", "static"));
-	return parseoperationrest(tok, eal, attrs);
     }
-    if (nodeisempty(attrs)) {
+    if (tok->type == TOK_inherit || tok->type == TOK_readonly || tok->type == TOK_attribute)
+        return parseattribute(tok, eal, attrs);
+    if (!nodeisempty(attrs)) {
+ 	return parseoperationrest(tok, eal, attrs);
+    } else {
         int alreadyseen = 0;
         for (;;) {
             static const int t[] = { TOK_getter,
