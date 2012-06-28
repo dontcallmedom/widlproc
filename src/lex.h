@@ -53,6 +53,7 @@
     "interface\0" \
     "legacycaller\0" \
     "partial\0" \
+    "serializer\0" \
     "setter\0" \
     "static\0" \
     "stringifier\0" \
@@ -103,6 +104,7 @@ enum toktype {
     TOK_interface,
     TOK_legacycaller,
     TOK_partial,
+    TOK_serializer,
     TOK_setter,
     TOK_static,
     TOK_stringifier,
