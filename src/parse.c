@@ -747,6 +747,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	  lexnocomment();
 	  if (tok->type == TOK_IDENTIFIER) {
 	    addnode(node, newattr("attribute", setidentifier(tok)));
+	    lexnocomment();
 	  } else if (tok->type == '{') {
 	    unsigned int done = 0;
 	    struct node *nodeMap = newelement("Map");
@@ -760,6 +761,7 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	    } else if (tok->type == TOK_inherit) {
 	      addnode(nodeMap, newattr("inherit", "inherit"));
 	      lexnocomment();
+	      eat(tok, ',');
 	      if (tok->type == TOK_attribute) {
 		addnode(nodeMap, newattr("attributes", "all"));
 		done = 1;
@@ -775,20 +777,24 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	    } else {
 	      do {
 		if (tok->type != TOK_IDENTIFIER)
-		  tokerrorexit(tok, "expected attribute identifiers in serializer map");
+		  tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
 		struct node *nodeAttribute = newelement("Attribute");
 		addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 		addnode(nodeMap, nodeAttribute);
 		lexnocomment();
 		if (tok->type == ',')
 		  lexnocomment();
-		} while (tok->type != '}');
+	      } while (tok->type != '}');
+	      eat(tok, '}');
 	    }
+	    addnode(node, nodeMap);
 	  } else if (tok->type == '[') {
 	    struct node *nodeList = newelement("List");
 	    lexnocomment();
 	    if (tok->type == TOK_getter) {
 	      addnode(nodeList, newattr("getter", "getter"));
+	      lexnocomment();
+	      eat(tok, ']');
 	    } else {
 	     do {
 	       if (tok->type != TOK_IDENTIFIER)
@@ -800,7 +806,9 @@ parseattributeoroperation(struct tok *tok, struct node *eal)
 	       if (tok->type == ',')
 		 lexnocomment();
 	       } while (tok->type != ']');	    
+	      eat(tok, ']');
 	     }
+	    addnode(node, nodeList);
 	  } else {
 	    tokerrorexit(tok, "Expected '{', '[' or an attribute identifier in the serializer declaration");
 	  }
