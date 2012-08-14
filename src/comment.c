@@ -99,6 +99,7 @@ static const struct htmleldesc htmleldescs[] = {
     { 2, "dt", HTMLEL_DLCONTENTS, HTMLEL_INLINE },
     { 2, "em", HTMLEL_INLINE, 0 },
     { 2, "li", HTMLEL_LI, HTMLEL_FLOW },
+    { 2, "ol", HTMLEL_BLOCK, HTMLEL_LI },
     { 1, "p", HTMLEL_BLOCK, HTMLEL_INLINE },
     { 2, "td", HTMLEL_TRCONTENTS | HTMLEL_AUTOCLOSE, HTMLEL_FLOW },
     { 2, "th", HTMLEL_TRCONTENTS | HTMLEL_AUTOCLOSE, HTMLEL_FLOW },
