@@ -18,6 +18,9 @@
 // starting from "attribute" are the list of names allowed as arguments identifier
 #define KEYWORDS \
     "DOMString\0" \
+    "ByteString\0" \
+    "Date\0" \
+    "RegExp\0" \
     "false\0" \
     "object\0" \
     "true\0" \
@@ -69,6 +72,9 @@ enum toktype {
     TOK_STRING, TOK_DOUBLECOLON, TOK_ELLIPSIS, TOK_DOUBLEBRACKET,
     /* Keywords must be in the same order as above. */
     TOK_DOMString,
+    TOK_ByteString,
+    TOK_Date,
+    TOK_RegExp,
     TOK_false,
     TOK_object,
     TOK_true,

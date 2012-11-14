@@ -384,6 +384,16 @@ parseprimitiveorstringtype(struct tok *tok)
         case TOK_DOMString:
             addnode(node, newattr("type", "DOMString"));
             break;
+        case TOK_ByteString:
+            addnode(node, newattr("type", "ByteString"));
+            break;
+        case TOK_Date:
+            addnode(node, newattr("type", "Date"));
+            break;
+        case TOK_RegExp:
+            addnode(node, newattr("type", "RegExp"));
+            break;
+
         }
         lexnocomment();
     }

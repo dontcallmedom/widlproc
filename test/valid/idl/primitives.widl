@@ -12,4 +12,8 @@ interface Primitives {
   attribute double bigreal; 
   attribute unrestricted float realwithinfinity;
   attribute unrestricted double bigrealwithinfinity; 
+  attribute DOMString string; 
+  attribute ByteString bytes; 
+  attribute Date date;
+  attribute RegExp regexp;
 };
