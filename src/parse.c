@@ -487,8 +487,9 @@ parseunionmembertype(struct tok *tok)
 static struct node *
 parseuniontype(struct tok *tok)
 {
+  struct node *node;
   eat(tok, '(');
-  struct node* node = newelement("Type");
+  node = newelement("Type");
   addnode(node, newattr("type", "union"));
   if (tok->type != ')') {
     for (;;) {
@@ -545,10 +546,11 @@ parsetype(struct tok *tok)
 static struct node *
 parseextendedattribute(struct tok *tok)
 {
+	const char *start ;
     struct node *node = newelement("ExtendedAttribute");
     char *attrname = setidentifier(tok);
     addnode(node, newattr("name", attrname));
-    const char *start = tok->prestart;
+    start = tok->prestart;
     node->wsstart = start;
     node->end = tok->start + tok->len;
     if(!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor")) {
@@ -822,7 +824,8 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
  */
 static struct node *
 parseserializer (struct tok *tok, struct node *eal) {
-  struct node *node = newelement("Serializer");
+	struct node *nodeAttribute;
+	struct node *node = newelement("Serializer");
   if (tok->type == '=') {
     if (eal) addnode(node, eal);
     lexnocomment();
@@ -858,7 +861,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 	do {
 	  if (tok->type != TOK_IDENTIFIER)
 	    tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
-	  struct node *nodeAttribute = newelement("PatternAttribute");
+	  nodeAttribute = newelement("PatternAttribute");
 	  addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 	  addnode(nodeMap, nodeAttribute);
 	  lexnocomment();
@@ -880,7 +883,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 	do {
 	  if (tok->type != TOK_IDENTIFIER)
 	    tokerrorexit(tok, "expected attribute identifiers in serializer list");
-	  struct node *nodeAttribute = newelement("PatternAttribute");
+	  nodeAttribute = newelement("PatternAttribute");
 	  addnode(nodeAttribute, newattr("name", setidentifier(tok)));
 	  addnode(nodeList, nodeAttribute);
 	  lexnocomment();
@@ -912,6 +915,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 static struct node *
 parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
 {
+	int alreadyseen ;
     struct node *attrs = newattrlist();
     if (tok->type == TOK_serializer) {
       lexnocomment();
@@ -939,7 +943,7 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
         return parseattribute(tok, eal, attrs);
     if (!nodeisempty(attrs))
  	return parsereturntypeandoperationrest(tok, eal, attrs);
-    int alreadyseen = 0;
+    alreadyseen = 0;
     for (;;) {
       static const int t[] = { TOK_getter,
 			       TOK_setter, TOK_creator, TOK_deleter, TOK_legacycaller,
@@ -1126,12 +1130,14 @@ parseimplementsstatement(struct tok *tok, struct node *eal)
 static struct node *
 parsetypedef(struct tok *tok, struct node *eal)
 {
+struct node *ealtype;
+struct node *typenode;
     struct node *node = newelement("Typedef");
     setcommentnode(node);
     if (eal) addnode(node, eal);
     tok = lexnocomment();
-    struct node *ealtype = parseextendedattributelist(tok);
-    struct node *typenode = parsetype(tok);
+    ealtype = parseextendedattributelist(tok);
+    typenode = parsetype(tok);
     if (ealtype) addnode(typenode, ealtype);
     addnode(node, typenode);
     addnode(node, newattr("name", setidentifier(tok)));
@@ -1303,6 +1309,7 @@ parsedictionary(struct tok *tok, struct node *eal)
 static struct node *
 parseenum(struct tok *tok, struct node *eal)
 {
+	char *s;
     struct node *node = newelement("Enum");
     if (eal) addnode(node, eal);
     setcommentnode(node);
@@ -1315,7 +1322,7 @@ parseenum(struct tok *tok, struct node *eal)
 	const char *start = tok->prestart;
 	struct node *node2 = newelement("EnumValue");
 	setcommentnode(node2);
-	char *s;
+	
 	s = memalloc(tok->len + 1);
 	memcpy(s, tok->start, tok->len);
 	s[tok->len] = 0;
@@ -1410,9 +1417,10 @@ parsedefinitions(struct tok *tok, struct node *parent)
 struct node *
 parse(void)
 {
+	struct tok *tok; 
     struct node *root = newelement("Definitions");
     setcommentnode(root);
-    struct tok *tok = lexnocomment();
+    tok = lexnocomment();
     parsedefinitions(tok, root);
     if (tok->type != TOK_EOF)
         tokerrorexit(tok, "expected end of input");

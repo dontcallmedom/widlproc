@@ -48,15 +48,32 @@ else
 ########################################################################
 # Windows (cygwin but using MS compiler) configuration
 #
+# this is messy - should probably use vcvars.bat
 ifneq (,$(filter CYGWIN%, $(UNAME))) 
 VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program*Files/Microsoft*Visual*Studio*8)
+SDKDIR = $(wildcard /cygdrive/c/Program*Files/Microsoft*SDKs/Windows/*/Lib)
 ifeq (,$(VISUALSTUDIODIR))
-$(error Could not find MS Visual Studio)
+VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program\ Files\ */Microsoft*Visual*Studio*10*)
+endif
+ifeq (,$(VISUALSTUDIODIR))
+VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program\ Files\ */Microsoft*Visual*Studio*11*)
+endif
+# this is revelvant for vs2012 and windows 8 - sdk location has changed
+ifeq (,$(SDKDIR))
+SDKDIR = $(wildcard /cygdrive/c/Program\ Files\ */Windows*Kits)
+endif
+
+ifeq (,$(VISUALSTUDIODIR))
+$(error Could not find  MS Visual Studio) 
 else
 WINVISUALSTUDIODIR = $(shell cygpath -w '$(VISUALSTUDIODIR)')
+WINSDKDIR = $(shell cygpath -w '$(SDKDIR)')
+
+#$(error $(VISUALSTUDIODIR)) 
+
 CC = \
-	Lib='$(WINVISUALSTUDIODIR)\VC\LIB;$(WINVISUALSTUDIODIR)\VC\PlatformSDK\Lib' \
-	PATH='$(VISUALSTUDIODIR)/Common7/IDE:$(VISUALSTUDIODIR)/VC/BIN:$(VISUALSTUDIODIR)/Common7/Tools:$(VISUALSTUDIODIR)/SDK/v2.0/bin:'$$PATH \
+	Lib='$(WINVISUALSTUDIODIR)\VC\LIB;$(WINVISUALSTUDIODIR)\VC\PlatformSDK\Lib;$(WINSDKDIR)' \
+	PATH='$(VISUALSTUDIODIR)/Common7/IDE:$(VISUALSTUDIODIR)/VC/BIN:$(VISUALSTUDIODIR)/Common7/Tools:$(VISUALSTUDIODIR)/SDK/v2.0/bin:$(VISUALSTUDIODIR)/8.0/Lib/win8/um/x86:'$$PATH \
 	Include='$(WINVISUALSTUDIODIR)\VC\INCLUDE;$(WINVISUALSTUDIODIR)\VC\PlatformSDK\Include' \
 	cl
 endif

@@ -1326,6 +1326,7 @@ dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
   struct cnode *cnode = *pcnode;
     const char *word;
     int len, wordlen, offset = 0;
+	char *attrtext;
     /* Get the next word as the attribute value. */
     word = parseword(&p);
     if (!word)
@@ -1334,7 +1335,7 @@ dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
 	len = strlen(cmdname) + (wordlen = p-word) + 4; /* p="word"\0 */
 	if(cnode->attrtext)
 	  len += (offset = strlen(cnode->attrtext)) + 1; /* add space for space */
-	char *attrtext = memalloc(len);
+	attrtext = memalloc(len);
 	if(offset) {
 		memcpy(attrtext, cnode->attrtext, offset);
 		attrtext[offset++] = ' ';
