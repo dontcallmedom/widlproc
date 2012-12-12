@@ -11,10 +11,6 @@
         attribute Point bottomright;
       };
 
-  typedef gfx::geom::geom2d::Point Point;
-  typedef gfx::geom::geom2d::PointSequence PointSequence;
-  typedef gfx::geom::geom2d::Rect Rect;
-
   interface Widget {
 
     readonly attribute Rect bounds;

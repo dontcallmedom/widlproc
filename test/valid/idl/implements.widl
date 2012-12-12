@@ -11,4 +11,4 @@
     // ...
   };
 
-  dom::Node implements EventTarget;
+  Node implements EventTarget;

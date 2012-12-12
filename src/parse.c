@@ -167,27 +167,13 @@ parsescopedname(struct tok *tok, const char *name, int ref)
     struct node *node;
     unsigned int len = 0;
     char *s = memalloc(3);
-    if (tok->type == TOK_DOUBLECOLON) {
-        strcpy(s, "::");
-        len = 2;
-        lexnocomment();
-    }
-    for (;;) {
-        if (tok->type != TOK_IDENTIFIER)
-            tokerrorexit(tok, "expected identifier in scoped name");
-        s = memrealloc(s, len + tok->len + 1);
-        memcpy(s + len, tok->start, tok->len);
-        len += tok->len;
-        end = tok->start + tok->len;
-        lexnocomment();
-        if (tok->type != TOK_DOUBLECOLON)
-            break;
-        s = memrealloc(s, len + tok->len + 1);
-        memcpy(s + len, tok->start, tok->len);
-        len += tok->len;
-        end = tok->start + tok->len;
-        lexnocomment();
-    }
+    if (tok->type != TOK_IDENTIFIER)
+        tokerrorexit(tok, "expected identifier");
+    s = memrealloc(s, len + tok->len + 1);
+    memcpy(s + len, tok->start, tok->len);
+    len += tok->len;
+    end = tok->start + tok->len;
+    lexnocomment();
     s[len] = 0;
     node = newattr(name, s);
     if (ref) {
@@ -413,7 +399,6 @@ parsenonanytype(struct tok *tok)
 {
     struct node *node;
     switch (tok->type) {
-    case TOK_DOUBLECOLON:
     case TOK_IDENTIFIER:
         node = newelement("Type");
         addnode(node, parsescopedname(tok, "name", 1));
@@ -1388,7 +1373,6 @@ parsedefinitions(struct tok *tok, struct node *parent)
         case TOK_typedef:
             node = parsetypedef(tok, eal);
             break;
-        case TOK_DOUBLECOLON:
         case TOK_IDENTIFIER:
             node = parseimplementsstatement(tok, eal);
             break;

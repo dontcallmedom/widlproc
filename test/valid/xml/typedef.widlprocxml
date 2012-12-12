@@ -13,10 +13,6 @@
         attribute <ref>Point</ref> bottomright;
       };
 
-  typedef <ref>gfx::geom::geom2d::Point</ref> Point;
-  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;
-  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;
-
   interface Widget {
 
     readonly attribute <ref>Rect</ref> bounds;
@@ -60,18 +56,6 @@
       <Type name="Point"/>
     </Attribute>
   </Interface>
-  <Typedef name="Point" id="::Point">
-    <webidl>  typedef <ref>gfx::geom::geom2d::Point</ref> Point;</webidl>
-    <Type name="gfx::geom::geom2d::Point"/>
-  </Typedef>
-  <Typedef name="PointSequence" id="::PointSequence">
-    <webidl>  typedef <ref>gfx::geom::geom2d::PointSequence</ref> PointSequence;</webidl>
-    <Type name="gfx::geom::geom2d::PointSequence"/>
-  </Typedef>
-  <Typedef name="Rect" id="::Rect">
-    <webidl>  typedef <ref>gfx::geom::geom2d::Rect</ref> Rect;</webidl>
-    <Type name="gfx::geom::geom2d::Rect"/>
-  </Typedef>
   <Interface name="Widget" id="::Widget">
     <webidl>  interface Widget {
 
