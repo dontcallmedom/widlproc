@@ -206,7 +206,6 @@ lexnumber(const char *start)
                 ch = *++p;
             }
         }
-
         for (;;) {
             if ((unsigned)(ch - '0') >= 8) {
                 if ((ch & -2) == '8') {
@@ -226,17 +225,20 @@ lexnumber(const char *start)
                     if (state == STATE_HEX || state >= STATE_DP)
                         break;
                     state = STATE_DP;
-                } else if (ch == '-') {
+                } else if (ch == '-' || ch == '+') {
                     if (state != STATE_EXPSTART)
                         break;
                     state = STATE_EXPSIGN;
-                } else
-                    break;
+                } else {
+  		    if (state == STATE_EXPSTART)
+		        state = STATE_EXP;
+		    break;
+		}
             }
             ch = *++p;
             if (state == STATE_START)
                 state = STATE_INT;
-            else if (state == STATE_EXPSTART || state == STATE_EXPSIGN)
+            else if (state == STATE_EXPSIGN)
                 state = STATE_EXP;
         }
         switch (state) {
@@ -406,9 +408,20 @@ lex(void)
         }
         tok.type = '/';
     } else {
+        /* The only multi-symbol token is ... */
+        if (ch == '.') {
+            tok.type = '.';
+            if (*++p == '.' && p[1] == '.') {
+                tok.type = TOK_ELLIPSIS;
+                p += 2;
+		goto done;
+            } else {
+	      p--;
+	    }
+        }
         /* Handle things that start with '-', which is either '-' as a token,
          * or a number. Handle numbers. */
-        if (ch == '-' || (unsigned)(ch - '0') < 10)
+        if (ch == '-' || (unsigned)(ch - '0') < 10 || ch == '.')
             return lexnumber(p);
         /* Handle string. */
         if (ch == '"')
@@ -416,15 +429,6 @@ lex(void)
         /* Handle identifier. */
         if (ch == '_' || (unsigned)((ch & ~0x20) - 'A') <= 'Z' - 'A')
             return lexidentifier(p);
-        /* The only multi-symbol token is ... */
-        if (ch == '.') {
-            tok.type = '.';
-            if (*++p == '.' && p[1] == '.') {
-                tok.type = TOK_ELLIPSIS;
-                p += 2;
-            }
-            goto done;
-        }
     }
     /* Single symbol token. */
     tok.type = ch;

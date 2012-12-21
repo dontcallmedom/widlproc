@@ -9,6 +9,9 @@ interface Util {
   const octet LF = 10;
   const unsigned long BIT_MASK = 0x0000fc00;
   const float AVOGADRO = 6.022e23;
+  const float half = .5;
+  const float one = 1E-2;
+  const float ten = 10E+1;
   const unrestricted float sobig = Infinity;
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
@@ -32,6 +35,9 @@ exception Error {
   const octet LF = 10;
   const unsigned long BIT_MASK = 0x0000fc00;
   const float AVOGADRO = 6.022e23;
+  const float half = .5;
+  const float one = 1E-2;
+  const float ten = 10E+1;
   const unrestricted float sobig = Infinity;
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
@@ -55,6 +61,18 @@ exception Error {
     </Const>
     <Const name="AVOGADRO" value="6.022e23" id="::Util::AVOGADRO">
       <webidl>  const float AVOGADRO = 6.022e23;</webidl>
+      <Type type="float"/>
+    </Const>
+    <Const name="half" value=".5" id="::Util::half">
+      <webidl>  const float half = .5;</webidl>
+      <Type type="float"/>
+    </Const>
+    <Const name="one" value="1E-2" id="::Util::one">
+      <webidl>  const float one = 1E-2;</webidl>
+      <Type type="float"/>
+    </Const>
+    <Const name="ten" value="10E+1" id="::Util::ten">
+      <webidl>  const float ten = 10E+1;</webidl>
       <Type type="float"/>
     </Const>
     <Const name="sobig" value="Infinity" id="::Util::sobig">
