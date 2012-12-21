@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <webidl>interface Util {
+  <webidl>typedef short? Foo;
+
+interface Util {
   const boolean DEBUG = false;
   const short negative = -1;
   const octet LF = 10;
@@ -10,6 +12,7 @@
   const unrestricted float sobig = Infinity;
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
+  const <ref>Foo</ref> bar = 3;
 };
 
 exception Error {
@@ -18,6 +21,10 @@ exception Error {
 
   short errorCode;
 };</webidl>
+  <Typedef name="Foo" id="::Foo">
+    <webidl>typedef short? Foo;</webidl>
+    <Type type="short" nullable="nullable"/>
+  </Typedef>
   <Interface name="Util" id="::Util">
     <webidl>interface Util {
   const boolean DEBUG = false;
@@ -28,6 +35,7 @@ exception Error {
   const unrestricted float sobig = Infinity;
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
+  const <ref>Foo</ref> bar = 3;
 };</webidl>
     <Const name="DEBUG" value="false" id="::Util::DEBUG">
       <webidl>  const boolean DEBUG = false;</webidl>
@@ -60,6 +68,10 @@ exception Error {
     <Const name="notanumber" value="NaN" id="::Util::notanumber">
       <webidl>  const short notanumber = NaN;</webidl>
       <Type type="short"/>
+    </Const>
+    <Const name="bar" value="3" id="::Util::bar">
+      <webidl>  const <ref>Foo</ref> bar = 3;</webidl>
+      <Type name="Foo"/>
     </Const>
   </Interface>
   <Exception name="Error" id="::Error">

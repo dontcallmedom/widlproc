@@ -1,4 +1,6 @@
 // Extracted from http://dev.w3.org/2006/webapi/WebIDL/ on 2011-05-06
+typedef short? Foo;
+
 interface Util {
   const boolean DEBUG = false;
   const short negative = -1;
@@ -8,6 +10,7 @@ interface Util {
   const unrestricted float sobig = Infinity;
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
+  const Foo bar = 3;
 };
 
 exception Error {

@@ -1071,6 +1071,7 @@ parseconst(struct tok *tok, struct node *eal)
     case TOK_unrestricted:
     case TOK_short:
     case TOK_long:
+    case TOK_IDENTIFIER:
         addnode(node, parsetype(tok));
 	break;
     default:
