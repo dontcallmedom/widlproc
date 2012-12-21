@@ -1,4 +1,5 @@
-enum MealType { "rice", "noodles", "other" };
+enum MealType { "rice", "noodles", "other" , "with line
+return"};
 
 interface Meal {
   attribute MealType type;

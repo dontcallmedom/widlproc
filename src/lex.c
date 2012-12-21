@@ -292,7 +292,7 @@ lexstring(const char *start)
         const char *p = start + 1;
         int ch = *p;
         for (;;) {
-            if (!ch || ch == '\n')
+            if (!ch)
                 lexerrorexit("unterminated string");
             if (ch == '"') {
                 tok.type = TOK_STRING;

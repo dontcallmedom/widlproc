@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; };
+  <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; , &quot;with line
+return&quot;};
 
 interface Meal {
   attribute <ref>MealType</ref> type;
@@ -10,7 +11,8 @@ interface Meal {
   void initialize(<ref>MealType</ref> type, float size);
 };</webidl>
   <Enum name="MealType" id="::MealType">
-    <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; };</webidl>
+    <webidl>enum MealType { &quot;rice&quot;, &quot;noodles&quot;, &quot;other&quot; , &quot;with line
+return&quot;};</webidl>
     <EnumValue stringvalue="rice">
       <webidl> &quot;rice</webidl>
     </EnumValue>
@@ -19,6 +21,11 @@ interface Meal {
     </EnumValue>
     <EnumValue stringvalue="other">
       <webidl> &quot;other</webidl>
+    </EnumValue>
+    <EnumValue stringvalue="with line
+return">
+      <webidl> &quot;with line
+return</webidl>
     </EnumValue>
   </Enum>
   <Interface name="Meal" id="::Meal">
