@@ -64,6 +64,14 @@ interface Account7 {
 interface Account8 {
   getter object getItem(unsigned long index);
   serializer = [ getter ];
+};
+
+interface Account9 {
+ serializer = [ ];
+};
+
+interface Account10 {
+ serializer = { };
 };</webidl>
   <Interface name="Transaction" id="::Transaction">
     <webidl>interface Transaction {
@@ -291,6 +299,24 @@ interface Account8 {
     <Serializer>
       <webidl>  serializer = [ getter ];</webidl>
       <List pattern="getter"/>
+    </Serializer>
+  </Interface>
+  <Interface name="Account9" id="::Account9">
+    <webidl>interface Account9 {
+ serializer = [ ];
+};</webidl>
+    <Serializer>
+      <webidl> serializer = [ ];</webidl>
+      <List pattern="selection"/>
+    </Serializer>
+  </Interface>
+  <Interface name="Account10" id="::Account10">
+    <webidl>interface Account10 {
+ serializer = { };
+};</webidl>
+    <Serializer>
+      <webidl> serializer = { };</webidl>
+      <Map pattern="selection"/>
     </Serializer>
   </Interface>
 </Definitions>

@@ -838,14 +838,15 @@ parseserializer (struct tok *tok, struct node *eal) {
 	  done = 1;
 	}
       } else if (tok->type != TOK_IDENTIFIER) {
-	tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
+	if (tok->type != '}')
+	  tokerrorexit(tok, "expected 'attribute', 'getter', 'inherit' or attribute identifiers in serializer map");
       }
       if (done) {
 	lexnocomment();
 	eat(tok, '}');
       } else {
 	addnode(nodeMap, newattr("pattern", "selection"));
-	do {
+	while (tok->type != '}') {
 	  if (tok->type != TOK_IDENTIFIER)
 	    tokerrorexit(tok, "expected attribute identifiers in serializer map %s", tok->prestart);
 	  nodeAttribute = newelement("PatternAttribute");
@@ -854,7 +855,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 	  lexnocomment();
 	  if (tok->type == ',')
 	    lexnocomment();
-	} while (tok->type != '}');
+	}
 	eat(tok, '}');
       }
       addnode(node, nodeMap);
@@ -867,7 +868,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 	eat(tok, ']');
       } else {
 	addnode(nodeList, newattr("pattern", "selection"));
-	do {
+	while (tok->type != ']') {
 	  if (tok->type != TOK_IDENTIFIER)
 	    tokerrorexit(tok, "expected attribute identifiers in serializer list");
 	  nodeAttribute = newelement("PatternAttribute");
@@ -876,7 +877,7 @@ parseserializer (struct tok *tok, struct node *eal) {
 	  lexnocomment();
 	  if (tok->type == ',')
 	    lexnocomment();
-	} while (tok->type != ']');	    
+	} 
 	eat(tok, ']');
       }
       addnode(node, nodeList);
