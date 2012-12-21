@@ -3,12 +3,12 @@
 <Definitions>
   <webidl>[Constructor]
 interface LotteryResults {
-  readonly attribute unsigned short[][] numbers;
+  readonly attribute unsigned short[][ ] numbers;
 };</webidl>
   <Interface name="LotteryResults" id="::LotteryResults">
     <webidl>[Constructor]
 interface LotteryResults {
-  readonly attribute unsigned short[][] numbers;
+  readonly attribute unsigned short[][ ] numbers;
 };</webidl>
     <ExtendedAttributeList>
       <ExtendedAttribute name="Constructor">
@@ -16,7 +16,7 @@ interface LotteryResults {
       </ExtendedAttribute>
     </ExtendedAttributeList>
     <Attribute readonly="readonly" name="numbers" id="::LotteryResults::numbers">
-      <webidl>  readonly attribute unsigned short[][] numbers;</webidl>
+      <webidl>  readonly attribute unsigned short[][ ] numbers;</webidl>
       <Type type="array">
         <Type type="array">
           <Type type="unsigned short"/>

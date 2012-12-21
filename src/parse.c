@@ -280,13 +280,14 @@ parseunsignedintegertype(struct tok *tok)
 static struct node *
 parsetypesuffix(struct tok *tok, struct node *node)
 {
-    if (tok->type == TOK_DOUBLEBRACKET) {
+    if (tok->type == '[') {
+        eat(tok, '[');
+        eat(tok, ']');
         struct node *typenode = node;
 	node = newelement("Type");
         addnode(node, newattr("type", "array"));
         addnode(node, typenode);
-        lexnocomment();
-	node = parsetypesuffix(tok, node);
+        node = parsetypesuffix(tok, node);
     } else if (tok->type == '?') {
         addnode(node, newattr("nullable", "nullable"));
         lexnocomment();
@@ -306,12 +307,13 @@ parsetypesuffix(struct tok *tok, struct node *node)
 static struct node *
 parsetypesuffixstartingwitharray(struct tok *tok,  struct node *node)
 {
-    if (tok->type == TOK_DOUBLEBRACKET) {
+    if (tok->type == '[') {
+        eat(tok, '[');
+        eat(tok, ']');
         struct node *typenode = node;
 	node = newelement("Type");
         addnode(node, newattr("type", "array"));
         addnode(node, typenode);
-        lexnocomment();
 	node = parsetypesuffix(tok, node);
     }
     return node;
@@ -446,7 +448,8 @@ parseunionmembertype(struct tok *tok)
     struct node *typenode = newelement("Type");
     addnode(typenode, newattr("type", "any"));
     lexnocomment();
-    eat(tok, TOK_DOUBLEBRACKET);
+    eat(tok, '[');
+    eat(tok, ']');
     node = newelement("Type");
     addnode(node, newattr("type", "array"));
     addnode(node, typenode);

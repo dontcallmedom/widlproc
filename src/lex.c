@@ -416,20 +416,12 @@ lex(void)
         /* Handle identifier. */
         if (ch == '_' || (unsigned)((ch & ~0x20) - 'A') <= 'Z' - 'A')
             return lexidentifier(p);
-        /* The only multi-symbol token are ... and [] */
+        /* The only multi-symbol token is ... */
         if (ch == '.') {
             tok.type = '.';
             if (*++p == '.' && p[1] == '.') {
                 tok.type = TOK_ELLIPSIS;
                 p += 2;
-            }
-            goto done;
-        }
-        if (ch == '[') {
-            tok.type = '[';
-            if (*++p == ']') {
-                tok.type = TOK_DOUBLEBRACKET;
-                p++;
             }
             goto done;
         }
