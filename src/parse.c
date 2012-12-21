@@ -450,7 +450,6 @@ parseunionmembertype(struct tok *tok)
     node = newelement("Type");
     addnode(node, newattr("type", "array"));
     addnode(node, typenode);
-    lexnocomment();
     node = parsetypesuffix(tok, node);
   } else if (tok->type == '(') { 
     node = parseuniontype(tok);

@@ -2,16 +2,18 @@
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
   <webidl>interface Union {
- attribute (float or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
+ attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
 };</webidl>
   <Interface name="Union" id="::Union">
     <webidl>interface Union {
- attribute (float or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
+ attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
 };</webidl>
     <Attribute name="test" id="::Union::test">
-      <webidl> attribute (float or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;</webidl>
+      <webidl> attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;</webidl>
       <Type type="union">
-        <Type type="float"/>
+        <Type type="array">
+          <Type type="any"/>
+        </Type>
         <Type type="union">
           <Type type="Date"/>
           <Type name="Event"/>
