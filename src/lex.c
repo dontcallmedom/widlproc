@@ -483,7 +483,7 @@ outputwidl(struct node *node)
                 continue;
             }
             p2 = thisend;
-            if (node && node->start >= file->buf && node->start < p2)
+            if (node && node->start >= file->buf && node->start < p2 && start < node->start) // TODO: there are cases when start is actually greater than node->start???
                 p2 = node->start;
             p = memchr(start, '/', p2 - start);
             if (!p) {
