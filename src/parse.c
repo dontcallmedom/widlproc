@@ -832,10 +832,12 @@ parseserializer (struct tok *tok, struct node *eal) {
       } else if (tok->type == TOK_inherit) {
 	addnode(nodeMap, newattr("inherit", "inherit"));
 	lexnocomment();
-	eat(tok, ',');
-	if (tok->type == TOK_attribute) {
-	  addnode(nodeMap, newattr("pattern", "all"));
-	  done = 1;
+	if (tok->type == ',') {
+	  eat(tok, ',');
+	  if (tok->type == TOK_attribute) {
+	    addnode(nodeMap, newattr("pattern", "all"));
+	    done = 1;
+	  }
 	}
       } else if (tok->type != TOK_IDENTIFIER) {
 	if (tok->type != '}')

@@ -70,3 +70,14 @@ interface Account9 {
 interface Account10 {
  serializer = { };
 };
+
+interface Account11 : Account {
+  attribute DOMString secondname;
+  attribute DOMString thirdname;
+  serializer = { inherit, secondname, thirdname };
+};
+
+interface Account12 : Account {
+  attribute DOMString secondname;
+  serializer = { inherit };
+};

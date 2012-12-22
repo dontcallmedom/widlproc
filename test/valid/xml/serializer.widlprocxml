@@ -72,6 +72,17 @@ interface Account9 {
 
 interface Account10 {
  serializer = { };
+};
+
+interface Account11 : <ref>Account</ref> {
+  attribute DOMString secondname;
+  attribute DOMString thirdname;
+  serializer = { inherit, secondname, thirdname };
+};
+
+interface Account12 : <ref>Account</ref> {
+  attribute DOMString secondname;
+  serializer = { inherit };
 };</webidl>
   <Interface name="Transaction" id="::Transaction">
     <webidl>interface Transaction {
@@ -317,6 +328,48 @@ interface Account10 {
     <Serializer>
       <webidl> serializer = { };</webidl>
       <Map pattern="selection"/>
+    </Serializer>
+  </Interface>
+  <Interface name="Account11" id="::Account11">
+    <webidl>interface Account11 : <ref>Account</ref> {
+  attribute DOMString secondname;
+  attribute DOMString thirdname;
+  serializer = { inherit, secondname, thirdname };
+};</webidl>
+    <InterfaceInheritance>
+      <Name name="Account"/>
+    </InterfaceInheritance>
+    <Attribute name="secondname" id="::Account11::secondname">
+      <webidl>  attribute DOMString secondname;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+    <Attribute name="thirdname" id="::Account11::thirdname">
+      <webidl>  attribute DOMString thirdname;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+    <Serializer>
+      <webidl>  serializer = { inherit, secondname, thirdname };</webidl>
+      <Map inherit="inherit" pattern="selection">
+        <PatternAttribute name="secondname"/>
+        <PatternAttribute name="thirdname"/>
+      </Map>
+    </Serializer>
+  </Interface>
+  <Interface name="Account12" id="::Account12">
+    <webidl>interface Account12 : <ref>Account</ref> {
+  attribute DOMString secondname;
+  serializer = { inherit };
+};</webidl>
+    <InterfaceInheritance>
+      <Name name="Account"/>
+    </InterfaceInheritance>
+    <Attribute name="secondname" id="::Account12::secondname">
+      <webidl>  attribute DOMString secondname;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+    <Serializer>
+      <webidl>  serializer = { inherit };</webidl>
+      <Map inherit="inherit" pattern="selection"/>
     </Serializer>
   </Interface>
 </Definitions>
