@@ -922,7 +922,7 @@ name or an identifier;
 <li>
 if the extended attribute contains parentheses (either with or without
 an <code>=</code> sign), an <em>ArgumentList</em> element giving the
-contents of the parentheses.
+contents of the parentheses, or a <em>TypeList</em> element for <code>MapClass</code>
 </ul>
 <p>
 If the <em>value</em> attribute and the <em>ArgumentList</em> element are
@@ -933,10 +933,18 @@ a scoped name.
 <pre class="dtd">
 &lt;!ELEMENT ExtendedAttributeList (ExtendedAttribute+) >
 
-&lt;!ELEMENT ExtendedAttribute (webidl, ArgumentList?) >
+&lt;!ELEMENT ExtendedAttribute (webidl, ArgumentList?, TypeList?) >
 &lt;!ATTLIST ExtendedAttribute name NMTOKEN #REQUIRED
                             value CDATA #IMPLIED >
 </pre>
+
+<h4>TypeList</h4>
+<p><em>TypeList</em> represents a list of types; it takes <em>Type</em> elements as children.</p>
+
+<pre class="dtd">
+&lt;!ELEMENT TypeList (Type+) >
+</pre>
+
 
 <h4>Type</h4>
 

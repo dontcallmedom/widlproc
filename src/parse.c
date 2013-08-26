@@ -146,6 +146,7 @@ static struct node *parsetype(struct tok *tok);
 static struct node *parsedefaultvalue(struct tok *tok, struct node *parent);
 static struct node *parseuniontype(struct tok *tok);
 static struct node *parseargumentlist(struct tok *tok);
+static struct node *parsetypepair(struct tok *tok);
 static void parsedefinitions(struct tok *tok, struct node *parent);
 static struct node *parsetypesuffixstartingwitharray(struct tok *tok, struct node *node);
 
@@ -540,19 +541,27 @@ parseextendedattribute(struct tok *tok)
     start = tok->prestart;
     node->wsstart = start;
     node->end = tok->start + tok->len;
-    if(!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor")) {
+    if (!strcmp(attrname, "Constructor") || !strcmp(attrname, "NamedConstructor")) {
 	    setcommentnode(node);
-	}
+    }
     lexnocomment();
-    if (tok->type == '=') {
+    // Special casing MapClass since it has a unique structure
+    if (!strcmp(attrname, "MapClass")) {
+      eat(tok, '(');
+      addnode(node, parsetypepair(tok));
+      node->end = tok->start + tok->len;
+      eat(tok, ')');
+    } else {
+      if (tok->type == '=') {
         lexnocomment();
         addnode(node, parsescopedname(tok, "value", 0));
-    }
-    if (tok->type == '(') {
+      }
+      if (tok->type == '(') {
         lexnocomment();
         addnode(node, parseargumentlist(tok));
-	    node->end = tok->start + tok->len;
+	node->end = tok->start + tok->len;
         eat(tok, ')');
+      }
     }
     return node;
 }
@@ -661,6 +670,24 @@ parseargumentlist(struct tok *tok)
             lexnocomment();
         }
     }
+    return node;
+}
+
+/***********************************************************************
+ * parsetypepair : parse TypePair
+ *
+ * Enter:   tok = next token
+ *
+ * Return:  new node for the typepair
+ *          tok updated
+ */
+static struct node *
+parsetypepair(struct tok *tok)
+{
+    struct node *node = newelement("TypeList");
+    addnode(node, parsetype(tok));
+    eat(tok, ',');
+    addnode(node, parsetype(tok));
     return node;
 }
 

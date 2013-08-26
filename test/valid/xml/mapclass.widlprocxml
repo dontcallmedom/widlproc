@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>[MapClass(DOMString , object)] interface MyMap {
+};</webidl>
+  <Interface name="MyMap" id="::MyMap">
+    <webidl>[MapClass(DOMString , object)] interface MyMap {
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="MapClass">
+        <webidl>MapClass(DOMString , object)</webidl>
+        <TypeList>
+          <Type type="DOMString"/>
+          <Type type="object"/>
+        </TypeList>
+      </ExtendedAttribute>
+    </ExtendedAttributeList>
+  </Interface>
+</Definitions>
