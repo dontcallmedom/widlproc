@@ -119,7 +119,12 @@ setidentifier(struct tok *tok)
     char *s;
     if (tok->type != TOK_IDENTIFIER)
         tokerrorexit(tok, "expected identifier");
-    s = memprintf("%.*s", tok->len, tok->start);
+    // Remove leading underscore
+    if (tok->start[0] == '_') 
+      s = memprintf("%.*s", tok->len -1, tok->start + 1);
+    else
+      s = memprintf("%.*s", tok->len, tok->start);
+    
     return s;
 }
 

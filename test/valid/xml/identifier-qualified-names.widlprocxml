@@ -81,11 +81,11 @@ interface Foo {
 
       attribute DOMString? _value;
     };</webidl>
-    <Attribute name="_const" id="::TextField::_const">
+    <Attribute name="const" id="::TextField::const">
       <webidl>      attribute boolean _const;</webidl>
       <Type type="boolean"/>
     </Attribute>
-    <Attribute name="_value" id="::TextField::_value">
+    <Attribute name="value" id="::TextField::value">
       <webidl>      attribute DOMString? _value;</webidl>
       <Type type="DOMString" nullable="nullable"/>
     </Attribute>
