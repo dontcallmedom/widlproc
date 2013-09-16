@@ -287,9 +287,9 @@ static struct node *
 parsetypesuffix(struct tok *tok, struct node *node)
 {
     if (tok->type == '[') {
+        struct node *typenode = node;
         eat(tok, '[');
         eat(tok, ']');
-        struct node *typenode = node;
 	node = newelement("Type");
         addnode(node, newattr("type", "array"));
         addnode(node, typenode);
@@ -314,9 +314,9 @@ static struct node *
 parsetypesuffixstartingwitharray(struct tok *tok,  struct node *node)
 {
     if (tok->type == '[') {
+        struct node *typenode = node;
         eat(tok, '[');
         eat(tok, ']');
-        struct node *typenode = node;
 	node = newelement("Type");
         addnode(node, newattr("type", "array"));
         addnode(node, typenode);
