@@ -54,6 +54,7 @@ VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program*Files/Microsoft*Visual*Studio*8
 SDKDIR = $(wildcard /cygdrive/c/Program*Files/Microsoft*SDKs/Windows/*/Lib)
 ifeq (,$(VISUALSTUDIODIR))
 VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program\ Files\ */Microsoft*Visual*Studio*10*)
+SDKDIR = $(wildcard /cygdrive/c/Program*Files*/Microsoft*SDKs/Windows/*/Lib)
 endif
 ifeq (,$(VISUALSTUDIODIR))
 VISUALSTUDIODIR = $(wildcard /cygdrive/c/Program\ Files\ */Microsoft*Visual*Studio*11*)
