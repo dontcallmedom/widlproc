@@ -92,7 +92,7 @@ vlocerrorexit(const char *filename, unsigned int linenum,
         const char *format, va_list ap)
 {
     if (filename)
-        fprintf(stderr, linenum ? "%s: %i: " : "%s: ", filename, linenum);
+        linenum ? fprintf(stderr, "%s: %i: ", filename, linenum) : fprintf(stderr, "%s: ", filename);
     vfprintf(stderr, format, ap);
     fputc('\n', stderr);
     exit(1);
