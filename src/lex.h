@@ -38,6 +38,7 @@
     "octet\0" \
     "optional\0" \
     "or\0" \
+    "Promise\0" \
     "readonly\0" \
     "sequence\0" \
     "short\0" \
@@ -92,6 +93,7 @@ enum toktype {
     TOK_octet,
     TOK_optional,
     TOK_or,
+    TOK_Promise,
     TOK_readonly,
     TOK_sequence,
     TOK_short,

@@ -1,0 +1,3 @@
+interface withAPromise {
+  Promise<void> wait();
+};

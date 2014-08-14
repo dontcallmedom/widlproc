@@ -957,7 +957,7 @@ The <code>any</code>, <code>object</code> and <code>void</code>
 types have the attribute
 <em>type</em> set to the type, and no other attributes or elements.
 Note that the <code>void</code> type appears only when the <em>Type</em>
-element is a child of <em>Operation</em>.
+element is a child of <em>Operation</em> or as a parameter to a <code>Promise&lt;></code> type.
 <li>
 A type that is an interface has the attribute <em>name</em> set to the
 name of that interface, and no other attributes or elements.
@@ -971,6 +971,7 @@ whose value is one of those strings, and no other attributes or elements.
 However, if the type was specified in the Web IDL with a trailing <code>?</code>
 sign, then there is an attribute <em>nullable</em> with the value
 <code>nullable</code>.
+<li>For arrays, sequences, and parametrized Promise types, there is <em>type</em> attribute set respectively to <code>sequence</code>, <code>array</code> and <code>Promise</code>, and a chile element <code>Type</code> that describes the type of the elements in the sequence and array, and the type of the return value of the Promise
 </ul>
 <p>
 The restrictions on which combinations of elements and attributes are

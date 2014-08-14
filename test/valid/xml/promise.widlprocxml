@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface withAPromise {
+  Promise&lt;void> wait();
+};</webidl>
+  <Interface name="withAPromise" id="::withAPromise">
+    <webidl>interface withAPromise {
+  Promise&lt;void> wait();
+};</webidl>
+    <Operation name="wait" id="::withAPromise::wait">
+      <webidl>  Promise&lt;void> wait();</webidl>
+      <Type type="Promise">
+        <Type type="void"/>
+      </Type>
+      <ArgumentList/>
+    </Operation>
+  </Interface>
+</Definitions>
