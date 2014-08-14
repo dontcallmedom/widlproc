@@ -1,0 +1,3 @@
+dictionary Foo {
+  float[] positions = [0];
+}

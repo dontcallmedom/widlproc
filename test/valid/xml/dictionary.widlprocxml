@@ -4,6 +4,7 @@
   <webidl>dictionary PaintOptions {
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
+  float[] positions ;
   <ref>Point</ref> position;
 };
 
@@ -15,6 +16,7 @@ partial dictionary A {
     <webidl>dictionary PaintOptions {
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
+  float[] positions ;
   <ref>Point</ref> position;
 };</webidl>
     <DictionaryMember name="fillPattern" stringvalue="black" id="::PaintOptions::fillPattern">
@@ -24,6 +26,12 @@ partial dictionary A {
     <DictionaryMember name="strokePattern" value="null" id="::PaintOptions::strokePattern">
       <webidl>  DOMString? strokePattern = null;</webidl>
       <Type type="DOMString" nullable="nullable"/>
+    </DictionaryMember>
+    <DictionaryMember name="positions" id="::PaintOptions::positions">
+      <webidl>  float[] positions ;</webidl>
+      <Type type="array">
+        <Type type="float"/>
+      </Type>
     </DictionaryMember>
     <DictionaryMember name="position" id="::PaintOptions::position">
       <webidl>  <ref>Point</ref> position;</webidl>

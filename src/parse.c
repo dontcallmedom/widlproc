@@ -517,7 +517,7 @@ parsetype(struct tok *tok)
       lexnocomment();
       node = parsetypesuffixstartingwitharray(tok, node);
     } else {
-      node = parsenonanytype(tok);	
+      node = parsenonanytype(tok);
     }
     return node;
 }
@@ -1019,11 +1019,7 @@ parseconstexpr (struct tok *tok, struct node *node) {
   s = memalloc(tok->len + 1);
   memcpy(s, tok->start, tok->len);
   s[tok->len] = 0;
-  if (tok->type != TOK_STRING) {
-    addnode(node, newattr("value", s));
-  } else {
-    addnode(node, newattr("stringvalue", s));
-  }
+  addnode(node, newattr("value", s));
   lexnocomment();
   return node;
 }
@@ -1045,6 +1041,12 @@ parsedefaultvalue (struct tok *tok, struct node *node) {
     memcpy(s, tok->start, tok->len);
     s[tok->len] = 0;
     addnode(node, newattr("stringvalue", s));
+    lexnocomment();
+    return node;
+  } else if (tok->type == '[') {
+    eat(tok, '[');
+    eat(tok, ']');
+    addnode(node, newattr("value", "[]"));
     lexnocomment();
     return node;
   } else {

@@ -2,6 +2,7 @@
 dictionary PaintOptions {
   DOMString? fillPattern = "black";
   DOMString? strokePattern = null;
+  float[] positions ;
   Point position;
 };
 

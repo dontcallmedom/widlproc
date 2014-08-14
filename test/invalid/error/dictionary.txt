@@ -1,0 +1,1 @@
+invalid/idl/dictionary.widl: 2: at '0': expected ']'
