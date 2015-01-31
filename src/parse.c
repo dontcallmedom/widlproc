@@ -1083,6 +1083,10 @@ parsedictionarymember(struct tok *tok, struct node *eal)
     struct node *node = newelement("DictionaryMember");
     if (eal) addnode(node, eal);
     setcommentnode(node);
+    if (tok->type == TOK_required) {
+      eat(tok, TOK_required);
+      addnode(node, newattr("required", "required"));
+    }
     addnode(node, parsetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();

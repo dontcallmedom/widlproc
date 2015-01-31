@@ -893,12 +893,13 @@ The <em>id</em> attribute specifies the absolute scoped name of the attribute.
 </p>
 
 <p>The
-<em>value</em> attribute specifies its value for non-string values, and <em>stringvalue</em> for string values.</p>
+<em>value</em> attribute specifies its value for non-string values, and <em>stringvalue</em> for string values. The <em>required</em> attribute indicates whether the said member is required.</p>
 
 <pre class="dtd">
 &lt;!ELEMENT DictionaryMember (webidl, descriptive?, ExtendedAttributeList?, Type) >
 &lt;!ATTLIST DictionaryMember name CDATA #REQUIRED
                     id CDATA #REQUIRED
+                required (required) #IMPLIED
                 value CDATA #IMPLIED
                 stringvalue CDATA #IMPLIED >
 

@@ -2,6 +2,7 @@
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
   <webidl>dictionary PaintOptions {
+  required double length;
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
   float[] positions ;
@@ -14,11 +15,16 @@ partial dictionary A {
 };</webidl>
   <Dictionary name="PaintOptions" id="::PaintOptions">
     <webidl>dictionary PaintOptions {
+  required double length;
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
   float[] positions ;
   <ref>Point</ref> position;
 };</webidl>
+    <DictionaryMember required="required" name="length" id="::PaintOptions::length">
+      <webidl>  required double length;</webidl>
+      <Type type="double"/>
+    </DictionaryMember>
     <DictionaryMember name="fillPattern" stringvalue="black" id="::PaintOptions::fillPattern">
       <webidl>  DOMString? fillPattern = &quot;black&quot;;</webidl>
       <Type type="DOMString" nullable="nullable"/>
