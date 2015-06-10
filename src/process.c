@@ -39,6 +39,7 @@ static const char ntnames[] = { NTNAMES };
 void
 printtext(const char *s, unsigned int len, int escamp)
 {
+    const int tabLen = 8; // must be 8 or less 
     const char *p = s, *end = s + len;
     unsigned int count = 0;
     while (p != end) {
@@ -61,8 +62,10 @@ printtext(const char *s, unsigned int len, int escamp)
             count = 0;
             continue;
         case '\t':
-            seq = "        " + ((count - 1) & 7);
-            count = 0;
+		    memset( buf, ' ', sizeof(buf) );
+			buf[ 8 - ((count - 1) % tabLen ) ] = 0;
+			seq = buf;
+            count += 8 - ((count - 1) % tabLen);
             break;
         default:
             if ((unsigned char)ch >= 0x20) {
