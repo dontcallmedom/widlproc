@@ -1615,10 +1615,16 @@ checkforlineofstars:
                 pos = strchr(match, ch);
                 if (pos) {
                     /* Got a \ escape sequence. */
-                    const char *text = 
-                        "\\\0    @\0    &amp;\0$\0    #\0    &lt;\0 >\0    %"
-                        + 6 * (pos - match);
-                    cnode = addtext(cnode, text, strlen(text));
+				    const char *text[] = { "\\",
+										   "@",
+										   "&amp;",
+										   "$",
+										   "#",
+										   "&lt;"
+										   ">"
+										   "%" };
+					
+                    cnode = addtext(cnode, text[pos-match], strlen(text[pos-match]));
                     p += 2;
                     ch = *p;
                     starttext = p;
