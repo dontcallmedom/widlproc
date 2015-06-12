@@ -1,0 +1,1 @@
+invalid/idl/raises.widl: 5: at 'setraises': expected ';'

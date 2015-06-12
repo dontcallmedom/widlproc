@@ -1,0 +1,6 @@
+language: c
+install:
+  - sudo apt-get install xsltproc
+script:
+  - make
+  - make test OBJDIR=../obj/

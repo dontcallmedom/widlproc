@@ -65,7 +65,9 @@ DTD = $(OBJDIR)/widlprocxml.dtd
 VALID_WIDLS = $(patsubst $(VALIDTESTDIR)/%, %, $(wildcard $(VALIDTESTDIR)/*.widl))
 INVALID_WIDLS = $(patsubst $(INVALIDTESTDIR)/%, %, $(wildcard $(INVALIDTESTDIR)/*.widl))
 
-test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(VALID_WIDLS)) $(patsubst %.widl, $(INVALIDTESTOBJDIR)/%.txt, $(INVALID_WIDLS)) $(WIDLPROC) 
+INVALID_OBJS = $(patsubst $(INVALIDTESTDIR)/%.widl, $(INVALIDTESTOBJDIR)/%.txt, $(wildcard $(INVALIDTESTDIR)/*.widl))
+
+test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(VALID_WIDLS)) $(INVALID_OBJS) $(WIDLPROC) 
 	@echo "$@ pass"
 
 #$(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml $(SRCDIR)/widlprocxmltohtml.xsl Makefile
@@ -80,12 +82,12 @@ $(VALIDTESTOBJDIR)/%.widlprocxml : $(VALIDTESTDIR)/%.widl $(WIDLPROC) $(DTD) Mak
 	xmllint --noout --dtdvalid $(DTD) $@
 	diff $@ $(VALIDTESTREFDIR)/`basename $@`
 
-$(INVALIDTESTOBJDIR)/%.txt : $(INVALIDTESTDIR)/%.widl $(WIDLPROC) Makefile $(patsubst %.widl, $(INVALIDTESTREFDIR)/%.txt, $(INVALID_WIDLS))
+$(INVALIDTESTOBJDIR)/%.txt: $(INVALIDTESTDIR)/%.widl
 	mkdir -p $(dir $@)
 	-$(WIDLPROC) $<  >$@ 2>&1
 	diff $@ $(INVALIDTESTREFDIR)/`basename $@`
 
 
 
-.DELETE_ON_ERROR:
+#.DELETE_ON_ERROR:
 
