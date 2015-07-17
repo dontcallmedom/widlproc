@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface FrozenArrayAttribute {
+  attribute FrozenArray&lt;double> values;
+};</webidl>
+  <Interface name="FrozenArrayAttribute" id="::FrozenArrayAttribute">
+    <webidl>interface FrozenArrayAttribute {
+  attribute FrozenArray&lt;double> values;
+};</webidl>
+    <Attribute name="values" id="::FrozenArrayAttribute::values">
+      <webidl>  attribute FrozenArray&lt;double> values;</webidl>
+      <Type type="FrozenArray">
+        <Type type="double"/>
+      </Type>
+    </Attribute>
+  </Interface>
+</Definitions>

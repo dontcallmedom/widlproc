@@ -29,7 +29,8 @@
     "byte\0" \
     "double\0" \
     "float\0" \
-    "Infinity\0" \
+    "FrozenArray\0" \
+    "Infinity\0"  \
     "-Infinity\0" \
     "iterator\0" \
     "long\0" \
@@ -85,6 +86,7 @@ enum toktype {
     TOK_byte,
     TOK_double,
     TOK_float,
+    TOK_frozenarray,
     TOK_infinity,
     TOK_minusinfinity,
     TOK_iterator,

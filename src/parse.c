@@ -424,6 +424,18 @@ parsenonanytype(struct tok *tok)
 	  lexnocomment();
 	}
         break;
+    case TOK_frozenarray:
+        node = newelement("Type");
+        addnode(node, newattr("type", "FrozenArray"));
+        lexnocomment();
+        eat(tok, '<');
+        addnode(node, parsetype(tok));
+        eat(tok, '>');
+	if (tok->type == '?') {
+	  addnode(node, newattr("nullable", "nullable"));
+	  lexnocomment();
+	}
+        break;
     case TOK_Promise:
         node = newelement("Type");
         addnode(node, newattr("type", "Promise"));
