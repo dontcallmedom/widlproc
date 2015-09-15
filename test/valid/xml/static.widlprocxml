@@ -35,7 +35,7 @@ interface Circle {
       <webidl>  attribute float radius;</webidl>
       <Type type="float"/>
     </Attribute>
-    <Attribute static="static" readonly="readonly" name="triangulationCount" id="::Circle::triangulationCount">
+    <Attribute static="static" name="triangulationCount" readonly="readonly" id="::Circle::triangulationCount">
       <webidl>  static readonly attribute long triangulationCount;</webidl>
       <Type type="long"/>
     </Attribute>

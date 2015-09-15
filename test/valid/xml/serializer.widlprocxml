@@ -94,23 +94,23 @@ interface Account12 : <ref>Account</ref> {
 
   serializer;
 };</webidl>
-    <Attribute readonly="readonly" name="from" id="::Transaction::from">
+    <Attribute name="from" readonly="readonly" id="::Transaction::from">
       <webidl>  readonly attribute <ref>Account</ref> from;</webidl>
       <Type name="Account"/>
     </Attribute>
-    <Attribute readonly="readonly" name="to" id="::Transaction::to">
+    <Attribute name="to" readonly="readonly" id="::Transaction::to">
       <webidl>  readonly attribute <ref>Account</ref> to;</webidl>
       <Type name="Account"/>
     </Attribute>
-    <Attribute readonly="readonly" name="amount" id="::Transaction::amount">
+    <Attribute name="amount" readonly="readonly" id="::Transaction::amount">
       <webidl>  readonly attribute float amount;</webidl>
       <Type type="float"/>
     </Attribute>
-    <Attribute readonly="readonly" name="description" id="::Transaction::description">
+    <Attribute name="description" readonly="readonly" id="::Transaction::description">
       <webidl>  readonly attribute DOMString description;</webidl>
       <Type type="DOMString"/>
     </Attribute>
-    <Attribute readonly="readonly" name="number" id="::Transaction::number">
+    <Attribute name="number" readonly="readonly" id="::Transaction::number">
       <webidl>  readonly attribute unsigned long number;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
@@ -148,23 +148,23 @@ interface Account12 : <ref>Account</ref> {
 
   serializer = { from, to, amount, description };
 };</webidl>
-    <Attribute readonly="readonly" name="from" id="::Transaction2::from">
+    <Attribute name="from" readonly="readonly" id="::Transaction2::from">
       <webidl>  readonly attribute <ref>Account2</ref> from;</webidl>
       <Type name="Account2"/>
     </Attribute>
-    <Attribute readonly="readonly" name="to" id="::Transaction2::to">
+    <Attribute name="to" readonly="readonly" id="::Transaction2::to">
       <webidl>  readonly attribute <ref>Account2</ref> to;</webidl>
       <Type name="Account2"/>
     </Attribute>
-    <Attribute readonly="readonly" name="amount" id="::Transaction2::amount">
+    <Attribute name="amount" readonly="readonly" id="::Transaction2::amount">
       <webidl>  readonly attribute float amount;</webidl>
       <Type type="float"/>
     </Attribute>
-    <Attribute readonly="readonly" name="description" id="::Transaction2::description">
+    <Attribute name="description" readonly="readonly" id="::Transaction2::description">
       <webidl>  readonly attribute DOMString description;</webidl>
       <Type type="DOMString"/>
     </Attribute>
-    <Attribute readonly="readonly" name="number" id="::Transaction2::number">
+    <Attribute name="number" readonly="readonly" id="::Transaction2::number">
       <webidl>  readonly attribute unsigned long number;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

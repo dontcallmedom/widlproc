@@ -14,7 +14,7 @@
   void union(long... ints);
   void intersection(long... ints);
 };</webidl>
-    <Attribute readonly="readonly" name="cardinality" id="::IntegerSet::cardinality">
+    <Attribute name="cardinality" readonly="readonly" id="::IntegerSet::cardinality">
       <webidl>  readonly attribute unsigned long cardinality;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

@@ -15,7 +15,7 @@ interface LotteryResults {
         <webidl>Constructor</webidl>
       </ExtendedAttribute>
     </ExtendedAttributeList>
-    <Attribute readonly="readonly" name="numbers" id="::LotteryResults::numbers">
+    <Attribute name="numbers" readonly="readonly" id="::LotteryResults::numbers">
       <webidl>  readonly attribute unsigned short[][ ] numbers;</webidl>
       <Type type="array">
         <Type type="array">

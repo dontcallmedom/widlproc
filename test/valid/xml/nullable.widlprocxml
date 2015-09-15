@@ -21,7 +21,7 @@ interface Node {
     <webidl>interface Node {
   readonly attribute DOMString? namespaceURI;
 };</webidl>
-    <Attribute readonly="readonly" name="namespaceURI" id="::Node::namespaceURI">
+    <Attribute name="namespaceURI" readonly="readonly" id="::Node::namespaceURI">
       <webidl>  readonly attribute DOMString? namespaceURI;</webidl>
       <Type type="DOMString" nullable="nullable"/>
     </Attribute>

@@ -50,7 +50,7 @@ interface SessionIterator {
         </Argument>
       </ArgumentList>
     </Operation>
-    <Attribute readonly="readonly" name="sessionCount" id="::SessionManager::sessionCount">
+    <Attribute name="sessionCount" readonly="readonly" id="::SessionManager::sessionCount">
       <webidl>  readonly attribute unsigned long sessionCount;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
@@ -63,7 +63,7 @@ interface SessionIterator {
     <webidl>interface Session {
   readonly attribute DOMString username;
 };</webidl>
-    <Attribute readonly="readonly" name="username" id="::Session::username">
+    <Attribute name="username" readonly="readonly" id="::Session::username">
       <webidl>  readonly attribute DOMString username;</webidl>
       <Type type="DOMString"/>
     </Attribute>
@@ -84,7 +84,7 @@ interface SessionIterator {
         </Argument>
       </ArgumentList>
     </Operation>
-    <Attribute readonly="readonly" name="sessionCount" id="::SessionManager2::sessionCount">
+    <Attribute name="sessionCount" readonly="readonly" id="::SessionManager2::sessionCount">
       <webidl>  readonly attribute unsigned long sessionCount;</webidl>
       <Type type="unsigned long"/>
     </Attribute>
@@ -97,7 +97,7 @@ interface SessionIterator {
     <webidl>interface Session2 {
   readonly attribute DOMString username;
 };</webidl>
-    <Attribute readonly="readonly" name="username" id="::Session2::username">
+    <Attribute name="username" readonly="readonly" id="::Session2::username">
       <webidl>  readonly attribute DOMString username;</webidl>
       <Type type="DOMString"/>
     </Attribute>
@@ -106,7 +106,7 @@ interface SessionIterator {
     <webidl>interface SessionIterator {
   readonly attribute unsigned long remainingSessions;
 };</webidl>
-    <Attribute readonly="readonly" name="remainingSessions" id="::SessionIterator::remainingSessions">
+    <Attribute name="remainingSessions" readonly="readonly" id="::SessionIterator::remainingSessions">
       <webidl>  readonly attribute unsigned long remainingSessions;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

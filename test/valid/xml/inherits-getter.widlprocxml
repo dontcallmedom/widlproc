@@ -17,7 +17,7 @@ interface Person : <ref>Animal</ref> {
 
   readonly attribute DOMString name;
 };</webidl>
-    <Attribute readonly="readonly" name="name" id="::Animal::name">
+    <Attribute name="name" readonly="readonly" id="::Animal::name">
       <webidl>  readonly attribute DOMString name;</webidl>
       <Type type="DOMString"/>
     </Attribute>
@@ -32,7 +32,7 @@ interface Person : <ref>Animal</ref> {
     <InterfaceInheritance>
       <Name name="Animal"/>
     </InterfaceInheritance>
-    <Attribute readonly="readonly" name="age" id="::Person::age">
+    <Attribute name="age" readonly="readonly" id="::Person::age">
       <webidl>  readonly attribute unsigned short age;</webidl>
       <Type type="unsigned short"/>
     </Attribute>

@@ -64,7 +64,7 @@
     boolean pointWithinBounds(<ref>Point</ref> p);
     boolean allPointsWithinBounds(<ref>PointSequence</ref> ps);
   };</webidl>
-    <Attribute readonly="readonly" name="bounds" id="::Widget::bounds">
+    <Attribute name="bounds" readonly="readonly" id="::Widget::bounds">
       <webidl>    readonly attribute <ref>Rect</ref> bounds;</webidl>
       <Type name="Rect"/>
     </Attribute>

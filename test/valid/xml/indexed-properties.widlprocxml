@@ -24,7 +24,7 @@
   setter creator void set(DOMString name, any value);
   deleter void remove(DOMString name);
 };</webidl>
-    <Attribute readonly="readonly" name="size" id="::OrderedMap::size">
+    <Attribute name="size" readonly="readonly" id="::OrderedMap::size">
       <webidl>  readonly attribute unsigned long size;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

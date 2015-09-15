@@ -16,7 +16,7 @@
     <webidl>  interface Node {
     readonly attribute unsigned short nodeType;
   };</webidl>
-    <Attribute readonly="readonly" name="nodeType" id="::Node::nodeType">
+    <Attribute name="nodeType" readonly="readonly" id="::Node::nodeType">
       <webidl>    readonly attribute unsigned short nodeType;</webidl>
       <Type type="unsigned short"/>
     </Attribute>

@@ -14,7 +14,7 @@
   getter float (DOMString propertyName);
   setter void (DOMString propertyName, float propertyValue);
 };</webidl>
-    <Attribute readonly="readonly" name="propertyCount" id="::Dictionary::propertyCount">
+    <Attribute name="propertyCount" readonly="readonly" id="::Dictionary::propertyCount">
       <webidl>  readonly attribute unsigned long propertyCount;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

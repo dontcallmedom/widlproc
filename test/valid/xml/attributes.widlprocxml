@@ -34,7 +34,7 @@ interface Person {
       <webidl>  attribute unsigned short age;</webidl>
       <Type type="unsigned short"/>
     </Attribute>
-    <Attribute readonly="readonly" name="name" id="::Person::name">
+    <Attribute name="name" readonly="readonly" id="::Person::name">
       <webidl>  readonly attribute DOMString name;</webidl>
       <Type type="DOMString"/>
     </Attribute>
