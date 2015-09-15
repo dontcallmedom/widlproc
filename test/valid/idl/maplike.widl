@@ -1,0 +1,8 @@
+
+interface Stats {
+  maplike<DOMString, Dog>;
+};
+
+interface ReadonlyStats {
+  readonly maplike<DOMString, Dog>;
+};
