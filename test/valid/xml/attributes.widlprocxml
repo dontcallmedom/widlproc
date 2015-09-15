@@ -10,7 +10,7 @@ exception NoSuchPet { };
 interface Person {
 
   attribute unsigned short age;
-
+  readonly attribute DOMString name;
 };</webidl>
   <Exception name="InvalidName" id="::InvalidName">
     <webidl>exception InvalidName {
@@ -28,11 +28,15 @@ interface Person {
     <webidl>interface Person {
 
   attribute unsigned short age;
-
+  readonly attribute DOMString name;
 };</webidl>
     <Attribute name="age" id="::Person::age">
       <webidl>  attribute unsigned short age;</webidl>
       <Type type="unsigned short"/>
+    </Attribute>
+    <Attribute readonly="readonly" name="name" id="::Person::name">
+      <webidl>  readonly attribute DOMString name;</webidl>
+      <Type type="DOMString"/>
     </Attribute>
   </Interface>
 </Definitions>
