@@ -62,12 +62,13 @@ endif
 WIDLPROC = $(OBJDIR)/widlproc$(EXESUFFIX)
 DTD = $(OBJDIR)/widlprocxml.dtd
 
-VALID_WIDLS = $(patsubst $(VALIDTESTDIR)/%, %, $(wildcard $(VALIDTESTDIR)/*.widl))
-INVALID_WIDLS = $(patsubst $(INVALIDTESTDIR)/%, %, $(wildcard $(INVALIDTESTDIR)/*.widl))
+VALID_WIDLS = $(wildcard $(VALIDTESTDIR)/*.widl)
+INVALID_WIDLS = $(wildcard $(INVALIDTESTDIR)/*.widl)
 
+VALID_OBJS = $(patsubst $(VALIDTESTDIR)/%.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(VALID_WIDLS))
 INVALID_OBJS = $(patsubst $(INVALIDTESTDIR)/%.widl, $(INVALIDTESTOBJDIR)/%.txt, $(wildcard $(INVALIDTESTDIR)/*.widl))
 
-test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(VALID_WIDLS)) $(INVALID_OBJS) $(WIDLPROC) 
+test: $(VALID_OBJS) $(INVALID_OBJS) $(WIDLPROC) $(DTD)
 	@echo "$@ pass"
 
 #$(EXAMPLESOBJDIR)/%.html : $(EXAMPLESOBJDIR)/%.widlprocxml $(SRCDIR)/widlprocxmltohtml.xsl Makefile
@@ -75,7 +76,7 @@ test : $(patsubst %.widl, $(VALIDTESTOBJDIR)/%.widlprocxml, $(VALID_WIDLS)) $(IN
 #	xsltproc $(dir $@)/widlprocxmltohtml.xsl $< >$@
 
 
-$(VALIDTESTOBJDIR)/%.widlprocxml : $(VALIDTESTDIR)/%.widl $(WIDLPROC) $(DTD) Makefile $(patsubst %.widl, $(VALIDTESTREFDIR)/%.widlprocxml, $(VALID_WIDLS))
+$(VALIDTESTOBJDIR)/%.widlprocxml : $(VALIDTESTDIR)/%.widl $(VALIDTESTREFDIR)/%.widlprocxml
 	mkdir -p $(dir $@)
 	$(WIDLPROC) $< >$@
 	cp $(OBJDIR)/widlprocxml.dtd $(dir $@)/
@@ -89,5 +90,5 @@ $(INVALIDTESTOBJDIR)/%.txt: $(INVALIDTESTDIR)/%.widl
 
 
 
-#.DELETE_ON_ERROR:
+.DELETE_ON_ERROR:
 

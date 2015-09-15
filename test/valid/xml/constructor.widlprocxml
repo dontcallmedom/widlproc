@@ -43,7 +43,7 @@ interface Circle {
       <webidl>  attribute float cy;</webidl>
       <Type type="float"/>
     </Attribute>
-    <Attribute readonly="readonly" name="circumference" id="::Circle::circumference">
+    <Attribute name="circumference" readonly="readonly" id="::Circle::circumference">
       <webidl>  readonly attribute float circumference;</webidl>
       <Type type="float"/>
     </Attribute>

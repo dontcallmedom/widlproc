@@ -542,7 +542,7 @@ scoped name of the interface being inherited from.
 
 <pre class="dtd">
 &lt;!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
-        InterfaceInheritance?, (Const | Attribute | Operation | Stringifier* | Serializer* | Iterator | IteratorObject)* ) >
+        InterfaceInheritance?, MapLike?, (Const | Attribute | Operation | Stringifier | Serializer | Iterator | IteratorObject)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
                     partial (partial) #IMPLIED
                     callback (callback) #IMPLIED
@@ -1019,7 +1019,16 @@ sign, then there is an attribute <em>nullable</em> with the value
 sign, then there is an attribute <em>nullable</em> with the value
 <code>nullable</code>.
 
+<h4>MapLike</h4>
 
+<p>An interface can be declared to be <code>maplike</code>: this is represented by it having a child element named <em>MapLike</em>, with optionally a <code>readonly</code> attribute set to <code>readonly</code>; the types of the keys and values of that map are defined by children elements <code>Key</code> and <code>Value</code> which each takes a <code>Type</code> child elmeent.</p>
+
+<pre class="dtd">
+&lt;!ELEMENT MapLike (webidl, descriptive?, Key, Value) >
+&lt;!ATTLIST MapLike readonly (readonly) #IMPLIED >
+&lt;!ELEMENT Key (descriptive?, Type) >
+&lt;!ELEMENT Value (descriptive?, Type) >
+</pre>
 
 <h4>Descriptive elements</h4>
 

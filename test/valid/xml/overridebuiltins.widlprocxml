@@ -17,7 +17,7 @@ interface StringMap2 {
         <webidl>OverrideBuiltins</webidl>
       </ExtendedAttribute>
     </ExtendedAttributeList>
-    <Attribute readonly="readonly" name="length" id="::StringMap2::length">
+    <Attribute name="length" readonly="readonly" id="::StringMap2::length">
       <webidl>  readonly attribute unsigned long length;</webidl>
       <Type type="unsigned long"/>
     </Attribute>

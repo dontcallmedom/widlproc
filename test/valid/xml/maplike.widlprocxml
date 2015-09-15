@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface Stats {
+  maplike&lt;DOMString, <ref>Dog</ref>>;
+};
+
+interface ReadonlyStats {
+  readonly maplike&lt;DOMString, <ref>Dog</ref>>;
+};</webidl>
+  <Interface name="Stats" id="::Stats">
+    <webidl>interface Stats {
+  maplike&lt;DOMString, <ref>Dog</ref>>;
+};</webidl>
+    <MapLike>
+      <webidl>  maplike&lt;DOMString, <ref>Dog</ref>>;</webidl>
+      <Key>
+        <Type type="DOMString"/>
+      </Key>
+      <Value>
+        <Type name="Dog"/>
+      </Value>
+    </MapLike>
+  </Interface>
+  <Interface name="ReadonlyStats" id="::ReadonlyStats">
+    <webidl>interface ReadonlyStats {
+  readonly maplike&lt;DOMString, <ref>Dog</ref>>;
+};</webidl>
+    <MapLike readonly="readonly">
+      <webidl>  readonly maplike&lt;DOMString, <ref>Dog</ref>>;</webidl>
+      <Key>
+        <Type type="DOMString"/>
+      </Key>
+      <Value>
+        <Type name="Dog"/>
+      </Value>
+    </MapLike>
+  </Interface>
+</Definitions>

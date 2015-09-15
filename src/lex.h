@@ -58,6 +58,7 @@
     "inherit\0" \
     "interface\0" \
     "legacycaller\0" \
+    "maplike\0" \
     "partial\0" \
     "required\0" \
     "serializer\0" \
@@ -116,6 +117,7 @@ enum toktype {
     TOK_inherit,
     TOK_interface,
     TOK_legacycaller,
+    TOK_maplike,
     TOK_partial,
     TOK_required,
     TOK_serializer,

@@ -949,6 +949,23 @@ parseserializer (struct tok *tok, struct node *eal) {
   }
 }
 
+static struct node *
+parsemaplike(struct tok *tok) {
+  struct node *node, *key, *value;
+  node = newelement("MapLike");
+  key = newelement("Key");
+  value = newelement("Value");
+  lexnocomment();
+  eat(tok, '<');
+  addnode(key, parsetype(tok));
+  eat(tok, ',');
+  addnode(value, parsetype(tok));
+  addnode(node, key);
+  addnode(node, value);
+  eat(tok, '>');
+  return node;
+}
+
 /***********************************************************************
  * parseattributeoroperationoriterator : parse [15] AttributeOrOperationOrIterator
  *
@@ -972,6 +989,9 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
 	return parsereturntypeandoperationrest(tok, eal, attrs);
       }
     }
+    if (tok->type == TOK_maplike) {
+      return parsemaplike(tok);
+    }
     if (tok->type == TOK_stringifier) {
         addnode(attrs, newattr("stringifier", "stringifier"));
         lexnocomment();
@@ -985,7 +1005,18 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
         lexnocomment();
         addnode(attrs, newattr("static", "static"));
     }
-    if (tok->type == TOK_inherit || tok->type == TOK_readonly || tok->type == TOK_attribute)
+    if (tok->type == TOK_readonly) {
+      lexnocomment();
+      struct node *node;
+      if (tok->type == TOK_maplike) {
+         node = parsemaplike(tok);
+       } else {
+         node = parseattribute(tok, eal, attrs);
+       }
+        addnode(node, newattr("readonly", "readonly"));
+        return node;
+    }
+    if (tok->type == TOK_inherit || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
     if (!nodeisempty(attrs))
  	return parsereturntypeandoperationrest(tok, eal, attrs);
