@@ -1102,7 +1102,6 @@ parsedefaultvalue (struct tok *tok, struct node *node) {
     eat(tok, '[');
     eat(tok, ']');
     addnode(node, newattr("value", "[]"));
-    lexnocomment();
     return node;
   } else {
     return parseconstexpr(tok, node);

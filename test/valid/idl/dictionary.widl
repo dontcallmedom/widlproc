@@ -3,6 +3,7 @@ dictionary PaintOptions {
   required double length;
   DOMString? fillPattern = "black";
   DOMString? strokePattern = null;
+  sequence<MediaStream> streams = [];
   float[] positions ;
   Point position;
 };

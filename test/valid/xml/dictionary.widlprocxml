@@ -5,6 +5,7 @@
   required double length;
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
+  sequence&lt;<ref>MediaStream</ref>> streams = [];
   float[] positions ;
   <ref>Point</ref> position;
 };
@@ -18,6 +19,7 @@ partial dictionary A {
   required double length;
   DOMString? fillPattern = &quot;black&quot;;
   DOMString? strokePattern = null;
+  sequence&lt;<ref>MediaStream</ref>> streams = [];
   float[] positions ;
   <ref>Point</ref> position;
 };</webidl>
@@ -32,6 +34,12 @@ partial dictionary A {
     <DictionaryMember name="strokePattern" value="null" id="::PaintOptions::strokePattern">
       <webidl>  DOMString? strokePattern = null;</webidl>
       <Type type="DOMString" nullable="nullable"/>
+    </DictionaryMember>
+    <DictionaryMember name="streams" value="[]" id="::PaintOptions::streams">
+      <webidl>  sequence&lt;<ref>MediaStream</ref>> streams = [];</webidl>
+      <Type type="sequence">
+        <Type name="MediaStream"/>
+      </Type>
     </DictionaryMember>
     <DictionaryMember name="positions" id="::PaintOptions::positions">
       <webidl>  float[] positions ;</webidl>
