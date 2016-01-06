@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface SessionManager {
+  <ref>Session</ref> getSessionForUser(DOMString username);
+  readonly attribute unsigned long sessionCount;
+
+  iterable&lt;<ref>Session</ref>>;
+};
+
+interface Session {
+  readonly attribute DOMString username;
+};
+
+interface KeydSessionManager {
+  iterable&lt;DOMString,<ref>Session</ref>>;
+};</webidl>
+  <Interface name="SessionManager" id="::SessionManager">
+    <webidl>interface SessionManager {
+  <ref>Session</ref> getSessionForUser(DOMString username);
+  readonly attribute unsigned long sessionCount;
+
+  iterable&lt;<ref>Session</ref>>;
+};</webidl>
+    <Operation name="getSessionForUser" id="::SessionManager::getSessionForUser">
+      <webidl>  <ref>Session</ref> getSessionForUser(DOMString username);</webidl>
+      <Type name="Session"/>
+      <ArgumentList>
+        <Argument name="username">
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+    <Attribute name="sessionCount" readonly="readonly" id="::SessionManager::sessionCount">
+      <webidl>  readonly attribute unsigned long sessionCount;</webidl>
+      <Type type="unsigned long"/>
+    </Attribute>
+    <Iterable>
+      <webidl>  iterable&lt;<ref>Session</ref>>;</webidl>
+      <Value>
+        <Type name="Session"/>
+      </Value>
+    </Iterable>
+  </Interface>
+  <Interface name="Session" id="::Session">
+    <webidl>interface Session {
+  readonly attribute DOMString username;
+};</webidl>
+    <Attribute name="username" readonly="readonly" id="::Session::username">
+      <webidl>  readonly attribute DOMString username;</webidl>
+      <Type type="DOMString"/>
+    </Attribute>
+  </Interface>
+  <Interface name="KeydSessionManager" id="::KeydSessionManager">
+    <webidl>interface KeydSessionManager {
+  iterable&lt;DOMString,<ref>Session</ref>>;
+};</webidl>
+    <Iterable>
+      <webidl>  iterable&lt;DOMString,<ref>Session</ref>>;</webidl>
+      <Key>
+        <Type type="DOMString"/>
+      </Key>
+      <Value>
+        <Type name="Session"/>
+      </Value>
+    </Iterable>
+  </Interface>
+</Definitions>

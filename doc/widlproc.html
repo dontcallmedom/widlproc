@@ -542,7 +542,7 @@ scoped name of the interface being inherited from.
 
 <pre class="dtd">
 &lt;!ELEMENT Interface (webidl, descriptive?, ExtendedAttributeList?,
-        InterfaceInheritance?, MapLike?, (Const | Attribute | Operation | Stringifier | Serializer | Iterator | IteratorObject)* ) >
+        InterfaceInheritance?, MapLike?, (Const | Attribute | Operation | Stringifier | Serializer | Iterable)* ) >
 &lt;!ATTLIST Interface name CDATA #REQUIRED
                     partial (partial) #IMPLIED
                     callback (callback) #IMPLIED
@@ -863,18 +863,11 @@ name when the corresponding syntax appears in the Web IDL input.
 
 </pre>
 
-<h4>Iterator</h4>
-<p>An <em>Iterator</em> element defines  whether the interface has a custom iterator; the type of the iterated objects is defined in the <em>Type</em> child. If that interator implements a particular interface, the name of that interface is set in the <em>interface</em> attribute.</p>
+<h4>Iterable</h4>
+<p>An <em>Iterable</em> element defines  whether the interface has an iterator; the type of the iterated objects is defined in the <em>Value</em> child. If that interator has a pair iterator, the type of the key is defined in the <em>Key</em> child.</p>
 <pre class="dtd">
-&lt;!ELEMENT Iterator (webidl, descriptive?, ExtendedAttributeList?, Type) >
-&lt;!ATTLIST Iterator interface CDATA #IMPLIED>
-</pre>
-
-<h4>IteratorObject</h4>
-<p>An <em>IteratorObject</em> element denotes that the interface serves as an iterator object interface; the type of the iterated objects is defined in the <em>Type</em> child.</p>
-
-<pre class="dtd">
-&lt;!ELEMENT IteratorObject (webidl, descriptive?, ExtendedAttributeList?, Type) >
+&lt;!ELEMENT Iterable (webidl, descriptive?, ExtendedAttributeList?, Key?, Value) >
+&lt;!ATTLIST Iterable interface CDATA #IMPLIED>
 </pre>
 
 

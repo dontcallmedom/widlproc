@@ -759,71 +759,8 @@ parsetypepair(struct tok *tok)
     return node;
 }
 
-
 /***********************************************************************
  * parseoperationrest : parse [25] OperationRest
- *
- * Enter:   tok = next token
- *          node
- *
- * Return:  node
- *          tok on terminating ';'
- */
-static struct node *
-parseoperationrest(struct tok *tok, struct node *node)
-{
-    if (tok->type == TOK_IDENTIFIER) {
-        addnode(node, newattr("name", setidentifier(tok)));
-        lexnocomment();
-    }
-    eat(tok, '(');
-    addnode(node, parseargumentlist(tok));
-    eat(tok, ')');
-    return node;
-}
-
-/***********************************************************************
- * parsereturntypeandoperationrest: parse ReturnType OperationRest
- * Enter:   tok = next token
- *          eal
- *          attrs list of attributes
- * Return:  node
- *          tok on terminating ';'
- */
-static struct node *
-parsereturntypeandoperationrest(struct tok *tok, struct node *eal, struct node *attrs) 
-{
-  struct node *node =  newelement("Operation");
-  struct node *nodeType = parsereturntype(tok);
-  if (eal) addnode(node, eal);
-  setcommentnode(node);
-  addnode(node, attrs);
-  addnode(node, nodeType);
-  return parseoperationrest(tok, node);
-}
-
-/***********************************************************************
- * parseiteratorrest : parse OptionalIteratorInterface
- *
- * Enter:   tok = next token
- *          node
- *
- * Return:  node
- *          tok on terminating ';'
- */
-static struct node *
-parseoptionaliteratorinterface(struct tok *tok, struct node *node)
-{
-  if (tok->type == '=') {
-    lexnocomment();
-    addnode(node, newattr("interface", setidentifier(tok)));
-    lexnocomment();
-  }
-  return node;
-}
-
-/***********************************************************************
- * parseoperationoriteratorrest : parse [25] OperationOrIteratorRest
  *
  * Enter:   tok = next token
  *          eal = 0 else extended attribute list node
@@ -833,33 +770,23 @@ parseoptionaliteratorinterface(struct tok *tok, struct node *node)
  *          tok on terminating ';'
  */
 static struct node *
-parseoperationoriteratorrest(struct tok *tok, struct node *eal, struct node *attrs)
+parseoperationrest(struct tok *tok, struct node *eal, struct node *attrs)
 {
   struct node *node;
   struct node *nodeType = parsereturntype(tok);
-  unsigned int isIterator = 0;
-  if (tok->type == TOK_iterator) {
-    lexnocomment();
-    if (tok->type == TOK_object) {
-      lexnocomment();
-      node = newelement("IteratorObject");
-      addnode(node, nodeType);
-      return node;
-    } else {
-      node = newelement("Iterator");
-      isIterator = 1;    
-    }
-  } else {
-    node = newelement("Operation");
-  }
+  node = newelement("Operation");
   if (eal) addnode(node, eal);
   setcommentnode(node);
   addnode(node, attrs);
   addnode(node, nodeType);
-  if (isIterator)
-    return parseoptionaliteratorinterface(tok, node);
-  else
-    return parseoperationrest(tok, node);
+  if (tok->type == TOK_IDENTIFIER) {
+    addnode(node, newattr("name", setidentifier(tok)));
+    lexnocomment();
+  }
+  eat(tok, '(');
+  addnode(node, parseargumentlist(tok));
+  eat(tok, ')');
+  return node;
 }
 
 
@@ -1005,8 +932,31 @@ parsemaplike(struct tok *tok) {
   return node;
 }
 
+static struct node *
+parseiterable(struct tok *tok) {
+  struct node *node, *key, *value, *type1;
+  node = newelement("Iterable");
+  key = newelement("Key");
+  value = newelement("Value");
+  lexnocomment();
+  eat(tok, '<');
+  type1 = parsetype(tok);
+  if (tok->type == ',') {
+    eat(tok, ',');
+    addnode(key, type1);
+    addnode(node, key);
+    addnode(value, parsetype(tok));
+  } else {
+    addnode(value, type1);
+  }
+  addnode(node, value);
+  eat(tok, '>');
+  return node;
+}
+
+
 /***********************************************************************
- * parseattributeoroperationoriterator : parse [15] AttributeOrOperationOrIterator
+ * parseattributeoroperationoriterable : parse [15] AttributeOrOperationOrIteratable
  *
  * Enter:   tok = next token
  *          eal = 0 else extended attribute list node
@@ -1015,7 +965,7 @@ parsemaplike(struct tok *tok) {
  *          tok on terminating ';'
  */
 static struct node *
-parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
+parseattributeoroperationoriterable(struct tok *tok, struct node *eal)
 {
 	int alreadyseen ;
     struct node *attrs = newattrlist();
@@ -1025,8 +975,11 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
 	return parseserializer(tok, eal);
       } else {
 	addnode(attrs, newattr("serializer", "serializer"));
-	return parsereturntypeandoperationrest(tok, eal, attrs);
+	return parseoperationrest(tok, eal, attrs);
       }
+    }
+    if (tok->type == TOK_iterable) {
+      return parseiterable(tok);
     }
     if (tok->type == TOK_maplike) {
       return parsemaplike(tok);
@@ -1058,7 +1011,7 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
     if (tok->type == TOK_inherit || tok->type == TOK_attribute)
         return parseattribute(tok, eal, attrs);
     if (!nodeisempty(attrs))
- 	return parsereturntypeandoperationrest(tok, eal, attrs);
+ 	return parseoperationrest(tok, eal, attrs);
     alreadyseen = 0;
     for (;;) {
       static const int t[] = { TOK_getter,
@@ -1077,10 +1030,7 @@ parseattributeoroperationoriterator(struct tok *tok, struct node *eal)
       addnode(attrs, newattr(s, s));
       lexnocomment();
     }
-    if (!nodeisempty(attrs))    
-      return parsereturntypeandoperationrest(tok, eal, attrs);
-    else
-      return parseoperationoriteratorrest(tok, eal, attrs);
+    return parseoperationrest(tok, eal, attrs);
 }
 
 
@@ -1338,7 +1288,7 @@ parseinterface(struct tok *tok, struct node *eal)
         if (tok->type == TOK_const)
             addnode(node, node2 = parseconst(tok, eal));
         else
-            addnode(node, node2 = parseattributeoroperationoriterator(tok, eal));
+            addnode(node, node2 = parseattributeoroperationoriterable(tok, eal));
         node2->wsstart = start;
         node2->end = tok->start + tok->len;
         setid(node2);
