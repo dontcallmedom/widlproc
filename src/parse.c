@@ -580,6 +580,14 @@ parseextendedattribute(struct tok *tok)
       addnode(node, parsetypepair(tok));
       node->end = tok->start + tok->len;
       eat(tok, ')');
+    } else if (!strcmp(attrname, "Exposed")) {
+      // Special casing Exposed since it too has a unique structure
+      eat(tok, '=');
+      eat(tok, '(');
+      addnode(node, parsetypepair(tok));
+      node->end = tok->start + tok->len;
+      eat(tok, ')');
+
     } else {
       if (tok->type == '=') {
         lexnocomment();
