@@ -1,0 +1,5 @@
+[Global=(Worker,ServiceWorker), Exposed=ServiceWorker]
+interface ServiceWorkerGlobalScope {
+};
+[Global] interface Foo {
+};

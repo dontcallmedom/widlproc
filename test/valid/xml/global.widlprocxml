@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>[Global=(<ref>Worker</ref>,<ref>ServiceWorker</ref>), Exposed=<ref>ServiceWorker</ref>]
+interface ServiceWorkerGlobalScope {
+};
+[Global] interface Foo {
+};</webidl>
+  <Interface name="ServiceWorkerGlobalScope" id="::ServiceWorkerGlobalScope">
+    <webidl>[Global=(<ref>Worker</ref>,<ref>ServiceWorker</ref>), Exposed=<ref>ServiceWorker</ref>]
+interface ServiceWorkerGlobalScope {
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="Global">
+        <webidl>Global=(<ref>Worker</ref>,<ref>ServiceWorker</ref>),</webidl>
+        <TypeList>
+          <Type name="Worker"/>
+          <Type name="ServiceWorker"/>
+        </TypeList>
+      </ExtendedAttribute>
+      <ExtendedAttribute name="Exposed">
+        <webidl> Exposed=<ref>ServiceWorker</ref>]</webidl>
+        <TypeList>
+          <Type name="ServiceWorker"/>
+        </TypeList>
+      </ExtendedAttribute>
+    </ExtendedAttributeList>
+  </Interface>
+  <Interface name="Foo" id="::Foo">
+    <webidl>[Global] interface Foo {
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="Global">
+        <webidl>Global</webidl>
+      </ExtendedAttribute>
+    </ExtendedAttributeList>
+  </Interface>
+</Definitions>

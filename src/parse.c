@@ -152,6 +152,7 @@ static struct node *parsedefaultvalue(struct tok *tok, struct node *parent);
 static struct node *parseuniontype(struct tok *tok);
 static struct node *parseargumentlist(struct tok *tok);
 static struct node *parsetypepair(struct tok *tok);
+static struct node *parseoneormanytype(struct tok *tok);
 static void parsedefinitions(struct tok *tok, struct node *parent);
 static struct node *parsetypesuffixstartingwitharray(struct tok *tok, struct node *node);
 
@@ -583,11 +584,15 @@ parseextendedattribute(struct tok *tok)
     } else if (!strcmp(attrname, "Exposed")) {
       // Special casing Exposed since it too has a unique structure
       eat(tok, '=');
-      eat(tok, '(');
-      addnode(node, parsetypepair(tok));
+      addnode(node, parseoneormanytype(tok));
       node->end = tok->start + tok->len;
-      eat(tok, ')');
-
+    } else if (!strcmp(attrname, "Global") || !strcmp(attrname, "PrimaryGlobal")) {
+      // Special casing Global / PrimaryGlobal since they too have a unique structure
+      if (tok->type == '=') {
+        eat(tok, '=');
+        addnode(node, parseoneormanytype(tok));
+        node->end = tok->start + tok->len;
+      }
     } else {
       if (tok->type == '=') {
         lexnocomment();
@@ -706,6 +711,32 @@ parseargumentlist(struct tok *tok)
                 break;
             lexnocomment();
         }
+    }
+    return node;
+}
+
+/***********************************************************************
+ * parseoneormanytype
+ *
+ * Enter:   tok = next token
+ *
+ * Return:  new node for the typepair
+ *          tok updated
+ */
+static struct node *
+parseoneormanytype(struct tok *tok)
+{
+    struct node *node = newelement("TypeList");
+    if (tok->type == '(') {
+      eat(tok, '(');
+      addnode(node, parsetype(tok));
+      while(tok->type == ',') {
+        eat(tok, ',');
+        addnode(node, parsetype(tok));
+      }
+      eat(tok, ')');
+    } else {
+      addnode(node, parsetype(tok));
     }
     return node;
 }

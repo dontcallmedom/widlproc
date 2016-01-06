@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>[Exposed=(<ref>Window</ref>,<ref>Worker</ref>)]
+interface ServiceWorker : <ref>EventTarget</ref> {
+};</webidl>
+  <Interface name="ServiceWorker" id="::ServiceWorker">
+    <webidl>[Exposed=(<ref>Window</ref>,<ref>Worker</ref>)]
+interface ServiceWorker : <ref>EventTarget</ref> {
+};</webidl>
+    <ExtendedAttributeList>
+      <ExtendedAttribute name="Exposed">
+        <webidl>Exposed=(<ref>Window</ref>,<ref>Worker</ref>)</webidl>
+        <TypeList>
+          <Type name="Window"/>
+          <Type name="Worker"/>
+        </TypeList>
+      </ExtendedAttribute>
+    </ExtendedAttributeList>
+    <InterfaceInheritance>
+      <Name name="EventTarget"/>
+    </InterfaceInheritance>
+  </Interface>
+</Definitions>
