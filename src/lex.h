@@ -19,7 +19,7 @@
 #define KEYWORDS \
     "DOMString\0" \
     "ByteString\0" \
-    "Date\0" \
+    "USVString\0" \
     "RegExp\0" \
     "false\0" \
     "object\0" \
@@ -77,7 +77,7 @@ enum toktype {
     /* Keywords must be in the same order as above. */
     TOK_DOMString,
     TOK_ByteString,
-    TOK_Date,
+    TOK_USVString,
     TOK_RegExp,
     TOK_false,
     TOK_object,

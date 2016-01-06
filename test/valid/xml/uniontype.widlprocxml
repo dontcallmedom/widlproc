@@ -2,20 +2,20 @@
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
   <webidl>interface Union {
- attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
+ attribute (any[] or (RegExp or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
 };</webidl>
   <Interface name="Union" id="::Union">
     <webidl>interface Union {
- attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
+ attribute (any[] or (RegExp or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;
 };</webidl>
     <Attribute name="test" id="::Union::test">
-      <webidl> attribute (any[] or (Date or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;</webidl>
+      <webidl> attribute (any[] or (RegExp or <ref>Event</ref>) or (<ref>Node</ref> or DOMString)?) test;</webidl>
       <Type type="union">
         <Type type="array">
           <Type type="any"/>
         </Type>
         <Type type="union">
-          <Type type="Date"/>
+          <Type type="RegExp"/>
           <Type name="Event"/>
         </Type>
         <Type type="union" nullable="nullable">

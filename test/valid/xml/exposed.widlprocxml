@@ -10,7 +10,7 @@ interface ServiceWorker : <ref>EventTarget</ref> {
 };</webidl>
     <ExtendedAttributeList>
       <ExtendedAttribute name="Exposed">
-        <webidl>Exposed=(<ref>Window</ref>,<ref>Worker</ref>)</webidl>
+        <webidl>Exposed=(<ref>Window</ref>,<ref>Worker</ref>)]</webidl>
         <TypeList>
           <Type name="Window"/>
           <Type name="Worker"/>

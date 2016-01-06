@@ -16,8 +16,8 @@
   attribute unrestricted float realwithinfinity;
   attribute unrestricted double bigrealwithinfinity; 
   attribute DOMString string; 
-  attribute ByteString bytes; 
-  attribute Date date;
+  attribute ByteString bytes;
+  attribute USVString usvstring;
   attribute RegExp regexp;
 };</webidl>
   <Interface name="Primitives" id="::Primitives">
@@ -36,8 +36,8 @@
   attribute unrestricted float realwithinfinity;
   attribute unrestricted double bigrealwithinfinity; 
   attribute DOMString string; 
-  attribute ByteString bytes; 
-  attribute Date date;
+  attribute ByteString bytes;
+  attribute USVString usvstring;
   attribute RegExp regexp;
 };</webidl>
     <Attribute name="truth" id="::Primitives::truth">
@@ -100,9 +100,9 @@
       <webidl>  attribute ByteString bytes;</webidl>
       <Type type="ByteString"/>
     </Attribute>
-    <Attribute name="date" id="::Primitives::date">
-      <webidl>  attribute Date date;</webidl>
-      <Type type="Date"/>
+    <Attribute name="usvstring" id="::Primitives::usvstring">
+      <webidl>  attribute USVString usvstring;</webidl>
+      <Type type="USVString"/>
     </Attribute>
     <Attribute name="regexp" id="::Primitives::regexp">
       <webidl>  attribute RegExp regexp;</webidl>
