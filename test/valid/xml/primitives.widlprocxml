@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
 <Definitions>
-  <webidl>interface Primitives {
+  <webidl>typedef (Int8Array or Int16Array or Int32Array or
+         Uint8Array or Uint16Array or Uint32Array or Uint8ClampedArray or
+         Float32Array or Float64Array or DataView) ArrayBufferView;
+interface Primitives {
   attribute boolean truth;
   attribute byte character;
   attribute octet value;
@@ -20,6 +23,23 @@
   attribute USVString usvstring;
   attribute RegExp regexp;
 };</webidl>
+  <Typedef name="ArrayBufferView" id="::ArrayBufferView">
+    <webidl>typedef (Int8Array or Int16Array or Int32Array or
+         Uint8Array or Uint16Array or Uint32Array or Uint8ClampedArray or
+         Float32Array or Float64Array or DataView) ArrayBufferView;</webidl>
+    <Type type="union">
+      <Type type="Int8Array"/>
+      <Type type="Int16Array"/>
+      <Type type="Int32Array"/>
+      <Type type="Uint8Array"/>
+      <Type type="Uint16Array"/>
+      <Type type="Uint32Array"/>
+      <Type type="Uint8ClampedArray"/>
+      <Type type="Float32Array"/>
+      <Type type="Float64Array"/>
+      <Type type="DataView"/>
+    </Type>
+  </Typedef>
   <Interface name="Primitives" id="::Primitives">
     <webidl>interface Primitives {
   attribute boolean truth;

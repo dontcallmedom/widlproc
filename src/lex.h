@@ -21,6 +21,19 @@
     "ByteString\0" \
     "USVString\0" \
     "RegExp\0" \
+    "Error\0" \
+    "DOMException\0" \
+    "ArrayBuffer\0" \
+    "DataView\0" \
+    "Int8Array\0" \
+    "Int16Array\0" \
+    "Int32Array\0" \
+    "Uint8Array\0" \
+    "Uint16Array\0" \
+    "Uint32Array\0" \
+    "Uint8ClampedArray\0" \
+    "Float32Array\0" \
+    "Float64Array\0" \
     "false\0" \
     "object\0" \
     "true\0" \
@@ -79,6 +92,19 @@ enum toktype {
     TOK_ByteString,
     TOK_USVString,
     TOK_RegExp,
+    TOK_Error,
+    TOK_DOMException,
+    TOK_ArrayBuffer,
+    TOK_DataView,
+    TOK_Int8Array,
+    TOK_Int16Array,
+    TOK_Int32Array,
+    TOK_Uint8Array,
+    TOK_Uint16Array,
+    TOK_Uint32Array,
+    TOK_Uint8ClampedArray,
+    TOK_Float32Array,
+    TOK_Float64Array,
     TOK_false,
     TOK_object,
     TOK_true,

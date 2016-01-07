@@ -388,7 +388,45 @@ parseprimitiveorstringtype(struct tok *tok)
         case TOK_RegExp:
             addnode(node, newattr("type", "RegExp"));
             break;
-
+        case TOK_DOMException:
+            addnode(node, newattr("type", "DOMException"));
+            break;
+        case TOK_Error:
+            addnode(node, newattr("type", "Error"));
+            break;
+        case TOK_ArrayBuffer:
+            addnode(node, newattr("type", "ArrayBuffer"));
+            break;
+        case TOK_DataView:
+            addnode(node, newattr("type", "DataView"));
+            break;
+        case TOK_Int8Array:
+            addnode(node, newattr("type", "Int8Array"));
+            break;
+        case TOK_Int16Array:
+            addnode(node, newattr("type", "Int16Array"));
+            break;
+        case TOK_Int32Array:
+            addnode(node, newattr("type", "Int32Array"));
+            break;
+        case TOK_Uint8Array:
+            addnode(node, newattr("type", "Uint8Array"));
+            break;
+        case TOK_Uint16Array:
+            addnode(node, newattr("type", "Uint16Array"));
+            break;
+        case TOK_Uint32Array:
+            addnode(node, newattr("type", "Uint32Array"));
+            break;
+        case TOK_Uint8ClampedArray:
+            addnode(node, newattr("type", "Uint8ClampedArray"));
+            break;
+        case TOK_Float32Array:
+            addnode(node, newattr("type", "Float32Array"));
+            break;
+        case TOK_Float64Array:
+            addnode(node, newattr("type", "Float64Array"));
+            break;
         }
         lexnocomment();
     }

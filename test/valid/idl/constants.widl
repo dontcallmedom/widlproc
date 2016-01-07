@@ -16,7 +16,7 @@ interface Util {
   const Foo bar = 3;
 };
 
-exception Error {
+exception OldError {
   const short ERR_UNKNOWN = 0;
   const short ERR_OUT_OF_MEMORY = 1;
 
