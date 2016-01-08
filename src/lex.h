@@ -60,7 +60,6 @@
     "attribute\0" \
     "callback\0" \
     "const\0" \
-    "creator\0" \
     "deleter\0" \
     "dictionary\0" \
     "enum\0" \
@@ -132,7 +131,6 @@ enum toktype {
     TOK_attribute,
     TOK_callback,
     TOK_const,
-    TOK_creator,
     TOK_deleter,
     TOK_dictionary,
     TOK_enum,

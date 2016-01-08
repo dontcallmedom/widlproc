@@ -9,7 +9,6 @@
   deleter void removeByIndex(unsigned long index);
 
   getter any get(DOMString name);
-  setter creator void set(DOMString name, any value);
   deleter void remove(DOMString name);
 };</webidl>
   <Interface name="OrderedMap" id="::OrderedMap">
@@ -21,7 +20,6 @@
   deleter void removeByIndex(unsigned long index);
 
   getter any get(DOMString name);
-  setter creator void set(DOMString name, any value);
   deleter void remove(DOMString name);
 };</webidl>
     <Attribute name="size" readonly="readonly" id="::OrderedMap::size">
@@ -64,18 +62,6 @@
       <ArgumentList>
         <Argument name="name">
           <Type type="DOMString"/>
-        </Argument>
-      </ArgumentList>
-    </Operation>
-    <Operation setter="setter" creator="creator" name="set" id="::OrderedMap::set">
-      <webidl>  setter creator void set(DOMString name, any value);</webidl>
-      <Type type="void"/>
-      <ArgumentList>
-        <Argument name="name">
-          <Type type="DOMString"/>
-        </Argument>
-        <Argument name="value">
-          <Type type="any"/>
         </Argument>
       </ArgumentList>
     </Operation>
