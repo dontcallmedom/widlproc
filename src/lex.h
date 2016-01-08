@@ -57,6 +57,9 @@
     "short\0" \
     "unsigned\0" \
     "void\0" \
+    "constructor\0" \
+    "toString\0"     \
+    "toJSON\0"     \
     "attribute\0" \
     "callback\0" \
     "const\0" \
@@ -126,6 +129,10 @@ enum toktype {
     TOK_short,
     TOK_unsigned,
     TOK_void,
+    /* Reserved names ; only used to make them not usable as identifiers */
+    TOK_constructor,
+    TOK_toString,
+    TOK_toJSON,
     /* Below that line are keywords that are allowed as arguments names */
     TOK_attribute,
     TOK_callback,

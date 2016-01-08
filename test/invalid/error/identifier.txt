@@ -1,0 +1,1 @@
+invalid/idl/identifier.widl: 2: at 'constructor': expected identifier
