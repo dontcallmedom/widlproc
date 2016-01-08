@@ -45,7 +45,6 @@
     "FrozenArray\0" \
     "Infinity\0"  \
     "-Infinity\0" \
-    "iterable\0" \
     "long\0" \
     "NaN\0" \
     "null\0" \
@@ -70,6 +69,7 @@
     "implements\0" \
     "inherit\0" \
     "interface\0" \
+    "iterable\0" \
     "legacycaller\0" \
     "maplike\0" \
     "partial\0" \
@@ -116,7 +116,6 @@ enum toktype {
     TOK_frozenarray,
     TOK_infinity,
     TOK_minusinfinity,
-    TOK_iterable,
     TOK_long,
     TOK_NaN,
     TOK_null,
@@ -142,6 +141,7 @@ enum toktype {
     TOK_implements,
     TOK_inherit,
     TOK_interface,
+    TOK_iterable,
     TOK_legacycaller,
     TOK_maplike,
     TOK_partial,
