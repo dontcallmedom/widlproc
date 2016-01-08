@@ -16,13 +16,6 @@ interface Util {
   const unrestricted double minusonedividedbyzero = -Infinity;
   const short notanumber = NaN;
   const <ref>Foo</ref> bar = 3;
-};
-
-exception OldError {
-  const short ERR_UNKNOWN = 0;
-  const short ERR_OUT_OF_MEMORY = 1;
-
-  short errorCode;
 };</webidl>
   <Typedef name="Foo" id="::Foo">
     <webidl>typedef short? Foo;</webidl>
@@ -92,24 +85,4 @@ exception OldError {
       <Type name="Foo"/>
     </Const>
   </Interface>
-  <Exception name="OldError" id="::OldError">
-    <webidl>exception OldError {
-  const short ERR_UNKNOWN = 0;
-  const short ERR_OUT_OF_MEMORY = 1;
-
-  short errorCode;
-};</webidl>
-    <Const name="ERR_UNKNOWN" value="0" id="::OldError::ERR_UNKNOWN">
-      <webidl>  const short ERR_UNKNOWN = 0;</webidl>
-      <Type type="short"/>
-    </Const>
-    <Const name="ERR_OUT_OF_MEMORY" value="1" id="::OldError::ERR_OUT_OF_MEMORY">
-      <webidl>  const short ERR_OUT_OF_MEMORY = 1;</webidl>
-      <Type type="short"/>
-    </Const>
-    <ExceptionField name="errorCode" id="::OldError::errorCode">
-      <webidl>  short errorCode;</webidl>
-      <Type type="short"/>
-    </ExceptionField>
-  </Exception>
 </Definitions>

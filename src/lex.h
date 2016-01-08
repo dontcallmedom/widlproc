@@ -63,7 +63,6 @@
     "deleter\0" \
     "dictionary\0" \
     "enum\0" \
-    "exception\0" \
     "getter\0" \
     "implements\0" \
     "inherit\0" \
@@ -134,7 +133,6 @@ enum toktype {
     TOK_deleter,
     TOK_dictionary,
     TOK_enum,
-    TOK_exception,
     TOK_getter,
     TOK_implements,
     TOK_inherit,

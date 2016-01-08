@@ -6,8 +6,6 @@
   attribute unsigned long height;
 };
 
-exception NoPointerDevice { };
-
 interface Button {
 
   boolean isMouseOver();
@@ -29,9 +27,6 @@ interface Button {
       <Type type="unsigned long"/>
     </Attribute>
   </Interface>
-  <Exception name="NoPointerDevice" id="::NoPointerDevice">
-    <webidl>exception NoPointerDevice { };</webidl>
-  </Exception>
   <Interface name="Button" id="::Button">
     <webidl>interface Button {
 

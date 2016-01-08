@@ -674,27 +674,6 @@ parseextendedattributelist(struct tok *tok)
 }
 
 /***********************************************************************
- * parseexceptionfield : parse [36] ExceptionField
- *
- * Enter:   tok = next token
- *          eal = 0 else extended attribute list node
- *
- * Return:  new node for the exceptionfield
- *          tok updated
- */
-static struct node *
-parseexceptionfield(struct tok *tok, struct node *eal)
-{
-    struct node *node = newelement("ExceptionField");
-    if (eal) addnode(node, eal);
-    setcommentnode(node);
-    addnode(node, parsetype(tok));
-    addnode(node, newattr("name", setidentifier(tok)));
-    tok = lexnocomment();
-    return node;
-}
-
-/***********************************************************************
  * parseargument : parse [31] Argument
  *
  * Enter:   tok = next token
@@ -1256,47 +1235,6 @@ struct node *typenode;
 }
 
 /***********************************************************************
- * parseexception : parse [8] Exception
- *
- * Enter:   tok = next token, known to be TOK_exception
- *          eal = 0 else extended attribute list node
- *
- * Return:  new node for the exception
- *          tok updated to the terminating ';'
- */
-static struct node *
-parseexception(struct tok *tok, struct node *eal)
-{
-    struct node *node = newelement("Exception");
-    setcommentnode(node);
-    if (eal) addnode(node, eal);
-    tok = lexnocomment();
-    addnode(node, newattr("name", setidentifier(tok)));
-    lexnocomment();
-    if (tok->type == ':') {
-        lexnocomment();
-        addnode(node, parsescopednamelist(tok, "ExceptionInheritance", "Name", 1));
-    }
-    eat(tok, '{');
-    while (tok->type != '}') {
-        const char *start = tok->prestart;
-        struct node *node2;
-        struct node *eal = parseextendedattributelist(tok);
-        if (tok->type == TOK_const)
-            node2 = parseconst(tok, eal);
-        else
-            node2 = parseexceptionfield(tok, eal);
-        addnode(node, node2);
-        node2->wsstart = start;
-        node2->end = tok->start + tok->len;
-        setid(node2);
-        eat(tok, ';');
-    }
-    lexnocomment();
-    return node;
-}
-
-/***********************************************************************
  * parseinterface : parse [4] Interface
  *
  * Enter:   tok = next token, known to be TOK_interface
@@ -1492,9 +1430,6 @@ parsedefinitions(struct tok *tok, struct node *parent)
 	case TOK_enum:
             node = parseenum(tok, eal);
             break;	  
-        case TOK_exception:
-            node = parseexception(tok, eal);
-            break;
         case TOK_typedef:
             node = parsetypedef(tok, eal);
             break;

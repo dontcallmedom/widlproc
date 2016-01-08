@@ -3,13 +3,6 @@
 <Definitions>
   <webidl>  typedef float number;
 
-  exception FrameworkException {
-
-    const long ERR_NOT_FOUND = 1;
-
-    long code;
-  };
-
   interface System {
 
     object createObject(DOMString _interface);
@@ -32,22 +25,6 @@ interface Foo {
     <webidl>  typedef float number;</webidl>
     <Type type="float"/>
   </Typedef>
-  <Exception name="FrameworkException" id="::FrameworkException">
-    <webidl>  exception FrameworkException {
-
-    const long ERR_NOT_FOUND = 1;
-
-    long code;
-  };</webidl>
-    <Const name="ERR_NOT_FOUND" value="1" id="::FrameworkException::ERR_NOT_FOUND">
-      <webidl>    const long ERR_NOT_FOUND = 1;</webidl>
-      <Type type="long"/>
-    </Const>
-    <ExceptionField name="code" id="::FrameworkException::code">
-      <webidl>    long code;</webidl>
-      <Type type="long"/>
-    </ExceptionField>
-  </Exception>
   <Interface name="System" id="::System">
     <webidl>  interface System {
 
