@@ -2,7 +2,7 @@ language: c
 addons:
   apt:
     packages:
-      -xsltproc
+      - xsltproc
 sudo: false
 script:
   - make
