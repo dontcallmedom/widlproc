@@ -117,7 +117,7 @@ $(OBJDIR)/%$(OBJSUFFIX) : $(SRCDIR)/%.c
 
 $(OBJDIR)/%.d : $(SRCDIR)/%.c
 	mkdir -p $(dir $@)
-	cc $(patsubst %, -I%, $(INCDIRS)) -MM -MG -MT $(patsubst %.d, %$(OBJSUFFIX), $@) $< | sed '$(patsubst %, s| \(%\)| $(OBJDIR)/\1|;, $(AUTOGENHEADERS))' >$@
+	$(CC) $(patsubst %, -I%, $(INCDIRS)) -MM -MG -MT $(patsubst %.d, %$(OBJSUFFIX), $@) $< | sed '$(patsubst %, s| \(%\)| $(OBJDIR)/\1|;, $(AUTOGENHEADERS))' >$@
 
 include $(patsubst %.c, $(OBJDIR)/%.d, $(SRCS))
 
