@@ -1332,21 +1332,21 @@ dox_attr(const char *p, struct cnode **pcnode, const struct cnodefuncs *type,
     if (!word)
         locerrorexit(filename, linenum, "expected word after \\%s", cmdname);
 
-	len = strlen(cmdname) + (wordlen = p-word) + 4; /* p="word"\0 */
-	if(cnode->attrtext)
-	  len += (offset = strlen(cnode->attrtext)) + 1; /* add space for space */
-	attrtext = memalloc(len);
-	if(offset) {
-		memcpy(attrtext, cnode->attrtext, offset);
-		attrtext[offset++] = ' ';
-		memfree(((void*)cnode->attrtext));
-	}
-	offset += sprintf(&attrtext[offset], "%s=\"", cmdname);
-	memcpy(&attrtext[offset], word, wordlen);
-	strcpy(&attrtext[offset + wordlen], "\"");
-	cnode->attrtext = attrtext;
-	/* skip delimiter because it won't be done otherwise */
-	if(incode && iswhitespace(*p)) ++p;
+    len = strlen(cmdname) + (wordlen = p-word) + 4; /* p="word"\0 */
+    if(cnode->attrtext)
+      len += (offset = strlen(cnode->attrtext)) + 1; /* add space for space */
+    attrtext = memalloc(len);
+    if(offset) {
+      memcpy(attrtext, cnode->attrtext, offset);
+      attrtext[offset++] = ' ';
+      memfree(((void*)cnode->attrtext));
+    }
+    offset += sprintf(&attrtext[offset], "%s=\"", cmdname);
+    memcpy(&attrtext[offset], word, wordlen);
+    strcpy(&attrtext[offset + wordlen], "\"");
+    cnode->attrtext = attrtext;
+    /* skip delimiter because it won't be done otherwise */
+    if(incode && iswhitespace(*p)) ++p;
     return p;
 }
 
