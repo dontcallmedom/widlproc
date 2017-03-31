@@ -5,7 +5,10 @@
   attribute [Clamp] long notThatLong;
   attribute [EnforceRange] long thereIsALimit;
   boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);
-};</webidl>
+};
+
+
+typedef ([Clamp] unsigned long or <ref>ConstrainLongRange</ref>) ConstrainLong;</webidl>
   <Interface name="AnnotatedTypes" id="::AnnotatedTypes">
     <webidl>interface AnnotatedTypes {
   attribute [Clamp] long notThatLong;
@@ -47,4 +50,17 @@
       </ArgumentList>
     </Operation>
   </Interface>
+  <Typedef name="ConstrainLong" id="::ConstrainLong">
+    <webidl>typedef ([Clamp] unsigned long or <ref>ConstrainLongRange</ref>) ConstrainLong;</webidl>
+    <Type type="union">
+      <Type type="unsigned long">
+        <ExtendedAttributeList>
+          <ExtendedAttribute name="Clamp">
+            <webidl>Clamp</webidl>
+          </ExtendedAttribute>
+        </ExtendedAttributeList>
+      </Type>
+      <Type name="ConstrainLongRange"/>
+    </Type>
+  </Typedef>
 </Definitions>

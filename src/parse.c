@@ -524,10 +524,12 @@ parseunionmembertype(struct tok *tok)
     addnode(node, newattr("type", "array"));
     addnode(node, typenode);
     node = parsetypesuffix(tok, node);
-  } else if (tok->type == '(') { 
+  } else if (tok->type == '(') {
     node = parseuniontype(tok);
   } else {
+    struct node *eal = parseextendedattributelist(tok);
     node = parsenonanytype(tok);
+    if (eal) addnode(node, eal);
   }
   return node;
 }

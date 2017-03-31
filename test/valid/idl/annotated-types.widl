@@ -3,3 +3,6 @@ interface AnnotatedTypes {
   attribute [EnforceRange] long thereIsALimit;
   boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);
 };
+
+
+typedef ([Clamp] unsigned long or ConstrainLongRange) ConstrainLong;
