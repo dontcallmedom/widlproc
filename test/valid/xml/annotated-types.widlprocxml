@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface AnnotatedTypes {
+  attribute [Clamp] long notThatLong;
+  attribute [EnforceRange] long thereIsALimit;
+  boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);
+};</webidl>
+  <Interface name="AnnotatedTypes" id="::AnnotatedTypes">
+    <webidl>interface AnnotatedTypes {
+  attribute [Clamp] long notThatLong;
+  attribute [EnforceRange] long thereIsALimit;
+  boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);
+};</webidl>
+    <Attribute name="notThatLong" id="::AnnotatedTypes::notThatLong">
+      <webidl>  attribute [Clamp] long notThatLong;</webidl>
+      <Type type="long">
+        <ExtendedAttributeList>
+          <ExtendedAttribute name="Clamp">
+            <webidl>Clamp</webidl>
+          </ExtendedAttribute>
+        </ExtendedAttributeList>
+      </Type>
+    </Attribute>
+    <Attribute name="thereIsALimit" id="::AnnotatedTypes::thereIsALimit">
+      <webidl>  attribute [EnforceRange] long thereIsALimit;</webidl>
+      <Type type="long">
+        <ExtendedAttributeList>
+          <ExtendedAttribute name="EnforceRange">
+            <webidl>EnforceRange</webidl>
+          </ExtendedAttribute>
+        </ExtendedAttributeList>
+      </Type>
+    </Attribute>
+    <Operation name="isMemberOfBreed" id="::AnnotatedTypes::isMemberOfBreed">
+      <webidl>  boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);</webidl>
+      <Type type="boolean"/>
+      <ArgumentList>
+        <Argument name="breedName">
+          <ExtendedAttributeList>
+            <ExtendedAttribute name="TreatNullAs" value="EmptyString">
+              <webidl>TreatNullAs</webidl>
+            </ExtendedAttribute>
+          </ExtendedAttributeList>
+          <Type type="DOMString"/>
+        </Argument>
+      </ArgumentList>
+    </Operation>
+  </Interface>
+</Definitions>

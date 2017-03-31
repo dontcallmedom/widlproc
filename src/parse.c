@@ -148,6 +148,8 @@ setargumentname(struct tok *tok)
 
 /* Prototypes for funcs that have a forward reference. */
 static struct node *parsetype(struct tok *tok);
+static struct node *parsetypewithextendedattributes(struct tok *tok);
+static struct node *parseextendedattributelist(struct tok *tok);
 static struct node *parsedefaultvalue(struct tok *tok, struct node *parent);
 static struct node *parseuniontype(struct tok *tok);
 static struct node *parseargumentlist(struct tok *tok);
@@ -455,7 +457,7 @@ parsenonanytype(struct tok *tok)
         addnode(node, newattr("type", "sequence"));
         lexnocomment();
         eat(tok, '<');
-        addnode(node, parsetype(tok));
+        addnode(node, parsetypewithextendedattributes(tok));
         eat(tok, '>');
 	if (tok->type == '?') {
 	  addnode(node, newattr("nullable", "nullable"));
@@ -467,7 +469,7 @@ parsenonanytype(struct tok *tok)
         addnode(node, newattr("type", "FrozenArray"));
         lexnocomment();
         eat(tok, '<');
-        addnode(node, parsetype(tok));
+        addnode(node, parsetypewithextendedattributes(tok));
         eat(tok, '>');
 	if (tok->type == '?') {
 	  addnode(node, newattr("nullable", "nullable"));
@@ -584,6 +586,33 @@ parsetype(struct tok *tok)
     return node;
 }
 
+/***********************************************************************
+ * parsetypewithextendedattributes : parse Type
+ *
+ * Enter:   tok = next token
+ *
+ * Return:  node for type
+ *          tok updated
+ */
+static struct node *
+parsetypewithextendedattributes(struct tok *tok)
+{
+    struct node *eal = parseextendedattributelist(tok);
+    struct node *node;
+    if (tok->type == '(') {
+      node = parseuniontype(tok);
+    } else if (tok->type == TOK_any) {
+      node = newelement("Type");
+      addnode(node, newattr("type", "any"));
+      lexnocomment();
+      node = parsetypesuffixstartingwitharray(tok, node);
+    } else {
+      node = parsenonanytype(tok);
+    }
+    if (eal) addnode(node, eal);
+    return node;
+}
+
 
 /***********************************************************************
  * parseextendedattribute : parse [39] ExtendedAttribute
@@ -685,8 +714,10 @@ parseargument(struct tok *tok)
     if (tok->type == TOK_optional) {
         addnode(node, newattr("optional", "optional"));
         lexnocomment();
+        addnode(node, parsetypewithextendedattributes(tok));
+    } else {
+        addnode(node, parsetype(tok));
     }
-    addnode(node, parsetype(tok));
     if (tok->type == TOK_ELLIPSIS) {
         addnode(node, newattr("ellipsis", "ellipsis"));
         lexnocomment();
@@ -814,7 +845,7 @@ parseattribute(struct tok *tok, struct node *eal, struct node *attrs)
         addnode(node, newattr("readonly", "readonly"));
     }
     eat(tok, TOK_attribute);
-    addnode(node, parsetype(tok));
+    addnode(node, parsetypewithextendedattributes(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     lexnocomment();
     return node;
@@ -921,9 +952,9 @@ parsemaplike(struct tok *tok) {
   value = newelement("Value");
   lexnocomment();
   eat(tok, '<');
-  addnode(key, parsetype(tok));
+  addnode(key, parsetypewithextendedattributes(tok));
   eat(tok, ',');
-  addnode(value, parsetype(tok));
+  addnode(value, parsetypewithextendedattributes(tok));
   addnode(node, key);
   addnode(node, value);
   eat(tok, '>');
@@ -938,12 +969,12 @@ parseiterable(struct tok *tok) {
   value = newelement("Value");
   lexnocomment();
   eat(tok, '<');
-  type1 = parsetype(tok);
+  type1 = parsetypewithextendedattributes(tok);
   if (tok->type == ',') {
     eat(tok, ',');
     addnode(key, type1);
     addnode(node, key);
-    addnode(value, parsetype(tok));
+    addnode(value, parsetypewithextendedattributes(tok));
   } else {
     addnode(value, type1);
   }
@@ -1115,8 +1146,10 @@ parsedictionarymember(struct tok *tok, struct node *eal)
     if (tok->type == TOK_required) {
       eat(tok, TOK_required);
       addnode(node, newattr("required", "required"));
+      addnode(node, parsetypewithextendedattributes(tok));
+    } else {
+      addnode(node, parsetype(tok));
     }
-    addnode(node, parsetype(tok));
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();
     // Optional value
@@ -1200,15 +1233,12 @@ parseimplementsstatement(struct tok *tok, struct node *eal)
 static struct node *
 parsetypedef(struct tok *tok, struct node *eal)
 {
-struct node *ealtype;
-struct node *typenode;
+    struct node *typenode;
     struct node *node = newelement("Typedef");
     setcommentnode(node);
     if (eal) addnode(node, eal);
     tok = lexnocomment();
-    ealtype = parseextendedattributelist(tok);
-    typenode = parsetype(tok);
-    if (ealtype) addnode(typenode, ealtype);
+    typenode = parsetypewithextendedattributes(tok);
     addnode(node, typenode);
     addnode(node, newattr("name", setidentifier(tok)));
     tok = lexnocomment();

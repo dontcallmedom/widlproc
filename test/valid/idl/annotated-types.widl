@@ -1,0 +1,5 @@
+interface AnnotatedTypes {
+  attribute [Clamp] long notThatLong;
+  attribute [EnforceRange] long thereIsALimit;
+  boolean isMemberOfBreed([TreatNullAs=EmptyString] DOMString breedName);
+};

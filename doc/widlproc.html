@@ -513,7 +513,7 @@ enclosed in a <code>&lt;ref></code>..<code>&lt;/ref></code>.
 <p>
 The <em>ExtendedAttributeList</em> specifies any extended attributes
 for the  <em>Interface</em>, <em>Dictionary</em>, <em>Exception</em>,
-<em>Typedef</em>, <em>Valuetype</em> or <em>Const</em> in the
+<em>Type</em>, <em>Valuetype</em> or <em>Const</em> in the
 <em>Definition</em>.
 </p>
 
@@ -682,7 +682,7 @@ The <em>id</em> attribute specifies the absolute scoped name of the typedef.
 </p>
 
 <pre class="dtd">
-&lt;!ELEMENT Typedef (webidl, descriptive?, ExtendedAttributeList?, (Type)) >
+&lt;!ELEMENT Typedef (webidl, descriptive?, (Type)) >
 &lt;!ATTLIST Typedef name CDATA #REQUIRED
                   id CDATA #REQUIRED >
 </pre>
