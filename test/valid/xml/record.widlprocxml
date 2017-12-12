@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Definitions SYSTEM "widlprocxml.dtd">
+<Definitions>
+  <webidl>interface WithARecord {
+   attribute record&lt;ByteString, double> data;
+};</webidl>
+  <Interface name="WithARecord" id="::WithARecord">
+    <webidl>interface WithARecord {
+   attribute record&lt;ByteString, double> data;
+};</webidl>
+    <Attribute name="data" id="::WithARecord::data">
+      <webidl>   attribute record&lt;ByteString, double> data;</webidl>
+      <Type type="record">
+        <Type type="ByteString"/>
+        <Type type="double"/>
+      </Type>
+    </Attribute>
+  </Interface>
+</Definitions>

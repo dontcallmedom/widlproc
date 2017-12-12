@@ -1,0 +1,1 @@
+invalid/idl/record.widl: 2: at 'double': expected string type

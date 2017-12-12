@@ -1,0 +1,3 @@
+interface WithInvalidRecordNotString {
+   attribute record<double, double> data;
+};
