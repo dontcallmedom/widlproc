@@ -3,6 +3,7 @@ addons:
   apt:
     packages:
       - xsltproc
+      - libxml2-utils
 sudo: false
 script:
   - make
