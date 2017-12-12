@@ -434,6 +434,28 @@ parseprimitiveorstringtype(struct tok *tok)
     return node;
 }
 
+static struct node *
+parsestringtype(struct tok *tok)
+{
+  struct node *node = newelement("Type");
+  switch (tok->type) {
+  case TOK_DOMString:
+    addnode(node, newattr("type", "DOMString"));
+    break;
+  case TOK_USVString:
+    addnode(node, newattr("type", "USVString"));
+    break;
+  case TOK_ByteString:
+    addnode(node, newattr("type", "ByteString"));
+    break;
+  default:
+    tokerrorexit(tok, "expected string type");
+    break;
+  }
+  lexnocomment();
+  return node;
+}
+
 /***********************************************************************
  * parsenonanytype : parse NonAnyType
  *
@@ -482,6 +504,20 @@ parsenonanytype(struct tok *tok)
         lexnocomment();
         eat(tok, '<');
         addnode(node, parsereturntype(tok));
+        eat(tok, '>');
+	if (tok->type == '?') {
+	  addnode(node, newattr("nullable", "nullable"));
+	  lexnocomment();
+	}
+        break;
+    case TOK_record:
+        node = newelement("Type");
+        addnode(node, newattr("type", "record"));
+        lexnocomment();
+        eat(tok, '<');
+        addnode(node, parsestringtype(tok));
+        eat(tok, ',');
+        addnode(node, parsetypewithextendedattributes(tok));
         eat(tok, '>');
 	if (tok->type == '?') {
 	  addnode(node, newattr("nullable", "nullable"));

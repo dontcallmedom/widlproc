@@ -53,6 +53,7 @@
     "or\0" \
     "Promise\0" \
     "readonly\0" \
+    "record\0" \
     "sequence\0" \
     "short\0" \
     "unsigned\0" \
@@ -124,6 +125,7 @@ enum toktype {
     TOK_or,
     TOK_Promise,
     TOK_readonly,
+    TOK_record,
     TOK_sequence,
     TOK_short,
     TOK_unsigned,
