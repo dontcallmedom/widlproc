@@ -10,7 +10,7 @@ widlproc is licensed under the Apache 2 License.
 
 # Others
 
-See also [webidl.js](https://github.com/darobin/webidl.js), a JavaScript-based Web IDL parser used by various tools in W3C.
+See also [webidl2.js](https://github.com/darobin/webidl2.js), a JavaScript-based Web IDL parser used by various tools in W3C.
 
 # Credits
 
